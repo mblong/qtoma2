@@ -43,23 +43,23 @@ HEADERS  += qtoma2.h\
         oma2UiIndependent/jpeglib.h\
         oma2UiIndependent/ImageBitmap.h \
         oma2UiIndependent/oma2.h \
-    datawindow.h \
-    preferences.h
-#        oma2UiIndependent/tiff.h\
-#        oma2UiIndependent/tiffio.h\
-#        oma2UiIndependent/tiffvers.h
+        datawindow.h \
+        preferences.h \
+        oma2UiIndependent/tiff.h\
+        oma2UiIndependent/tiffio.h\
+        oma2UiIndependent/tiffvers.h
 
 
 FORMS    += qtoma2.ui \
     datawindow.ui \
     preferences.ui
 
-macx: LIBS += -L$$PWD/../../../opt/local/lib/ -ljpeg
+macx: LIBS += -L/opt/local/lib/ -ljpeg
 
-INCLUDEPATH += $$PWD/../../../opt/local/lib
-DEPENDPATH += $$PWD/../../../opt/local/lib
+INCLUDEPATH += /opt/local/lib
+DEPENDPATH += /opt/local/lib
 
-macx: PRE_TARGETDEPS += $$PWD/../../../opt/local/lib/libjpeg.a
+macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
 RESOURCES += \
     qtoma2.qrc
