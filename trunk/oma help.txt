@@ -1,0 +1,425 @@
++ x
+	Adds x to the data in the current image data buffer.
+
+- x
+	Subtracts x from the data in the current image data buffer.
+
+* x
+	Multiplies the data in the current image data buffer by x.
+
+/ x
+	Divides the data in the current image data buffer by x.
+
+^ x
+	Raises the data in the current image data to the power x.
+
+
+ADDFILE <filename>
+	Adds the contents of an OMA file of a given name to the data in the current image data buffer.
+
+ADDTMPIMAGE name
+	Adds the contents of the named temporary image to the data in the current image data buffer.
+
+ABEL
+	Calculate the abel inversion using three-point abel inversion operator Di,j. The index i,j start from 0. The formula followed Dasch 1992 (Applied Optics) which contains several typos. One correction is done in function OP1 following  Martin's PhD thesis.
+
+ABELRECT rec_width [rec_y0 rec_y1]
+	Sets the rectangle (of width rec_width) according to the centroid of the image. If rec_y0 and rec_y1 are omitted, they are taken to be the top and bottom of the image.
+
+ABELPREP clip_value [fill_value]
+	Finds the maximum pixel value along horizontal lines in the image. If that maximum is < clip_value, the entire horizontal line is set to fill_value. Default for fill_value is 0.
+
+ACADD
+	Adds the current image data buffer to the accumulator buffer.
+
+ACCUMULATE
+	Allocates and clears memory for an image accumulator buffer that can be used to sum individual images. The size of the accumulator is determined by the image size parameters when the accumulate command is first given.
+
+ACDELETE
+	Frees the memory associated with the accumulator. 
+
+ACGET
+	Moves the data from the accumulator buffer into the current image data area. The previous contents of the image data buffer are destroyed.
+
+BLOCK n [m]
+	Group the image data into n x m blocks (rows x cols). This command reduces the size of the data buffer. The values are summed, pending implementation of the BLKAVE command. If the image is flagged as color, the three color planes are treated separately.
+
+BIT8 [min] [max]
+	Converts the file in the OMA image buffer to have a dynamic range of 0 to 255. That is, 8 unsigned bits per pixel. This conversion is automatically done before saving the image buffer as a TIFF image. If the optional min and max are specified, they are used for the scaling rather than the min and max of the current image buffer.
+
+BIT16 [min] [max]
+	Converts the file in the OMA image buffer to have a dynamic range of 0 to 65535. That is, 16 unsigned bits per pixel. This conversion is automatically done before saving the image buffer as a TIFF image with the SATIFFSCALED command. If the optional min and max are specified, they are used for the scaling rather than the min and max of the current image buffer.
+
+CALCULATE
+	Print calculations on the rectangle specified with the RECTANGLE command or with the rectangle tools. The average, rms, # of points, and the x and y "center of mass" are printed. The mean, rms, centroid_X and centroid_Y are passed to the command_return_variables.
+
+CALCALL
+	Print calculations on the entire image. The average, rms, # of points, and the x and y "center of mass" are printed. The mean, rms, centroid_X and centroid_Y are passed to the command_return_variables.
+
+CLIP value
+	Sets all data values in the current image buffer that are > value to value.
+
+CLIPBOTTOM clip_value
+	For the current image, set pixels whose value is < clip_value to be equal to clip_value.
+
+CLIPFBOTTOM clip_fraction
+	For the current image, set pixels whose value is < clip_fraction*image_max to be equal to clip_fraction*image_max.
+
+CLIPFRACTION fraction
+	Clip data at a fraction of the maximum value. Fraction is a real argument.
+
+CROP
+	Use the current rectangle to crop the image in the buffer.
+
+COMPOSITE  <filename> 
+	Create a composite image by appending the data in the specified file to that which exists in the current image buffer. The width of the specified file must be the same as that of the current image. 
+
+COMTEMPIMAGE name 
+	Create a composite image by appending the data in the named temporary image to that which exists in the current image buffer. The width of the specified temporary image be the same as that of the current image.
+	
+COLORFLAG [value]
+	If an argument is given, the IS_COLOR flag is set to 0 (flag = 0) or 1 (anything else). If no argument is given, the current value of the color flag is printed.
+
+CMINMX n m 
+	Specifies the minimum (n) and maximum (m) values in the data that correspond to the minimum and maximum color or gray scale values. Specifying the values causes the "Auto Scale" feature to be disabled. If the arguments are not given, the "Auto Scale" feature is enabled.
+
+CYL2
+	Treat the data in the current image as a half cross section of a cylindrically symmetric intensity distribution. The centerline is assumed to be along the LHS of the image. An integrated image is calculated by rotating the image  about the centerline. Does a parallel projection.
+
+CLEARBADPIX
+ 	Sets pixels tagged as bad to the value of their 8 nearest neighbors. This will not work well if there are contiguous bad pixels. For that, consider using the FILBOX or FILMSK commands.
+
+DISPLAY [string] 
+	Opens a window on the Macintosh screen and displays the contents of the current data buffer. The color palette used can be determined by the PALETTE command. The color minimum and maximum are specified by the CMINMX command. There can be up to 9 image windows open at one time. Windows can be resized, moved around the screen, and closed as in other Macintosh applications. If the optional string is specified, the window will be named according to the string.
+
+DMACRO [n] [command]
+	Prompts the user for lines of a command macro to be executed using the RMACRO command. If the argument n is omitted, definition starts with line one. If n is specified, definition begins with the nth line of the macro. To include numerical arguments that change each time the macro is executed, %d can be inserted in the macro command at the location where the number will be placed upon execution of the macro. If "command" is not present, the program prompts for additional command lines until a null command is entered (i.e. <CR> only). If the optional "command" is included on the same line, the text of "command" replaces any command already existing at line n and no further command lines are solicited. Dummy arguments in Macros or Execute files include the following:
+	%c  the number of seconds since OMA was started (float)
+	%d  a decimal digit
+	%s  the string specified by the STRMAC command
+	%f  last file name
+	%b  maximum value (big)
+	%l  minimum value (little)
+	%m  multiplier (the current scale factor)
+	%t  current date and time
+	%v  an integer value that increments by a specified amount every time it is used
+	Use the VALMAC command to specify the starting value and increment.
+	%e  the result of the last error code (0 means no error)
+	%a  the average within the currently defined rectangle
+	%r  the rms within the currently defined rectangle
+	%h  the height of the current image
+	%w  the width of the current image
+	%x  the x pixel coordinate of the last mouse click
+	%y  the y pixel coordinate of the last mouse click
+	%p	Filled in with the "save data" prefix
+	%q	Filled in with the "get data" prefix
+
+DIVFILE <filename>
+	Divides the data in the current buffer by the contents of the specified file.
+
+DIVTMPIMAGE name
+	Divides the data in the current buffer by the contents of the named temporary image.
+
+DIFFX
+	Differentiate the data in the current image data buffer in the x direction. 
+
+DIFFY
+	Differentiate the data in the current image data buffer in the y direction.
+
+DCRAWARGS  [arguments]
+	Allows the user to specify the arguments passed to the dcraw routine, which decodes camera raw files to OMA format. Omitting the argument lists the allowed arguments and gives the current argument settings. The filename field is ignored.
+
+DELAY nticks
+	Waits nticks/60 seconds before continuing on to the next command. Use this for rough timing operations.
+
+DMNMX
+	Displays the color min and max in the window.
+
+ERASE [n] 
+	If no argument is given, all image windows currently on the screen are closed. If a value n is specified, only window n is erased.
+
+ECHO string
+	Prints "string" during macro execution. "string" can be replaced with any of the macro dummy arguments (e.g., ECHO %b).
+
+ENDIF
+	Terminates an IF command. This is applicable within Macros only.
+
+EXECUTE <filename>
+	Reads OMA commands stored in the specified file into a special execute buffer and then performs those commands. Unlike macros, these should not contain dummy numerical arguments (%d).
+
+FFT mode scale_factor
+	mode = 0  return the magnitude scaled by scale_factor
+	mode = 1  return the real part scaled by scale_factor
+	mode = 2  return the imaginary part scaled by scale_factor
+	mode = 3  return inverse - input is real part scaled by scale_factor
+	mode = 4  return inverse - input is imaginary part scaled by scale_factor
+	mode = 5  return the log of the magnitude squared scaled by scale_factor
+	mode = 6  return the magnitude squared scaled by scale_factor
+	mode = 7  return the autocorrelation scaled by scale_factor
+	mode = 8  return inverse - input is a filter scaled by n
+
+FLOATVARIABLE variable_name
+	Specifies that variable_name is to be used as a floating point variable.
+
+FOLD fraction new_width
+	Fold an image in half vertically. It is assumed to be symmetric about some nearly verticle axis. The center of symmetry is found separately for each row, except if there are dark regions at the top and bottom of the image. For the dark regions, the average center of the middle part of the image is used as the center of symmetry. Dark regions are rows (at the top and bottom) whose values are all less than fraction*image_max. x0,y0 and x1,y1 are coordinates of the top and bottom of the dark region, center is the average center. These are returned in command_return_1-5.
+
+FTEMPIMAGE tempImage
+	Free memory associated with temporary image tempImage. tempImage must be in the range 0-9, or correspond to a named image.
+
+FCLOSE
+	Closes the currently open text file (there can be only one). The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
+
+FECHO string
+	Exactly as echo but instead of printing to the command window, it writes to the file opened with FOPEN. The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
+
+FOPEN <filename>
+	Open a text file with the name <filename> for I/O. The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
+
+FINDBADPIX Counts
+	Searches the current image buffer for pixels whose value is more than "Counts" above that of its nearest eight neighbors. Those pixels are tagged as hot pixels.
+
+GET <filename>
+	Loads the data from the specified file into the current image data buffer. The "Get Data Files" prefix is used. The "Get Data Files" suffix is used unless the specified filename has a suffix of .jpg, .tiff, .tif, or .nef; in those cases no suffix is added and the appropriate decoding routines are called according to the file type.
+
+GETFILENAMES NameFile
+	Open NameFile (currently uses macro prefix and suffix) which contains the names of files. The NEXTFILE command is used to open the next file. NameFile is left open until all files have been accessed.
+
+GETSETTINGS [filename]
+	Gets settings from the specified file (uses the appropriate prefix and suffix specified in the preferences). If no filename is given, OMA Settings from within the oma application are loaded.
+
+GETFUNCTION n filename
+	Read in a tabulated function to be used by the LOOKUP command. n is the function number to be defined. filename is file containing y=f(x) data pairs, preceeded by number of table entries.
+	Assumptions for tabulated functions:
+	File format:
+	first number is integer with the number of pairs to follow
+	pairs are float with x followed by f(x) on the same line
+	x values are ordered smallest to largest
+	y = f(x) is single valued
+
+GMACRO <filename>
+	Loads the contents of the specified file into the current macro buffer.
+
+GAUSSIAN EdgeValue [x0 y0]
+    Generate a Gaussian distribution centered at x0, y0. If x0, and y0, are not specified, the distribution is centered. The maximum is 1. For a centered distribution, EdgeValue specifies the value of the distribution at the center edge.
+	
+GREY2RGB [scaleRed scaleGreen scaleBlue]
+	Turns a single plane image into a three plane RGB image. The optional weighting factors are applied to each color plane.
+ 
+GRADIENT
+	Find the magnitude of the gradient of the data in the current image buffer. Use two pixels on either side of current pixel for gradient.
+
+GSMOOTH dx [dy]
+	Gaussian Smoothing of the data. dx and dy are the smoothing size parameters. If dy is omitted, it is taken as dx. dx and dy must be odd. sigma_x = (dx-1)/3.5
+
+GTEMPIMAGE name
+	Get temporary image that has been previously saved using STEMP.
+
+HELP [command name or fragment]
+	If a command name is given, a brief explanation of the command is printed in the command window. If only part of the command is given, a description of all commands that match the command fragment is printed. All help information is from the file "OMA HELP." If no argument is given, all command names are printed with no explanation.
+
+IF condition
+	If condition evaluates to a non-zero value, the commands following the IF are executed. However, if the condition is zero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
+
+INVERT
+	Inverts the image in the current image data buffer, causing the first data point to become the last data point.
+
+INTEGRATE direction_flag selection_flag do_average
+	Sum up the data in the horizontal ( direction_flag=0 ) or vertical (direction_flag=1)direction. The two-dimensional image becomes a single line. If selection_flag=1, the subset of the image specified by the selection rectangle is used. Possible cases are:
+	direction_flag = 1 The result is an array in x; sum in y direction
+	direction_flag = 0 The result is an array in y; sum in x direction
+	selection_box = 1 A selection box specifies what region to sum
+	selection_box = 0 Sum all channels or tracks 
+	do_average = 1 Average along the integrate direction (divide by box size in integration direction)
+	do_average = 0 Just sum, don't average
+
+INTFILL direction_flag selection_flag do_average
+	This works like the INTEGRATE command but a two-dimensional image is formed by duplicating the summed values. If selection_flag=1, the new image will be the size of the currently defined rectangle.
+
+INTVARIABLE variable_name
+	Specifies that variable_name is to be used as an integer variable.
+
+KILLBOX [value]
+	Much like FILLBOX, this command works on the region of the image that has been specified with the RECT command or mouse. The contents of this region are set to 'value'. Default for 'value' is 0.
+
+KWABEL n
+	Uses analytic evaluation of integral required for abel inversion, which involves a lot of evaluations of ln(x). n is a scale factor for the image.
+
+LIST
+	Lists the current detector parameters and log block.
+
+LABEL text_string
+	Display the text_string in the upper left of the current window.
+
+LMACRO
+	Lists the contents in the current macro buffer.
+
+LOOP variable_name start end [step]
+	Initializes a loop. The variable_name can be any string of reasonable length. The variable takes on the initial value specified by "start" and the commands within the loop are repeated until the variable is >= "end". ( or <= "end" if step < 0) If step is not specified, a step of 1 is assumed. The end of the loop is specified by the LOOPND command. Each LOOP must have a corresponding LOOPND. To access the value of a loop variable, precede variable_name with "@" For example:
+	loop fnum 2 10 2
+	get data@fnum
+	disp
+	loopnd
+	.
+	.
+	Note: To signify the end of a variable name when it is followed by other characters, use a '\' character. For example:
+	loop fnum 2 10 2
+	get data@fnum\_corrected
+	disp
+	loopnd
+
+LOOPBREAK
+	Break out of current loop.
+
+LOOPND
+	Specifies the end of a loop initiated with the LOOP command.
+
+LOOKUP fn_number 
+	Redefine the current image using the lookup table specified by a tabulated function. Use GETFUNCT n filename before using this command.
+
+LTEMPIMAGE 
+	List defined temporary images.
+
+LN
+	Returns the natural log of the current image.
+
+MACRO [n m]
+	Like "RMACRO [n m]" except that printing of intermediate output is automatically suppressed.
+
+MAKNEW n m
+	Change the resolution of the data in the current data buffer to be n rows x m columns. Bilinear interpolation is performed.
+
+MIRROR
+	Form a left-right mirror image operation on the data in the current data buffer.
+
+MULFILE <filename>
+	Multiplies the contents of the current data buffer by the contents of the specified file.
+
+MULTMPIMAGE name
+	Multiplies the contents of the current data buffer by the contents of the named temporary image.
+
+NEWWINDOW flag
+	If flag = 1 (default), a new window will be opened for each "DISPLAY" command. If flag = 0, the results of "DISPLAY" commands will be placed in the last-opened window. If no window exists, a new one will be opened. 
+
+NEXTFILE [prefix]
+	Open the next file specified in the FileNames file that was opened with the GetFileNames command. If a prefix is specified, that is added to the name before trying to open the file. command_return_1 is the the filename without any prefix and without the extension (last 4 characters).
+
+PALETTE n
+	Specifies that the nth predefined color palette should be used. Palette 0 is a color palette; 1 is a gray-scale palette.
+
+POSITVE
+	Sets all negative values in the image buffer to 0.  Positive values are unaffected.
+
+POWER y
+	Raise the data in the current image buffer to the power y (float).
+
+RAMP
+	Fill current image with a ramp from 0 to the number of number of channels.
+
+RECTANGLE ulx uly lrx lry
+	Specify a rectangle that calculations are to be done on. The arguments are upper left x coordinate; upper left y coordinate; lower right x; lower right y.
+
+RGB2RED
+	Get the red channel of the current color image.
+
+RGB2GREEN
+	Get the green channel of the current color image.
+
+RGB2BLUE
+	Get the blue channel of the current color image.
+
+RMACRO [n m] 
+	Starts executing commands in the macro buffer with %d being replaced first by value n. Subsequently, n is incremented by the amount specified in the INCMACRO command (default is 1). If the new numeric value is equal to m, the macro will be executed again. Menu items can be selected and the appropriate commands executed during macros. Commands typed during the execution of a macro will be echoed to the terminal but not performed. To stop a macro during execution type "cmd ." (hold down the apple key and type ".")
+
+ROTATE [value]
+	Rotates the data in the current image buffer.  If no value is specified, the image is rotated by 90 degrees. If a value is specified, the image is rotated by the specified number of degrees (this may be a real number).
+
+READBADPIX filename
+ Read in bad pixel data from a text file.
+	Format is:
+	# of bad pixels
+	detector_width	detector_height
+	bad_pix1_x
+	bad_pix1_y
+	bad_pix2_x
+	bad_pix2_y
+	.
+	.
+	.
+
+RNDOFF
+	Round the DATAWORD values Down to the nearest integer value.
+
+RNDUP
+	Round the DATAWORD values UP to the nearest integer value.
+
+SAVEFILE <filename>
+	Saves the current data buffer to the specified file.
+
+SAVSETTINGS [filename]
+	Saves the current settings to the specified file (uses the appropriate prefix and suffix specified in the preferences). If no filename is given, OMA Settings are saved within the oma application. 
+
+SATIFF <filename> 
+	Converts the contents of the OMA Image buffer to 8 bit unsigned data and then uses the LibTIFF TIFFWriteEncodedStrip function to save the data to a TIFF image specified on the command line. The 'save' file prefixes are used. A ".tif" extension is automatically appended to the filename. To save as a color image, use the COLORFLAG command to set the flag appropriately.
+
+SATIFFSCALED min max <filename>
+	Convert image to 16 bit and save as a TIFF file. Uses the specified min and max for scaling rather than the min and max of the image in the buffer. Results will be between 0 - 65535. Depending on min and max, the image may be clipped or the full 16-bit dynamic range may not be used. To save as a color image, use the COLORFLAG command to set the flag appropriately.
+
+SIZE rows cols
+	Set the number of rows and columns of the current image and zero the data.
+
+SINGRID radius
+	Draw grid from the sine function.
+
+STEMPIMAGE name
+	Save current image as temporary image with specified name. The name can be 0-9 or a text string beginning with a lower case letter. This can be retrieved with GTEMP.
+
+STRMACRO string
+	Specifies that "string" is to be substituted for any "%s" found in macro or execute commands. If no string is specified, the current string is printed.
+
+SMOOTH [n,m]
+	Performs an n x m smoothing operation on data in the current image buffer.  If only n is specified, an n x n smoothing is done; with no argument, a 2 x 2 smoothing is performed.  For the smoothing operation to be perfectly centered on each data point, the arguments must be odd. For Gaussian smoothing, use GSMOOTH.
+
+SUBFILE <filename>
+	Subtracts the contents of the specified file from the data in the current buffer.
+
+SHELL shell_command
+	Opens a pipe to a shell and sends along the command. Output from the command is echoed to the command window.
+
+STOPONERROR flag
+	If flag = 1, macro or execute commands will stop on error conditions. If flag = 0 (default) execution will continue.
+
+SUBTMPIMAGE name
+	Subtracts the contents of the named temporary image from the data in the current buffer.
+
+TSMOOTH
+	Smooth radius based on x_dim = Temp[0], y_dim = Temp[1]. This is a function that enables (Rectangular) smoothing of an image, with variable filter size. It works basically like SMOOTH 13 13, say, but it takes the x_dim and y_dim locally based on the values in the  Temporary buffers T[0] and T[1]. It has been used to variably smooth an image based on the local length scale which was modelled.
+
+VARIABLES
+	Lists currently defined variables and their values. Variables are defined using simple arithmetic expressions, such as
+	my_var = 10
+	or
+	y = my_var*2
+	The values of variables are accessed from other commands using @my_var. For example,
+	+ @my_var
+	or
+	save datfile_@4myvar
+	As with loops, the end of a variable can be tagged by adding a '\' For example,
+	save datfile_@my_var\_corrected
+	See also commands FLOAT and INTVARIABLE
+
+WRITEBADPIX filename
+	save bad pixel data to a text file.
+	Format is:
+	# of bad pixels
+	detector_width	detector_height
+	bad_pix1_x
+	bad_pix1_y
+	bad_pix2_x
+	bad_pix2_y
+	.
+	.
+	.
+
+
+
