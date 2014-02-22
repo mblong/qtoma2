@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>oma help.txt</file>
+    </qresource>
+    <qresource prefix="/Resources">
+        <file>Resources/OMA palette2.pa1</file>
+    </qresource>
+</RCC>
