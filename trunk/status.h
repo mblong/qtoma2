@@ -14,6 +14,22 @@ class Status : public QDialog
 public:
     explicit Status(QWidget *parent = 0);
     ~Status();
+    void fillInLabels();
+
+private slots:
+    void on_plusButton_clicked();
+
+    void on_boxButton_clicked();
+
+    void on_cboxButton_clicked();
+
+    void on_rulerButton_clicked();
+
+    void on_graphButton_clicked();
+
+    void on_scaleBox_clicked(bool checked);
+
+    void on_updateBox_clicked(bool checked);
 
 private:
     Ui::Status *ui;

@@ -35,6 +35,7 @@ void update_UI(){
     UIData.y0 = specs[Y0];
 
     //[statusController labelColorMinMax];
+    wPointer->fillInLabels();
     /*
     if(UIData.autoscale)
         [[statusController scaleState] setState:NSOnState];

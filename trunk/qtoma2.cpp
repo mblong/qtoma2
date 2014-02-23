@@ -17,6 +17,7 @@ QtOma2::QtOma2(QWidget *parent) :
     programmedText = 0;
     setUpUIData();
 
+
     char text[NEW_PREFIX_CHPERLN];
 
     QString appPath =  qApp->applicationDirPath();
@@ -33,6 +34,10 @@ QtOma2::QtOma2(QWidget *parent) :
     mainScreenSize = widget.availableGeometry(widget.primaryScreen());
     window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
     window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
+    status = new Status(this);
+    status->setGeometry(COMMAND_WIDTH+WINDOW_OFFSET,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,STATUS_WIDTH,WINDOW_HEIGHT);
+    status->show();
+
     wraps = 1;
     windowRow = 0;
     numWindows = 0;
@@ -43,6 +48,7 @@ QtOma2::QtOma2(QWidget *parent) :
     //      select triggered -- OK
     //      this fills in on_actionName_triggered() functions in both the .h and .cpp files
     //connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(fileOpen()));
+
 
 
 }
@@ -379,4 +385,8 @@ void QtOma2::closeEvent(QCloseEvent *event)
 void QtOma2::on_actionTest_triggered()
 {
     showPreferences();
+}
+
+void QtOma2::fillInLabels(){
+    status->fillInLabels();
 }

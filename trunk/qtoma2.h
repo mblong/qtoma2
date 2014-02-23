@@ -8,9 +8,13 @@
 #include "./oma2UiIndependent/oma2.h"
 #include "./oma2UiIndependent/UI.h"
 #include "datawindow.h"
+#include "status.h"
 #include "preferences.h"
 
 
+#define WINDOW_HEIGHT 376
+#define COMMAND_WIDTH 640
+#define STATUS_WIDTH 260
 int comdec(char*);
 
 // This isn't the right way to do this
@@ -41,6 +45,7 @@ public:
     void newData(char* name);
     void eraseWindow(int n);
     void showPreferences();
+    void fillInLabels();
 
 protected:
     void keyPressEvent(QKeyEvent*);
@@ -59,6 +64,7 @@ private:
     int programmedText;
     char oma2Command[CHPERLN];
     DataWindow* dwin[MAX_WINDOW_COUNT];
+    Status *status;
     Preferences* prefs;
     QRect mainScreenSize;
     rectangle window_placement;
