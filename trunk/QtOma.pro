@@ -26,7 +26,8 @@ SOURCES += main.cpp\
         oma2UiIndependent/jpegIO.cpp \
         QtUI.cpp \
         datawindow.cpp \
-    preferences.cpp
+    preferences.cpp \
+    status.cpp
 
 
 HEADERS  += qtoma2.h\
@@ -47,12 +48,14 @@ HEADERS  += qtoma2.h\
         preferences.h \
         oma2UiIndependent/tiff.h\
         oma2UiIndependent/tiffio.h\
-        oma2UiIndependent/tiffvers.h
+        oma2UiIndependent/tiffvers.h \
+    status.h
 
 
 FORMS    += qtoma2.ui \
     datawindow.ui \
-    preferences.ui
+    preferences.ui \
+    status.ui
 
 macx: LIBS += -L/opt/local/lib/ -ljpeg
 
