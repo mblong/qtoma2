@@ -2,6 +2,9 @@
 #define STATUS_H
 
 #include <QDialog>
+//#include "./oma2UiIndependent/oma2.h"
+//#include "./oma2UiIndependent/UI.h"
+
 
 namespace Ui {
 class Status;
@@ -15,6 +18,8 @@ public:
     explicit Status(QWidget *parent = 0);
     ~Status();
     void fillInLabels();
+    void fillDataLabel1(int x, int y, float z);
+    void fillDataLabel2(int x, int y, float z);
 
 private slots:
     void on_plusButton_clicked();

@@ -390,3 +390,11 @@ void QtOma2::on_actionTest_triggered()
 void QtOma2::fillInLabels(){
     status->fillInLabels();
 }
+
+void QtOma2::fillDataLabel1(int x, int y, DATAWORD z){
+    status->fillDataLabel1( x,  y,  z);
+}
+
+void QtOma2::fillDataLabel2(int x, int y, DATAWORD z){
+    status->fillDataLabel2( x,  y,  z);
+}
