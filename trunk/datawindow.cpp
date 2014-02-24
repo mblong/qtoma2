@@ -4,7 +4,7 @@
 
 extern Image iBuffer;
 extern ImageBitmap iBitmap;
-
+extern QtOma2* wPointer;
 
 DataWindow::DataWindow(QWidget *parent) :
     QDialog(parent),
@@ -47,7 +47,10 @@ void DataWindow::showData(char* name){
 void DataWindow::mousePressEvent(QMouseEvent *event)
 {
         QPoint pos = event->pos();
-        fprintf(stderr,"%d %d\n",pos.x(),pos.y());
+        //fprintf(stderr,"%d %d\n",pos.x(),pos.y());
+        // not safe for resized windows
+        wPointer->fillDataLabel1(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
+
         startPoint = event->pos();
 }
 
@@ -59,9 +62,14 @@ void DataWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
-        nextPoint = event->pos();
-        mouseMoving = 1;
-        update();
+    QPoint pos = event->pos();
+    //fprintf(stderr,"%d %d\n",pos.x(),pos.y());
+    // not safe for resized windows
+    wPointer->fillDataLabel1(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
+
+    nextPoint = event->pos();
+    mouseMoving = 1;
+    update();
 
 }
 

@@ -11,6 +11,5 @@
         <file>Resources/ruler.jpg</file>
         <file>Resources/plus.jpg</file>
         <file>Resources/OMA palette3.pa1</file>
-        <file>Resources/plus.png</file>
     </qresource>
 </RCC>

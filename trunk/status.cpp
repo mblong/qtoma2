@@ -60,34 +60,6 @@ void Status::fillInLabels(){
 
 
 }
-/*
-      [self setMinMaxInc:UIData.cminmaxinc];
-    [slide_val setIntValue:UIData.cminmaxinc];
-    [slide_label setIntValue:[slide_val intValue]];
-
-    //[minMaxIncSetting setIntValue:UIData.cminmaxinc];
-
-
-    [ColorMaxLabel setStringValue:[NSString stringWithFormat:@"%g",UIData.cmax]];
-    [ColorMinLabel setStringValue:[NSString stringWithFormat:@"%g",UIData.cmin]];
-
-    [MinLabel setStringValue:[NSString stringWithFormat:@"Min: %g",UIData.min]];
-    [MaxLabel setStringValue:[NSString stringWithFormat:@"Max: %g",UIData.max]];
-    if(UIData.iscolor)
-        [RowsLabel setStringValue:[NSString stringWithFormat:@"Rows: %d x 3",UIData.rows/3]];
-    else
-        [RowsLabel setStringValue:[NSString stringWithFormat:@"Rows: %d",UIData.rows]];
-    [ColsLabel setStringValue:[NSString stringWithFormat:@"Cols: %d",UIData.cols]];
-    [DXLabel setStringValue:[NSString stringWithFormat:@"DX: %d",UIData.dx]];
-    [DYLabel setStringValue:[NSString stringWithFormat:@"DY: %d",UIData.dy]];
-    [X0Label setStringValue:[NSString stringWithFormat:@"X0: %d",UIData.x0]];
-    [Y0Label setStringValue:[NSString stringWithFormat:@"Y0: %d",UIData.y0]];
-
-    appController.tool = UIData.toolselected;
-    [self setTool_selected:UIData.toolselected];
-    [[self toolSelected] selectCellAtRow:0 column:UIData.toolselected];
-
- */
 
 void Status::on_plusButton_clicked()
 {
@@ -133,3 +105,57 @@ void Status::on_updateBox_clicked(bool checked)
 {
     UIData.autoupdate = checked;
 }
+
+void Status::fillDataLabel1(int x, int y, DATAWORD z){
+    char text[256];
+    sprintf(text,"X: %d",x);
+    ui->xLabel_1->setText(text);
+    sprintf(text,"Y: %d",y);
+    ui->yLabel_1->setText(text);
+    sprintf(text,"Z: %g",z);
+    ui->zLabel_1->setText(text);
+
+}
+
+void Status::fillDataLabel2(int x, int y, DATAWORD z){
+    char text[256];
+    if(x< 0){
+        sprintf(text,"X:");
+        ui->xLabel_2->setText(text);
+        sprintf(text,"Y:");
+        ui->yLabel_2->setText(text);
+        sprintf(text,"Z:");
+        ui->zLabel_2->setText(text);
+
+    } else {
+        sprintf(text,"X: %d",x);
+        ui->xLabel_2->setText(text);
+        sprintf(text,"Y: %d",y);
+        ui->yLabel_2->setText(text);
+        sprintf(text,"Z: %g",z);
+        ui->zLabel_2->setText(text);
+    }
+
+}
+
+
+/*
+- (void) labelX0:(int) x Y0:(int) y Z0:(float) z{
+    [XLabel setStringValue:[NSString stringWithFormat:@"X: %d",x]];
+    [YLabel setStringValue:[NSString stringWithFormat:@"Y: %d",y]];
+    [ZLabel setStringValue:[NSString stringWithFormat:@"Z: %g",z]];
+
+}
+
+- (void) labelX1:(int) x Y1:(int) y Z1:(float) z{
+    if(x<0){
+        [XLabel2 setStringValue:@" "];
+        [YLabel2 setStringValue:@" "];
+        [ZLabel2 setStringValue:@" "];
+    } else {
+        [XLabel2 setStringValue:[NSString stringWithFormat:@"X: %d",x]];
+        [YLabel2 setStringValue:[NSString stringWithFormat:@"Y: %d",y]];
+        [ZLabel2 setStringValue:[NSString stringWithFormat:@"Z: %g",z]];
+     }
+}
+*/

@@ -46,6 +46,9 @@ public:
     void eraseWindow(int n);
     void showPreferences();
     void fillInLabels();
+    void fillDataLabel1(int x, int y, DATAWORD z);
+    void fillDataLabel2(int x, int y, DATAWORD z);
+
 
 protected:
     void keyPressEvent(QKeyEvent*);
