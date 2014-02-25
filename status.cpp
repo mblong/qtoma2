@@ -51,7 +51,7 @@ void Status::fillInLabels(){
     ui->scaleBox->setChecked(UIData.autoscale);
 
     ui->plusButton->setDown(UIData.toolselected == CROSS);
-    ui->boxButton->setDown(UIData.toolselected == RECT);
+    ui->boxButton->setDown(UIData.toolselected == SELRECT);
     ui->cboxButton->setDown(UIData.toolselected == CALCRECT);
     ui->rulerButton->setDown(UIData.toolselected == RULER);
     ui->graphButton->setDown(UIData.toolselected == LINEPLOT);
@@ -69,7 +69,7 @@ void Status::on_plusButton_clicked()
 
 void Status::on_boxButton_clicked()
 {
-    UIData.toolselected = RECT;
+    UIData.toolselected = SELRECT;
     fillInLabels();
 
 }

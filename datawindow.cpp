@@ -85,7 +85,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
         painter.setRenderHint(QPainter::Antialiasing, true);
 
         switch(thereIsDrawing){
-            case RECT:
+            case SELRECT:
                 painter.drawRect(QRect(oldP1,oldP2));
                 thereIsDrawing=0;
                 break;
@@ -94,9 +94,9 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 thereIsDrawing=0;
                 break;
         }
-        if(UIData.toolselected == RECT || UIData.toolselected == CALCRECT){
+        if(UIData.toolselected == SELRECT || UIData.toolselected == CALCRECT){
             painter.drawRect(QRect(startPoint,nextPoint));
-            thereIsDrawing = RECT;
+            thereIsDrawing = SELRECT;
         } else if(UIData.toolselected > CALCRECT){  // draw a line
             painter.drawLine(startPoint,nextPoint); // draw the new
             thereIsDrawing = RULER;

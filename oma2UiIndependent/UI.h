@@ -27,41 +27,52 @@
 extern AppController *appController;
 extern StatusController *statusController;
 
-enum {CROSS,RECT,CALCRECT,RULER,LINEPLOT};
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 
 #define printf omaprintf
 /*
-#define display_data [appController showDataWindow:(char*) args];
-#define erase_window [appController eraseWindow:(int) n];
-#define label_data [appController labelDataWindow:(char*) args];
-#define label_data_minMax [appController labelMinMax];
-*/
+ #define display_data [appController showDataWindow:(char*) args];
+ #define erase_window [appController eraseWindow:(int) n];
+ #define label_data [appController labelDataWindow:(char*) args];
+ #define label_data_minMax [appController labelMinMax];
+ */
 
 #define checkEvents ;
+
+#ifndef SETTINGSFILE
+#define SETTINGSFILE "Contents/Resources/OMA Settings"
+#define PALETTEFILE	"Contents/Resources/OMA palette.pa1"
+#define PALETTEFILE2 "Contents/Resources/OMA palette2.pa1"
+#define PALETTEFILE3 "Contents/Resources/OMA palette3.pa1"
+
+#define HELPFILE "Contents/Resources/oma help.txt"
+#define HELPURL "Contents/Resources/LightOma2Help/index.html"
+#endif
+
 
 // try this so that the command thread doesn't mess with things that need to be in the main thread
 
 #define display_data if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
-                        [appController showDataWindow:(char*) args]; \
-                     else \
-                        dispatch_sync(dispatch_get_main_queue(),^{[appController showDataWindow:(char*) args];});
+[appController showDataWindow:(char*) args]; \
+else \
+dispatch_sync(dispatch_get_main_queue(),^{[appController showDataWindow:(char*) args];});
 
 
 #define erase_window if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
-                        [appController eraseWindow:(int) n]; \
-                     else \
-                        dispatch_sync(dispatch_get_main_queue(),^{[appController eraseWindow:(int) n];});
+[appController eraseWindow:(int) n]; \
+else \
+dispatch_sync(dispatch_get_main_queue(),^{[appController eraseWindow:(int) n];});
 
 #define label_data if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
-                        [appController labelDataWindow:(char*) args]; \
-                    else \
-                        dispatch_sync(dispatch_get_main_queue(),^{[appController labelDataWindow:(char*) args];});
+[appController labelDataWindow:(char*) args]; \
+else \
+dispatch_sync(dispatch_get_main_queue(),^{[appController labelDataWindow:(char*) args];});
 
 #define label_data_minMax if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
-                            [appController labelMinMax]; \
-                          else \
-                            dispatch_sync(dispatch_get_main_queue(),^{[appController labelMinMax];});
+[appController labelMinMax]; \
+else \
+dispatch_sync(dispatch_get_main_queue(),^{[appController labelMinMax];});
 
 
 
@@ -73,6 +84,7 @@ int omaprintf(const char* format, ...);
 int pprintf(const char* format, ...);
 
 #endif
+
 
 #ifdef Qt_UI
 
@@ -97,7 +109,18 @@ int pprintf(const char* format, ...);
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
-enum {CROSS,RECT,CALCRECT,RULER,LINEPLOT};
+#ifndef SETTINGSFILE
+#define SETTINGSFILE "../Resources/OMA Settings"
+#define PALETTEFILE	"../Resources/OMA palette.pa1"
+#define PALETTEFILE2 "../Resources/OMA palette2.pa1"
+#define PALETTEFILE3 "../Resources/OMA palette3.pa1"
+
+#define HELPFILE "../Resources/oma help.txt"
+#define HELPURL "../Resources/LightOma2Help/index.html"
+#endif
+
+
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 typedef struct{
     unsigned char red;
@@ -125,4 +148,69 @@ void eraseWindow(int);
 BOOL dropped_file(char*,char*);
 
 #endif
+
+#ifdef Qt_UI_Win
+
+#include <QApplication>
+#include "qtoma2.h"
+
+#define display_data displayData(args);
+#define erase_window eraseWindow(n);
+#define label_data ;
+#define label_data_minMax ;
+#define checkEvents QCoreApplication::processEvents();
+
+#define pprintf omaprintf
+#define printf omaprintf
+#define nil 0
+
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wsign-compare"
+
+// dcraw needs these
+#define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+
+#ifndef SETTINGSFILE
+#define SETTINGSFILE "./OMA Settings"
+#define PALETTEFILE	"./OMA palette.pa1"
+#define PALETTEFILE2 "./OMA palette2.pa1"
+#define PALETTEFILE3 "./OMA palette3.pa1"
+
+#define HELPFILE "./oma help.txt"
+#define HELPURL "./LightOma2Help/index.html"
+#endif
+
+
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
+
+typedef struct{
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+} RGBColor;
+
+typedef struct{
+    int h;
+    int v;
+} Point;
+
+typedef char* Ptr;
+
+//typedef char BOOL;
+typedef char Boolean;
+#define NO 0
+#define YES 1
+#define strlcpy strncpy
+
+int omaprintf(const char* format, ...);
+void alertSound(char*);
+void beep();
+void displayData(char*);
+void eraseWindow(int);
+BOOL dropped_file(char*,char*);
+
+#endif
+
 #endif
