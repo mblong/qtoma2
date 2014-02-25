@@ -213,4 +213,9 @@ BOOL dropped_file(char*,char*);
 
 #endif
 
+
+#ifdef Qt_UI_Linux
+
+#endif
+
 #endif
