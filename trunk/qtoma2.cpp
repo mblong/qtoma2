@@ -178,7 +178,60 @@ int QtOma2::activeWindow(){
 }
 
 void QtOma2::newRowPlot(){
-    fprintf(stderr,"%d is active\n",activeWindow());
+    int n = activeWindow();
+    fprintf(stderr,"%d is active\n",n);
+    if(n<0){
+        //can't do this
+        beep();
+        return;
+    }
+    if(windowArray[n].type  != DATA){
+        //can't do this
+        beep();
+        return;
+    }
+
+
+    int windowWidth = window_placement.width = windowArray[n].dataWindow->width();
+    int windowHeight = window_placement.height = 256;
+
+    // now, figure out where to place the window
+    if(window_placement.x == WINDOW_OFFSET+mainScreenSize.x()) {   // left column
+        window_placement.y = mainScreenSize.y()+WINDOW_OFFSET+windowRow*(windowHeight+WINDOW_OFFSET);
+
+    }
+
+    if (window_placement.x+windowWidth > mainScreenSize.width()) {
+        window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
+
+        windowRow++;
+
+        if(window_placement.y + 2*(windowHeight) < mainScreenSize.height()){
+            window_placement.y += (windowHeight + WINDOW_OFFSET) ;
+        } else{
+            wraps++;
+            window_placement.y= mainScreenSize.y()+wraps*WINDOW_OFFSET; // wrap to top
+            windowRow = 0;
+        }
+    }
+
+    QRect placement(window_placement.x,window_placement.y,window_placement.width,window_placement.height);
+    if(numWindows == MAX_WINDOW_COUNT){
+        eraseWindow(0);
+    }
+
+    //dwin[numWindows] = new DataWindow(this);
+    windowArray[numWindows].drawingWindow = new DrawingWindow(this);
+    windowArray[numWindows].drawingWindow->setGeometry(placement);
+    windowArray[numWindows].drawingWindow->show();
+
+    windowArray[numWindows].type = LINE_DRAWING;
+
+
+    numWindows++;
+    ui->plainTextEdit->activateWindow();    // make the command window active
+    window_placement.x += windowWidth;            // increment for next one
+
 }
 
 void QtOma2::newColPlot(){
