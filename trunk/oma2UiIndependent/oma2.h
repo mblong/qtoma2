@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <fcntl.h>
-#include <Strings.h>
-#include <StdLib.h>
+#include <strings.h>
+#include <stdlib.h>
 #include <math.h>
 
 
@@ -15,7 +15,7 @@
 
 #define EOL 0
 
-#define FLOAT 1
+#define FLOAT_ 1
 #define DATAWORD float
 #define TWOBYTE short
 #define DATABYTES 4
@@ -113,7 +113,7 @@ enum  {SAVE_DATA,GET_DATA,MACROS_DATA,GRAPHICS_DATA,SETTINGS_DATA,TIFF_DATA,TIF_
        LOAD_MACRO_PREFIX,LOAD_SETTINGS_PREFIX,LOAD_MACRO_SUFFIX,LOAD_SETTINGS_SUFFIX};
 
 
-
+/*
 #ifdef MacOSX_UI
     #ifndef SETTINGSFILE
         #define SETTINGSFILE "Contents/Resources/OMA Settings"
@@ -137,6 +137,7 @@ enum  {SAVE_DATA,GET_DATA,MACROS_DATA,GRAPHICS_DATA,SETTINGS_DATA,TIFF_DATA,TIF_
         #define HELPURL "../Resources/LightOma2Help/index.html"
     #endif
 #endif
+*/
 
 // 8 defined color palettes
 #define NUMPAL 8

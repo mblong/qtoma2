@@ -11,7 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -DQt_UI
+macx: QMAKE_CXXFLAGS += -DQt_UI
+win: QMAKE_CXXFLAGS += -DQt_UI_Win
 
 SOURCES += main.cpp\
         qtoma2.cpp\
