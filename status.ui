@@ -10,6 +10,9 @@
     <height>376</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>Status</string>
   </property>
@@ -489,13 +492,13 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>10</y>
      <width>220</width>
-     <height>81</height>
+     <height>97</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">

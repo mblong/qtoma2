@@ -134,7 +134,6 @@ void QtOma2::newData(char* name){
 
     }
 
-
     if (window_placement.x+windowWidth > mainScreenSize.width()) {
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
 
@@ -149,37 +148,51 @@ void QtOma2::newData(char* name){
         }
     }
 
-    // name the window appropriately
-    /*
-    if(*windowname){
-        NSString *text  = [[NSString alloc] initWithCString:windowname encoding:NSASCIIStringEncoding];
-        [dataWindowController setWindowName:text] ;
-    } else{
-         [dataWindowController setWindowName:@"Data"] ;
-    }
-    */
-
-
     QRect placement(window_placement.x,window_placement.y,window_placement.width,window_placement.height);
 
     if(numWindows == MAX_WINDOW_COUNT){
         eraseWindow(0);
     }
 
-    dwin[numWindows] = new DataWindow(this);
-    dwin[numWindows]->setGeometry(placement);
-    dwin[numWindows]->show();
-    dwin[numWindows]->showData(name);
+    //dwin[numWindows] = new DataWindow(this);
+    windowArray[numWindows].dataWindow = new DataWindow(this);
+    windowArray[numWindows].dataWindow->setGeometry(placement);
+    windowArray[numWindows].dataWindow->show();
+    windowArray[numWindows].dataWindow->showData(name);
+    windowArray[numWindows].type = DATA;
+    currentDataWindow = numWindows;
 
     numWindows++;
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
 }
 
+int QtOma2::activeWindow(){
+    QWidget *activeWin = QApplication::activeWindow();
+    int i=0;
+    for(i=0; i< numWindows; i++){
+        if(windowArray[i].dataWindow == activeWin || windowArray[i].drawingWindow == activeWin) break;
+    }
+    if(i == numWindows) i = -1;
+    return i;
+}
+
+void QtOma2::newRowPlot(){
+    fprintf(stderr,"%d is active\n",activeWindow());
+}
+
+void QtOma2::newColPlot(){
+    fprintf(stderr,"%d is active\n",activeWindow());
+}
+
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){
-           dwin[i]->close();
+          if(windowArray[i].type == DATA)
+              windowArray[i].dataWindow-> close();
+          else
+              windowArray[i].drawingWindow->close();
+           //dwin[i]->close();
         }
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
         window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
@@ -189,9 +202,16 @@ void QtOma2::eraseWindow(int n){
         return;
     }
     if (n < numWindows){
-        dwin[n]->close();
+        //dwin[n]->close();
+        if(windowArray[n].type == DATA)
+            windowArray[n].dataWindow-> close();
+        else
+            windowArray[n].drawingWindow->close();
+
         for(int i=n; i<numWindows-1; i++){
-            dwin[i]=dwin[i+1];
+            //dwin[i]=dwin[i+1];
+            windowArray[i] = windowArray[i+1];
+
         }
         numWindows--;
     }
@@ -375,7 +395,6 @@ void TextEdit::printPreview(QPrinter *printer)
 
 void QtOma2::closeEvent(QCloseEvent *event)
 {
-
     char txt[CHPERLN];
     strlcpy(txt,SETTINGSFILE,CHPERLN);
     int err = saveprefs(txt);
@@ -397,4 +416,14 @@ void QtOma2::fillDataLabel1(int x, int y, DATAWORD z){
 
 void QtOma2::fillDataLabel2(int x, int y, DATAWORD z){
     status->fillDataLabel2( x,  y,  z);
+}
+
+void QtOma2::on_actionPlot_Rows_triggered()
+{
+    newRowPlot();
+}
+
+void QtOma2::on_actionPlot_Columns_triggered()
+{
+    newColPlot();
 }
