@@ -34,7 +34,11 @@ private:
     QPoint nextPoint;
     QPoint oldP1,oldP2;
     QPixmap pixmap;
-    int thereIsALine;
+    int thereIsDrawing;
+    int hasRowPlot;
+    int rowLine;
+    int hasColPlot;
+    int colLine;
     int mouseMoving;
 };
 

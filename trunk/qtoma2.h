@@ -8,6 +8,7 @@
 #include "./oma2UiIndependent/oma2.h"
 #include "./oma2UiIndependent/UI.h"
 #include "datawindow.h"
+#include "drawingwindow.h"
 #include "status.h"
 #include "preferences.h"
 
@@ -29,6 +30,13 @@ typedef struct{
     int height;
 } rectangle;
 
+ enum {DATA,LINE_DRAWING};
+
+typedef struct{
+    DataWindow* dataWindow;
+    DrawingWindow* drawingWindow;
+    int type;
+} WindowArray;
 
 namespace Ui {
 class QtOma2;
@@ -43,11 +51,14 @@ public:
     ~QtOma2();
     void addCString(char* string);
     void newData(char* name);
+    void newRowPlot();
+    void newColPlot();
     void eraseWindow(int n);
     void showPreferences();
     void fillInLabels();
     void fillDataLabel1(int x, int y, DATAWORD z);
     void fillDataLabel2(int x, int y, DATAWORD z);
+    int activeWindow();
 
 
 protected:
@@ -61,12 +72,17 @@ private slots:
 
     void on_actionTest_triggered();
 
+    void on_actionPlot_Rows_triggered();
+
+    void on_actionPlot_Columns_triggered();
+
 private:
     Ui::QtOma2 *ui;
     int lastReturn;
     int programmedText;
     char oma2Command[CHPERLN];
-    DataWindow* dwin[MAX_WINDOW_COUNT];
+    //DataWindow* dwin[MAX_WINDOW_COUNT];
+    WindowArray windowArray[MAX_WINDOW_COUNT];
     Status *status;
     Preferences* prefs;
     QRect mainScreenSize;
@@ -74,6 +90,7 @@ private:
     int wraps;
     int windowRow;
     int numWindows;
+    int currentDataWindow;
 
 };
 
