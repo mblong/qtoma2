@@ -25,21 +25,23 @@ class ImageBitmap
 private:
     PIXBYTES**  pdptr;
     PIXBYTES*   pixdata;            //
-    int         width;              // 
+    int         width;              //
     int         height;
     int         thePalette;
     DATAWORD    cmin;
     DATAWORD    crange;
+    PIXBYTES*   intensity;
 
-    
+
 
 public:
     ImageBitmap();            // default constructor with no arguments
-    
+
     void operator=(Image);
-    
+
     PIXBYTES* getpixdata();
     PIXBYTES** getpixdatap();
+    PIXBYTES* getintensitydata();
     int getwidth();
     int getheight();
     int getpalette();

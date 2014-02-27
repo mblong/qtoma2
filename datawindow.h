@@ -40,6 +40,12 @@ private:
     int hasColPlot;
     int colLine;
     int mouseMoving;
+    int         thePalette;
+    unsigned char*   intensity;
+    int         intensitySize;
+    int         dataRows;
+    int         dataCols;
+
 };
 
 #endif // DATAWINDOW_H

@@ -222,6 +222,10 @@ void QtOma2::newRowPlot(){
 
     windowArray[numWindows].type = LINE_DRAWING;
     numWindows++;
+
+    //
+
+
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
 }
