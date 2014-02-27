@@ -22,6 +22,7 @@ DataWindow::DataWindow(QWidget *parent) :
 DataWindow::~DataWindow()
 {
     delete ui;
+    delete intensity;
 }
 
 void DataWindow::showData(char* name){
@@ -34,9 +35,17 @@ void DataWindow::showData(char* name){
            //data,
            iBitmap.getwidth(),
            iBitmap.getheight(),
-           QImage::Format_RGBA8888
+           QImage::Format_RGB888
        )
    );
+
+    intensitySize = iBitmap.getheight()*iBitmap.getwidth();
+    dataCols = iBitmap.getwidth();
+    dataRows = iBitmap.getheight();
+    if (iBitmap.getpalette() == -1) intensitySize *= 3;
+    intensity = new unsigned char[intensitySize];
+    memcpy(intensity,iBitmap.getintensitydata(),intensitySize);
+
    ui->label->setPixmap(pixmap);
    ui->label->show();
    //ui->label->update();
@@ -110,5 +119,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
 
 void DataWindow::closeEvent (QCloseEvent *event)
 {
-    fprintf(stderr,"closing\n");
+    // this needs work -- doesn't do book keeping and n isn't necessarily what you want
+    int n = wPointer->activeWindow();
+    fprintf(stderr,"%d closing\n",n);
 }
