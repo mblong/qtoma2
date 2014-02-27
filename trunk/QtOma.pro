@@ -11,8 +11,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
-macx: QMAKE_CXXFLAGS += -DQt_UI
-win: QMAKE_CXXFLAGS += -DQt_UI_Win
+#macx:
+QMAKE_CXXFLAGS += -DQt_UI
+#win:
+#QMAKE_CXXFLAGS += -DQt_UI_Win
+#unix:!macx:
+#QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive
 
 SOURCES += main.cpp\
         qtoma2.cpp\
@@ -67,6 +71,10 @@ INCLUDEPATH += /opt/local/lib
 DEPENDPATH += /opt/local/lib
 
 macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
+
+unix:!macx: LIBS += -ljpeg
+unix:!macx: LIBS += -lbsd
+
 
 RESOURCES += \
     qtoma2.qrc

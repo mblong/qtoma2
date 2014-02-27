@@ -216,6 +216,73 @@ BOOL dropped_file(char*,char*);
 
 #ifdef Qt_UI_Linux
 
+#include <QApplication>
+#include "qtoma2.h"
+
+#define display_data displayData(args);
+#define erase_window eraseWindow(n);
+#define label_data ;
+#define label_data_minMax ;
+#define checkEvents QCoreApplication::processEvents();
+
+#define pprintf omaprintf
+#define printf omaprintf
+#define nil 0
+
+#pragma clang diagnostic ignored "-Wunused-parameter"
+#pragma clang diagnostic ignored "-Wsign-compare
+
+
+#define _H_INTTYPES
+#define _ALL_SOURCE
+
+
+// dcraw needs these
+#define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+
+#ifndef SETTINGSFILE
+#define SETTINGSFILE "./OMA Settings"
+#define PALETTEFILE	"./OMA palette.pa1"
+#define PALETTEFILE2 "./OMA palette2.pa1"
+#define PALETTEFILE3 "./OMA palette3.pa1"
+
+#define HELPFILE "./oma help.txt"
+#define HELPURL "./LightOma2Help/index.html"
+#endif
+
+typedef struct{
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+} RGBColor;
+
+typedef struct{
+    int h;
+    int v;
+} Point;
+
+typedef char* Ptr;
+
+typedef char BOOL;
+typedef char Boolean;
+#define NO 0
+#define YES 1
+
+int omaprintf(const char* format, ...);
+void alertSound(char*);
+void beep();
+void displayData(char*);
+void eraseWindow(int);
+BOOL dropped_file(char*,char*);
+
+#define _TIFF_DATA_TYPEDEFS_
+typedef unsigned char uint8;
+typedef unsigned short uint16;
+typedef unsigned int uint32;
+typedef int int32;
+
 #endif
 
 #endif
