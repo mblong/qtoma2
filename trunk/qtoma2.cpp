@@ -49,15 +49,12 @@ QtOma2::QtOma2(QWidget *parent) :
     //      this fills in on_actionName_triggered() functions in both the .h and .cpp files
     //connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
-
-
 }
 
 QtOma2::~QtOma2()
 {
     delete ui;
 }
-
 
 void QtOma2::on_plainTextEdit_textChanged()
 {
@@ -91,7 +88,6 @@ void QtOma2::keyPressEvent(QKeyEvent *event)
     {
         //addCString((char*)"You pressed ESC\n");
         stopMacroNow = 1;
-
     }
 }
 
@@ -191,7 +187,6 @@ void QtOma2::newRowPlot(){
         return;
     }
 
-
     int windowWidth = window_placement.width = windowArray[n].dataWindow->width();
     int windowHeight = window_placement.height = 256;
 
@@ -226,12 +221,9 @@ void QtOma2::newRowPlot(){
     windowArray[numWindows].drawingWindow->show();
 
     windowArray[numWindows].type = LINE_DRAWING;
-
-
     numWindows++;
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
-
 }
 
 void QtOma2::newColPlot(){
