@@ -187,16 +187,13 @@ void QtOma2::newRowPlot(){
         beep();
         return;
     }
-
     int windowWidth = window_placement.width = windowArray[n].dataWindow->width();
     int windowHeight = window_placement.height = 256;
 
     // now, figure out where to place the window
     if(window_placement.x == WINDOW_OFFSET+mainScreenSize.x()) {   // left column
         window_placement.y = mainScreenSize.y()+WINDOW_OFFSET+windowRow*(windowHeight+WINDOW_OFFSET);
-
     }
-
     if (window_placement.x+windowWidth > mainScreenSize.width()) {
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
 
@@ -210,17 +207,42 @@ void QtOma2::newRowPlot(){
             windowRow = 0;
         }
     }
-
     QRect placement(window_placement.x,window_placement.y,window_placement.width,window_placement.height);
     if(numWindows == MAX_WINDOW_COUNT){
         eraseWindow(0);
     }
 
-    //dwin[numWindows] = new DataWindow(this);
+    int theWindowRow = windowArray[n].dataWindow->height()/2;  // this is the height of the data window
     windowArray[numWindows].drawingWindow = new DrawingWindow(this);
+    windowArray[numWindows].drawingWindow->setMyDataWindow(n);
     windowArray[numWindows].drawingWindow->setGeometry(placement);
-    windowArray[numWindows].drawingWindow->setTheRow( windowHeight/2 );
+    windowArray[numWindows].drawingWindow->setTheRow( theWindowRow );
+    int pal = windowArray[n].dataWindow->getThePalette();
+    int bytesPerRow;
+    unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
+    //float widthScale = windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
+    float heightScale = windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    int theRow = theWindowRow * heightScale;
+    if(pal >= 0) { // we have a monochrome image
+        bytes += theRow * windowArray[n].dataWindow->getDataCols();
+        bytesPerRow = windowArray[n].dataWindow->getDataCols();
+        windowArray[numWindows].drawingWindow->setIsColor(0);
+    } else {
+        bytes += theRow * windowArray[n].dataWindow->getDataCols()*3;
+        bytesPerRow = windowArray[n].dataWindow->getDataCols()*3;
+        windowArray[numWindows].drawingWindow->setIsColor(1);
+    }
+    unsigned char* rowData = new unsigned char[bytesPerRow];
+    memcpy(rowData,bytes,bytesPerRow);
 
+    windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
+    windowArray[numWindows].drawingWindow->setRowData(rowData);
+    windowArray[numWindows].drawingWindow->setBytesPer(bytesPerRow);
+
+    // tell the data window what it needs to know
+    windowArray[n].dataWindow->setRowLine(theWindowRow);
+    windowArray[n].dataWindow->setHasRowPlot(numWindows);
+    windowArray[n].dataWindow->showLine(theWindowRow);
 
     /*
      *     int pal = [dataWindowController thePalette];
@@ -253,10 +275,10 @@ void QtOma2::newRowPlot(){
     NSRect rect = NSMakeRect(0, 0, windowRect.size.width,windowRect.size.height-TITLEBAR_HEIGHT);
     [drawingView setFrame:rect];
 
-    //[drawingView setRowData: bytes + theRow*bytesPerRow*pixPerPt];
+
     [drawingView setRowData: rowData];
     [drawingView setBytesPerRow: bytesPerRow];
-    //[drawingView setPixPerPt: bytesPerRow/4/[[dataWindowController imageView] frame ].size.width];
+
     [drawingView setPixPerPt: 1];
     [drawingView setHeightScale:theheightScale];
     if (pal >= 0)
@@ -282,6 +304,7 @@ void QtOma2::newRowPlot(){
 */
 
     windowArray[numWindows].drawingWindow->show();
+    windowArray[numWindows].drawingWindow->update();
 
     windowArray[numWindows].type = LINE_DRAWING;
     numWindows++;
@@ -291,6 +314,34 @@ void QtOma2::newRowPlot(){
 
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
+}
+
+void QtOma2::updateRowPlot(int theWindowRow, int theWindowNumber){
+    int n = windowArray[theWindowNumber].drawingWindow->getMyDataWindow();
+
+    windowArray[theWindowNumber].drawingWindow->setTheRow( theWindowRow );
+    int pal = windowArray[n].dataWindow->getThePalette();
+    int bytesPerRow;
+    unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
+    //float widthScale = windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
+    float heightScale = windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    int theRow = theWindowRow * heightScale;
+    if(pal >= 0) { // we have a monochrome image
+        bytes += theRow * windowArray[n].dataWindow->getDataCols();
+        bytesPerRow = windowArray[n].dataWindow->getDataCols();
+        windowArray[theWindowNumber].drawingWindow->setIsColor(0);
+    } else {
+        bytes += theRow * windowArray[n].dataWindow->getDataCols()*3;
+        bytesPerRow = windowArray[n].dataWindow->getDataCols()*3;
+        windowArray[theWindowNumber].drawingWindow->setIsColor(1);
+    }
+    unsigned char* rowData = new unsigned char[bytesPerRow];
+    memcpy(rowData,bytes,bytesPerRow);
+
+    windowArray[theWindowNumber].drawingWindow->setHeightScale(heightScale);
+    windowArray[theWindowNumber].drawingWindow->setRowData(rowData);
+    windowArray[theWindowNumber].drawingWindow->setBytesPer(bytesPerRow);
+    windowArray[theWindowNumber].drawingWindow->update();
 }
 
 void QtOma2::newColPlot(){

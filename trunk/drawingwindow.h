@@ -2,6 +2,7 @@
 #define DRAWINGWINDOW_H
 
 #include <QDialog>
+#include <Qpainter>
 
 namespace Ui {
 class DrawingWindow;
@@ -20,7 +21,12 @@ public:
     void setIsColor(int cflag);
     void setHeightScale(float scale);
     void setWidthScale(float scale);
-    void drawTheData();
+    void setMyDataWindow(int wnum);
+    int getMyDataWindow();
+
+protected:
+    void paintEvent(QPaintEvent* event);
+
 
 private:
     Ui::DrawingWindow *ui;
@@ -28,16 +34,11 @@ private:
     unsigned char* colData;
     int theRow;
     int theCol;
-    int bytesPer;
+    int bytesPer;   // bytes in the line (or lines) to be plotted
     int isColor;
     float heightScale;
     float widthScale;
-
-
-
-
+    int myDataWindow;
 };
-
-
 
 #endif // DRAWINGWINDOW_H
