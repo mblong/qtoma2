@@ -219,7 +219,55 @@ void QtOma2::newRowPlot(){
     //dwin[numWindows] = new DataWindow(this);
     windowArray[numWindows].drawingWindow = new DrawingWindow(this);
     windowArray[numWindows].drawingWindow->setGeometry(placement);
-    windowRow = windowWidth/2;
+    windowArray[numWindows].drawingWindow->setTheRow( windowHeight/2 );
+
+
+    /*
+     *     int pal = [dataWindowController thePalette];
+    unsigned char* bytes = [dataWindowController intensity];    // the start of the data
+    // find the pointer to the specific row
+    int bytesPerRow;
+    //float widthScale = iBitmap.getwidth()/dataRect.size.width;
+    float theheightScale = (float)[dataWindowController dataRows]/(float)dataRect.size.height;
+
+    int theRow = theWindowRow * theheightScale;
+
+    if(pal >= 0) { // we have a monochrome image
+        bytes += theRow * [dataWindowController dataCols];
+        bytesPerRow = [dataWindowController dataCols];
+    } else {
+        bytes += theRow * [dataWindowController dataCols]*3;
+        bytesPerRow = [dataWindowController dataCols]*3;
+    }
+    NSData* rowData = [[NSData alloc] initWithBytes:bytes length: bytesPerRow ];
+
+    // at this point, bytes points to the row of data and rowData has the data
+
+    [dataWindowController setHasRowPlot:theWindowRow];
+    [dataWindowController placeRowLine:theWindowRow];
+    [[dataWindowController imageView] setRowWindowController:self];
+
+    windowRect = theLocation;
+    [[self window] setTitle:windowName];
+
+    NSRect rect = NSMakeRect(0, 0, windowRect.size.width,windowRect.size.height-TITLEBAR_HEIGHT);
+    [drawingView setFrame:rect];
+
+    //[drawingView setRowData: bytes + theRow*bytesPerRow*pixPerPt];
+    [drawingView setRowData: rowData];
+    [drawingView setBytesPerRow: bytesPerRow];
+    //[drawingView setPixPerPt: bytesPerRow/4/[[dataWindowController imageView] frame ].size.width];
+    [drawingView setPixPerPt: 1];
+    [drawingView setHeightScale:theheightScale];
+    if (pal >= 0)
+        [drawingView setIsColor:0];
+    else
+        [drawingView setIsColor:1];
+    [drawingView setTheRow: theWindowRow ];
+    [drawingView display];
+    [[dataWindowController imageView] setEraseLines:0];
+    [[dataWindowController imageView] display];
+*/
     // add the plot here
     /*
     unsigned char* rowData;
