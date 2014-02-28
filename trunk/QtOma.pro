@@ -11,6 +11,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
+CONFIG(release, debug|release) {
+    DESTDIR = release
+} else {
+    DESTDIR = debug
+}
+
+
 #macx:
 QMAKE_CXXFLAGS += -DQt_UI
 #win:
@@ -78,3 +85,21 @@ unix:!macx: LIBS += -lbsd
 
 RESOURCES += \
     qtoma2.qrc
+
+#for Windows
+win32 {
+    #in Windows, you can use & to separate commands
+    #copyfiles.commands += @echo NOW COPYING ADDITIONAL FILE(S) &
+    #copyfiles.commands += @call copy ..\\$${TARGET}\\ffmpeg.exe $${DESTDIR}\\ffmpeg.exe
+}
+#QMAKE_EXTRA_TARGETS += copyfiles
+#POST_TARGETDEPS += copyfiles
+
+#for Mac
+macx {
+    MediaFiles.files = Resources
+    MediaFiles.path = Contents/Resources
+    QMAKE_BUNDLE_DATA += MediaFiles
+}
+
+
