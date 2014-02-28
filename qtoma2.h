@@ -59,6 +59,7 @@ public:
     void fillDataLabel1(int x, int y, DATAWORD z);
     void fillDataLabel2(int x, int y, DATAWORD z);
     int activeWindow();
+    void updateRowPlot(int theWindowRow, int theWindowNumber);
 
 
 protected:
@@ -88,7 +89,7 @@ private:
     QRect mainScreenSize;
     rectangle window_placement;
     int wraps;
-    int windowRow;      // not to be confused with tow/colplots, this is for placement on the screen
+    int windowRow;      // not to be confused with row/colplots, this is for placement on the screen
     int numWindows;
     int currentDataWindow;
 

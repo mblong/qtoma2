@@ -15,6 +15,10 @@ DataWindow::DataWindow(QWidget *parent) :
     mouseMoving = 0;
     thereIsDrawing = 0;
     oldP1 = oldP2 = QPoint(0,0);
+    rowLine = -1;
+    hasRowPlot = -1;
+    colLine = -1;
+    hasColPlot = -1;
 
 
 }
@@ -42,6 +46,7 @@ void DataWindow::showData(char* name){
     intensitySize = iBitmap.getheight()*iBitmap.getwidth();
     dataCols = iBitmap.getwidth();
     dataRows = iBitmap.getheight();
+    thePalette = iBitmap.getpalette();
     if (iBitmap.getpalette() == -1) intensitySize *= 3;
     intensity = new unsigned char[intensitySize];
     memcpy(intensity,iBitmap.getintensitydata(),intensitySize);
@@ -73,8 +78,14 @@ void DataWindow::mousePressEvent(QMouseEvent *event)
 void DataWindow::mouseReleaseEvent(QMouseEvent *event)
 {
 
+
 }
 
+void DataWindow::showLine(int theLine){
+     nextPoint.setY(theLine);
+     mouseMoving = 1;
+     update();
+}
 
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
@@ -88,12 +99,46 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
 
     nextPoint = event->pos();
     mouseMoving = 1;
+    if(hasRowPlot >=0){
+        int row = nextPoint.y();
+        if(row<0) row = 0;
+        if(row > height()-1) row = height()-1;
+        wPointer->updateRowPlot(row,hasRowPlot);
+    }
     update();
 
 }
 
 void DataWindow::paintEvent(QPaintEvent *event)
 {
+    if(hasRowPlot >= 0 && mouseMoving){
+        QPainter painter( &pixmap);
+        painter.setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+
+        switch(thereIsDrawing){
+            case SELRECT:
+                painter.drawRect(QRect(oldP1,oldP2));
+                thereIsDrawing=0;
+                break;
+            case RULER:
+                painter.drawLine(oldP1,oldP2); // get rid of old one
+                thereIsDrawing=0;
+                break;
+        }
+        startPoint.setX(0);
+        nextPoint.setX(width()-1);
+        startPoint.setY(nextPoint.y());
+
+        painter.drawLine(startPoint,nextPoint);
+        thereIsDrawing = RULER;
+        oldP1 = startPoint;
+        oldP2 = nextPoint;
+        mouseMoving = 0;
+        ui->label->setPixmap(pixmap);
+        return;
+    }
+
     if(mouseMoving ) {
         QPainter painter( &pixmap);
         painter.setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
@@ -121,6 +166,30 @@ void DataWindow::paintEvent(QPaintEvent *event)
         mouseMoving = 0;
         ui->label->setPixmap(pixmap);
     }
+}
+
+int DataWindow::getThePalette(){
+    return thePalette;
+}
+
+int DataWindow::getDataRows(){
+    return dataRows;
+}
+
+int DataWindow::getDataCols(){
+    return dataCols;
+}
+
+unsigned char* DataWindow::getIntensity(){
+    return intensity;
+}
+
+void DataWindow::setRowLine(int windowRow){
+    rowLine = windowRow;
+}
+
+void DataWindow::setHasRowPlot(int theWindowNumber){
+    hasRowPlot = theWindowNumber;
 }
 
 void DataWindow::closeEvent (QCloseEvent *event)

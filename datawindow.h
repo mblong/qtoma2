@@ -19,6 +19,14 @@ public:
     explicit DataWindow(QWidget *parent = 0);
     ~DataWindow();
     void showData(char*);
+    int getThePalette();
+    int getDataRows();
+    int getDataCols();
+    int getMyDataWindow();
+    unsigned char* getIntensity();
+    void setRowLine(int windowRow);
+    void setHasRowPlot(int theWindowNumber);    // this is the number of the row plot drawing window
+    void showLine(int theLine);
 
 protected:
     void mousePressEvent(QMouseEvent*);
@@ -35,7 +43,7 @@ private:
     QPoint oldP1,oldP2;
     QPixmap pixmap;
     int thereIsDrawing;
-    int hasRowPlot;
+    int hasRowPlot;     // this is the number of the row plot drawing window
     int rowLine;
     int hasColPlot;
     int colLine;
