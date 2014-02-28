@@ -62,6 +62,12 @@ void DataWindow::mousePressEvent(QMouseEvent *event)
         wPointer->fillDataLabel1(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
 
         startPoint = event->pos();
+        static float ovalue = 1;
+        if(event->button() == Qt::RightButton){
+            if (ovalue == 1) ovalue = .5;
+            else ovalue =1;
+            this->setWindowOpacity(ovalue);
+        }
 }
 
 void DataWindow::mouseReleaseEvent(QMouseEvent *event)

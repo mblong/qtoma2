@@ -155,6 +155,7 @@ void QtOma2::newData(char* name){
     windowArray[numWindows].dataWindow->setGeometry(placement);
     windowArray[numWindows].dataWindow->show();
     windowArray[numWindows].dataWindow->showData(name);
+    //windowArray[numWindows].dataWindow->setWindowOpacity(.5);
     windowArray[numWindows].type = DATA;
     currentDataWindow = numWindows;
 
@@ -218,12 +219,26 @@ void QtOma2::newRowPlot(){
     //dwin[numWindows] = new DataWindow(this);
     windowArray[numWindows].drawingWindow = new DrawingWindow(this);
     windowArray[numWindows].drawingWindow->setGeometry(placement);
+    windowRow = windowWidth/2;
+    // add the plot here
+    /*
+    unsigned char* rowData;
+    unsigned char* colData;
+    int theRow;
+    int theCol;
+    int bytesPerRow;
+    int pixPerPt;
+    int isColor;
+    float heightScale;
+    float widthScale;
+*/
+
     windowArray[numWindows].drawingWindow->show();
 
     windowArray[numWindows].type = LINE_DRAWING;
     numWindows++;
 
-    //
+
 
 
     ui->plainTextEdit->activateWindow();    // make the command window active

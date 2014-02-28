@@ -12,3 +12,5 @@ DrawingWindow::~DrawingWindow()
 {
     delete ui;
 }
+
+//DrawingWindow::~DrawingWindow()
