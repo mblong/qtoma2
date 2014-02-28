@@ -88,7 +88,7 @@ private:
     QRect mainScreenSize;
     rectangle window_placement;
     int wraps;
-    int windowRow;
+    int windowRow;      // not to be confused with tow/colplots, this is for placement on the screen
     int numWindows;
     int currentDataWindow;
 
