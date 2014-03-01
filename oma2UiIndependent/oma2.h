@@ -182,7 +182,7 @@ typedef struct {
 
     int         pixsiz;                     ///< Zoom factor for displaying images.
     int         newwindowflag;
-    int         cminmaxinc;
+    int         cminmaxinc=5;
     int         autoscale;
     int         autoupdate;
     int         toolselected;
