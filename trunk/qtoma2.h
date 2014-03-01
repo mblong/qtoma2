@@ -51,6 +51,7 @@ public:
     ~QtOma2();
     void addCString(char* string);
     void newData(char* name);
+    void updateData();
     void newRowPlot();
     void newColPlot();
     void eraseWindow(int n);
@@ -60,6 +61,7 @@ public:
     void fillDataLabel2(int x, int y, DATAWORD z);
     int activeWindow();
     void updateRowPlot(int theWindowRow, int theWindowNumber);
+    void updateStatus();
 
 
 protected:

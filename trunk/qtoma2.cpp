@@ -17,18 +17,12 @@ QtOma2::QtOma2(QWidget *parent) :
     programmedText = 0;
     setUpUIData();
 
-
-    char text[NEW_PREFIX_CHPERLN];
+    //char text[NEW_PREFIX_CHPERLN];
 
     QString appPath =  qApp->applicationDirPath();
     QByteArray ba = appPath.toLocal8Bit();
     strlcpy(applicationPath ,ba.data(),CHPERLN);
     fprintf(stderr,"App path is:%s\n",applicationPath);
-
-    strlcpy(text,SETTINGSFILE,NEW_PREFIX_CHPERLN);
-    loadprefs(text);
-
-    addCString((char*)"OMA2>");
 
     QDesktopWidget widget;
     mainScreenSize = widget.availableGeometry(widget.primaryScreen());
@@ -37,6 +31,7 @@ QtOma2::QtOma2(QWidget *parent) :
     status = new Status(this);
     status->setGeometry(COMMAND_WIDTH+WINDOW_OFFSET,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,STATUS_WIDTH,WINDOW_HEIGHT);
     status->show();
+
 
     wraps = 1;
     windowRow = 0;
@@ -48,6 +43,10 @@ QtOma2::QtOma2(QWidget *parent) :
     //      select triggered -- OK
     //      this fills in on_actionName_triggered() functions in both the .h and .cpp files
     //connect( ui->actionOpen, SIGNAL(triggered()), this, SLOT(fileOpen()));
+
+    //strlcpy(text,SETTINGSFILE,NEW_PREFIX_CHPERLN);
+    //loadprefs(text);
+    //addCString((char*)"OMA2>");
 
 }
 
@@ -96,10 +95,12 @@ void QtOma2::showPreferences(){
     prefs->show();
 }
 
+void QtOma2::updateStatus(){
+    status->fillInLabels();
+}
+
 void QtOma2::newData(char* name){
     // figure out where to place image
-    // window_placement needs to have the right position and size
-
     // this is for possibly scaling down images that won't fit on screen
     int windowHeight = iBitmap.getheight();
     int windowWidth = iBitmap.getwidth();
@@ -118,7 +119,6 @@ void QtOma2::newData(char* name){
         char txt[128];
         sprintf(txt," Window scaled by %f\n",scaleWindow);
         addCString(txt);
-
     }
 
     window_placement.width = windowWidth;
@@ -127,14 +127,11 @@ void QtOma2::newData(char* name){
     // now, figure out where to place the window
     if(window_placement.x == WINDOW_OFFSET+mainScreenSize.x()) {   // left column
         window_placement.y = mainScreenSize.y()+WINDOW_OFFSET+windowRow*(windowHeight+WINDOW_OFFSET);
-
     }
 
     if (window_placement.x+windowWidth > mainScreenSize.width()) {
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
-
         windowRow++;
-
         if(window_placement.y + 2*(windowHeight) < mainScreenSize.height()){
             window_placement.y += (windowHeight + WINDOW_OFFSET) ;
         } else{
@@ -150,18 +147,20 @@ void QtOma2::newData(char* name){
         eraseWindow(0);
     }
 
-    //dwin[numWindows] = new DataWindow(this);
     windowArray[numWindows].dataWindow = new DataWindow(this);
     windowArray[numWindows].dataWindow->setGeometry(placement);
     windowArray[numWindows].dataWindow->show();
     windowArray[numWindows].dataWindow->showData(name);
-    //windowArray[numWindows].dataWindow->setWindowOpacity(.5);
     windowArray[numWindows].type = DATA;
     currentDataWindow = numWindows;
 
     numWindows++;
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
+}
+
+void QtOma2::updateData(){
+    windowArray[currentDataWindow].dataWindow->showData(nil);
 }
 
 int QtOma2::activeWindow(){
@@ -235,82 +234,19 @@ void QtOma2::newRowPlot(){
     unsigned char* rowData = new unsigned char[bytesPerRow];
     memcpy(rowData,bytes,bytesPerRow);
 
-    windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
-    windowArray[numWindows].drawingWindow->setRowData(rowData);
-    windowArray[numWindows].drawingWindow->setBytesPer(bytesPerRow);
-
     // tell the data window what it needs to know
     windowArray[n].dataWindow->setRowLine(theWindowRow);
     windowArray[n].dataWindow->setHasRowPlot(numWindows);
     windowArray[n].dataWindow->showLine(theWindowRow);
 
-    /*
-     *     int pal = [dataWindowController thePalette];
-    unsigned char* bytes = [dataWindowController intensity];    // the start of the data
-    // find the pointer to the specific row
-    int bytesPerRow;
-    //float widthScale = iBitmap.getwidth()/dataRect.size.width;
-    float theheightScale = (float)[dataWindowController dataRows]/(float)dataRect.size.height;
-
-    int theRow = theWindowRow * theheightScale;
-
-    if(pal >= 0) { // we have a monochrome image
-        bytes += theRow * [dataWindowController dataCols];
-        bytesPerRow = [dataWindowController dataCols];
-    } else {
-        bytes += theRow * [dataWindowController dataCols]*3;
-        bytesPerRow = [dataWindowController dataCols]*3;
-    }
-    NSData* rowData = [[NSData alloc] initWithBytes:bytes length: bytesPerRow ];
-
-    // at this point, bytes points to the row of data and rowData has the data
-
-    [dataWindowController setHasRowPlot:theWindowRow];
-    [dataWindowController placeRowLine:theWindowRow];
-    [[dataWindowController imageView] setRowWindowController:self];
-
-    windowRect = theLocation;
-    [[self window] setTitle:windowName];
-
-    NSRect rect = NSMakeRect(0, 0, windowRect.size.width,windowRect.size.height-TITLEBAR_HEIGHT);
-    [drawingView setFrame:rect];
-
-
-    [drawingView setRowData: rowData];
-    [drawingView setBytesPerRow: bytesPerRow];
-
-    [drawingView setPixPerPt: 1];
-    [drawingView setHeightScale:theheightScale];
-    if (pal >= 0)
-        [drawingView setIsColor:0];
-    else
-        [drawingView setIsColor:1];
-    [drawingView setTheRow: theWindowRow ];
-    [drawingView display];
-    [[dataWindowController imageView] setEraseLines:0];
-    [[dataWindowController imageView] display];
-*/
-    // add the plot here
-    /*
-    unsigned char* rowData;
-    unsigned char* colData;
-    int theRow;
-    int theCol;
-    int bytesPerRow;
-    int pixPerPt;
-    int isColor;
-    float heightScale;
-    float widthScale;
-*/
-
+    windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
+    windowArray[numWindows].drawingWindow->setRowData(rowData);
+    windowArray[numWindows].drawingWindow->setBytesPer(bytesPerRow);
+    windowArray[numWindows].type = LINE_DRAWING;
     windowArray[numWindows].drawingWindow->show();
     windowArray[numWindows].drawingWindow->update();
 
-    windowArray[numWindows].type = LINE_DRAWING;
     numWindows++;
-
-
-
 
     ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one

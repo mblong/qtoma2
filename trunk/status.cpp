@@ -3,6 +3,9 @@
 #include "qtoma2.h"
 
 extern oma2UIData UIData;
+extern Image   iBuffer;       // the image buffer
+extern ImageBitmap iBitmap;   // the bitmap buffer
+extern QtOma2*  wPointer;
 
 
 Status::Status(QWidget *parent) :
@@ -26,7 +29,7 @@ void Status::fillInLabels(){
 
     sprintf(text,"Min: %g",UIData.min);
     ui->minLabel->setText(text);
-    sprintf(text,"Min: %g",UIData.max);
+    sprintf(text,"Max: %g",UIData.max);
     ui->maxLabel->setText(text);
     sprintf(text,"DX: %d",UIData.dx);
     ui->dxLabel->setText(text);
@@ -56,9 +59,9 @@ void Status::fillInLabels(){
     ui->rulerButton->setDown(UIData.toolselected == RULER);
     ui->graphButton->setDown(UIData.toolselected == LINEPLOT);
 
-
-
-
+    sprintf(text,"Min/Max Increment: %d%%",UIData.cminmaxinc);
+    ui->cMinMaxIncLabel->setText(text);
+    ui->cMinMaxIncControl->setValue(UIData.cminmaxinc);
 }
 
 void Status::on_plusButton_clicked()
@@ -138,24 +141,65 @@ void Status::fillDataLabel2(int x, int y, DATAWORD z){
 
 }
 
+void Status::on_cmaxMinus_clicked()
+{
+    UIData.cmax -= UIData.cminmaxinc/100.0*(UIData.max-UIData.min);
+    fillInLabels();
+    if(UIData.autoupdate){
+        int saveAuatoscale = UIData.autoscale;
+        UIData.autoscale = 0;
+        iBitmap = iBuffer;
+        wPointer->updateData();
+        UIData.autoscale = saveAuatoscale;
+    }
+}
 
-/*
-- (void) labelX0:(int) x Y0:(int) y Z0:(float) z{
-    [XLabel setStringValue:[NSString stringWithFormat:@"X: %d",x]];
-    [YLabel setStringValue:[NSString stringWithFormat:@"Y: %d",y]];
-    [ZLabel setStringValue:[NSString stringWithFormat:@"Z: %g",z]];
+void Status::on_cmaxPlus_clicked()
+{
+    UIData.cmax += UIData.cminmaxinc/100.0*(UIData.max-UIData.min);
+    fillInLabels();
+    if(UIData.autoupdate){
+        int saveAuatoscale = UIData.autoscale;
+        UIData.autoscale = 0;
+        iBitmap = iBuffer;
+        wPointer->updateData();
+        UIData.autoscale = saveAuatoscale;
+    }
 
 }
 
-- (void) labelX1:(int) x Y1:(int) y Z1:(float) z{
-    if(x<0){
-        [XLabel2 setStringValue:@" "];
-        [YLabel2 setStringValue:@" "];
-        [ZLabel2 setStringValue:@" "];
-    } else {
-        [XLabel2 setStringValue:[NSString stringWithFormat:@"X: %d",x]];
-        [YLabel2 setStringValue:[NSString stringWithFormat:@"Y: %d",y]];
-        [ZLabel2 setStringValue:[NSString stringWithFormat:@"Z: %g",z]];
-     }
+void Status::on_cminMinus_clicked()
+{
+    UIData.cmin -= UIData.cminmaxinc/100.0*(UIData.max-UIData.min);
+    fillInLabels();
+    if(UIData.autoupdate){
+        int saveAuatoscale = UIData.autoscale;
+        UIData.autoscale = 0;
+        iBitmap = iBuffer;
+        wPointer->updateData();
+        UIData.autoscale = saveAuatoscale;
+    }
+
 }
-*/
+
+void Status::on_cminPlus_clicked()
+{
+    UIData.cmin += UIData.cminmaxinc/100.0*(UIData.max-UIData.min);
+    fillInLabels();
+    if(UIData.autoupdate){
+        int saveAuatoscale = UIData.autoscale;
+        UIData.autoscale = 0;
+        iBitmap = iBuffer;
+        wPointer->updateData();
+        UIData.autoscale = saveAuatoscale;
+    }
+
+}
+
+void Status::on_cMinMaxIncControl_valueChanged(int value)
+{
+    char text[256];
+    UIData.cminmaxinc = value;
+    sprintf(text,"Min/Max increment %d%%",UIData.cminmaxinc);
+    ui->cMinMaxIncLabel->setText(text);
+}

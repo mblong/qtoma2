@@ -16,11 +16,7 @@ extern oma2UIData UIData;
 // This is a way to update user interface values after a command
 
 void update_UI(){
-    //[[appController preferenceController] fillInUIData];
 
-    /*
-
-     */
     int* specs = iBuffer.getspecs();
     DATAWORD* values= iBuffer.getvalues();
 
@@ -34,29 +30,14 @@ void update_UI(){
     UIData.x0 = specs[X0];
     UIData.y0 = specs[Y0];
 
-    //[statusController labelColorMinMax];
-    wPointer->fillInLabels();
-    /*
-    if(UIData.autoscale)
-        [[statusController scaleState] setState:NSOnState];
-    else
-        [[statusController scaleState] setState:NSOffState];
-
-    if(UIData.autoupdate)
-        [[statusController updateState] setState:NSOnState];
-    else
-        [[statusController updateState] setState:NSOffState];
-    */
     static int current_pal = -1;
     if (current_pal != UIData.thepalette) {
         //[statusController updatePaletteBox];
         current_pal = UIData.thepalette;
     }
-
+    wPointer->updateStatus();
     free(specs);
     free(values);
-
-
 }
 
 void displayData(char* name){

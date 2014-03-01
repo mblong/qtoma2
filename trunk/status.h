@@ -36,6 +36,17 @@ private slots:
 
     void on_updateBox_clicked(bool checked);
 
+
+    void on_cmaxMinus_clicked();
+
+    void on_cmaxPlus_clicked();
+
+    void on_cminMinus_clicked();
+
+    void on_cminPlus_clicked();
+
+    void on_cMinMaxIncControl_valueChanged(int value);
+
 private:
     Ui::Status *ui;
 };

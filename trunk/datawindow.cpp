@@ -31,8 +31,10 @@ DataWindow::~DataWindow()
 
 void DataWindow::showData(char* name){
     extern int macflag,exflag;
-    if(strlen(name))
-        this->setWindowTitle(QString(name));
+    if(name){
+        if(strlen(name))
+            this->setWindowTitle(QString(name));
+    }
     pixmap = QPixmap::fromImage(
        QImage(
            iBitmap.getpixdata(),

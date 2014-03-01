@@ -97,7 +97,10 @@ win32 {
 
 #for Mac
 macx {
-    MediaFiles.files = Resources
+    MediaFiles.files = "oma help.txt"
+    MediaFiles.files += "Resources/OMA palette.pa1"
+    MediaFiles.files += "Resources/OMA palette2.pa1"
+    MediaFiles.files += "Resources/OMA palette3.pa1"
     MediaFiles.path = Contents/Resources
     QMAKE_BUNDLE_DATA += MediaFiles
 }
