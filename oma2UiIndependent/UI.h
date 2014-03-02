@@ -153,6 +153,7 @@ BOOL dropped_file(char*,char*);
 
 #include <QApplication>
 #include "qtoma2.h"
+#include <time.h>
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
@@ -200,6 +201,7 @@ typedef char Boolean;
 #define NO 0
 #define YES 1
 #define strlcpy strncpy
+#define strlcat strncat
 
 int omaprintf(const char* format, ...);
 void alertSound(char*);
