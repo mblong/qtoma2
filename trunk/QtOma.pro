@@ -11,19 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
-CONFIG(release, debug|release) {
-    DESTDIR = release
-} else {
-    DESTDIR = debug
-}
 
-
-#macx:
-QMAKE_CXXFLAGS += -DQt_UI
-#win:
-#QMAKE_CXXFLAGS += -DQt_UI_Win
-#unix:!macx:
-#QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive
+macx:QMAKE_CXXFLAGS += -DQt_UI
+win:QMAKE_CXXFLAGS += -DQt_UI_Win
+unix:!macx: QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive -Wno-unused-parameter
 
 SOURCES += main.cpp\
         qtoma2.cpp\
@@ -38,9 +29,9 @@ SOURCES += main.cpp\
         oma2UiIndependent/jpegIO.cpp \
         QtUI.cpp \
         datawindow.cpp \
-    preferences.cpp \
-    status.cpp \
-    drawingwindow.cpp
+        preferences.cpp \
+        status.cpp \
+        drawingwindow.cpp
 
 
 HEADERS  += qtoma2.h\
@@ -62,8 +53,8 @@ HEADERS  += qtoma2.h\
         oma2UiIndependent/tiff.h\
         oma2UiIndependent/tiffio.h\
         oma2UiIndependent/tiffvers.h \
-    status.h \
-    drawingwindow.h
+        status.h \
+        drawingwindow.h
 
 
 FORMS    += qtoma2.ui \
@@ -73,14 +64,19 @@ FORMS    += qtoma2.ui \
     drawingwindow.ui
 
 macx: LIBS += -L/opt/local/lib/ -ljpeg
-
-INCLUDEPATH += /opt/local/lib
-DEPENDPATH += /opt/local/lib
-
+macx: INCLUDEPATH += /opt/local/lib
+macx: DEPENDPATH += /opt/local/lib
 macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
+#unix:!macx: INCLUDEPATH += /usr/lib/x86_64-linux-gnu/mesa
+#unix:!macx: DEPENDPATH += /usr/lib/x86_64-linux-gnu/mesa
+#unix:!macx: PRE_TARGETDEPS += /usr/lib/x86_64-linux-gnu/mesa/libGL.so.1
+#unix:!macx: LIBS += -L/usr/lib/x86_64-linux-gnu/mesa
+#unix:!macx: LIBS += -lbsd
+
 unix:!macx: LIBS += -ljpeg
-unix:!macx: LIBS += -lbsd
+
+
 
 
 RESOURCES += \
@@ -105,4 +101,9 @@ macx {
     QMAKE_BUNDLE_DATA += MediaFiles
 }
 
+unix:!macx:{
+install_it.path = %{buildDir}
+install_it.files += %{sourceDir}/oma%20help.txt
 
+INSTALLS += install_it
+}

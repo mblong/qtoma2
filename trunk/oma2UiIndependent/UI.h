@@ -10,7 +10,7 @@
 #define oma2_UI_h
 
 #include "ImageBitmap.h"
-#include "Image.h"
+#include "image.h"
 #include "commands_1.h"
 #include "comdec.h"
 
@@ -164,9 +164,6 @@ BOOL dropped_file(char*,char*);
 #define printf omaprintf
 #define nil 0
 
-#pragma clang diagnostic ignored "-Wunused-parameter"
-#pragma clang diagnostic ignored "-Wsign-compare"
-
 // dcraw needs these
 #define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
@@ -229,12 +226,18 @@ BOOL dropped_file(char*,char*);
 #define printf omaprintf
 #define nil 0
 
-#pragma clang diagnostic ignored "-Wunused-parameter"
-#pragma clang diagnostic ignored "-Wsign-compare
-
+#define strlcpy strncpy
+#define strlcat strncat
 
 #define _H_INTTYPES
 #define _ALL_SOURCE
+
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wcomment"
+#pragma GCC diagnostic ignored "-Wtype-limits"
 
 
 // dcraw needs these
@@ -269,6 +272,7 @@ typedef char BOOL;
 typedef char Boolean;
 #define NO 0
 #define YES 1
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 int omaprintf(const char* format, ...);
 void alertSound(char*);
@@ -277,11 +281,6 @@ void displayData(char*);
 void eraseWindow(int);
 BOOL dropped_file(char*,char*);
 
-#define _TIFF_DATA_TYPEDEFS_
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef int int32;
 
 #endif
 

@@ -1,4 +1,4 @@
-#include "Image_support.h"
+#include "image_support.h"
 
 extern char reply[1024];
 extern oma2UIData UIData;

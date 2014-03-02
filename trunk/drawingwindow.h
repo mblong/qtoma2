@@ -2,7 +2,8 @@
 #define DRAWINGWINDOW_H
 
 #include <QDialog>
-#include <Qpainter>
+#include <QPainter>
+#include <stdio.h>
 
 namespace Ui {
 class DrawingWindow;
