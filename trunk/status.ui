@@ -16,32 +16,6 @@
   <property name="windowTitle">
    <string>Status</string>
   </property>
-  <widget class="QCheckBox" name="updateBox">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>92</y>
-     <width>70</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Update</string>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="scaleBox">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>92</y>
-     <width>98</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Scale</string>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
@@ -222,7 +196,7 @@
      <height>44</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout" name="toolLayout">
     <item>
      <widget class="QToolButton" name="plusButton">
       <property name="text">
@@ -310,7 +284,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="groupBox_4">
+  <widget class="QGroupBox" name="xyzBox">
    <property name="geometry">
     <rect>
      <x>3</x>
@@ -324,16 +298,16 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="rightMargin">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>4</number>
+     <number>0</number>
     </property>
     <item row="0" column="0">
      <widget class="QLabel" name="xLabel_1">
@@ -459,16 +433,16 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="topMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="rightMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
-     <number>2</number>
+     <number>0</number>
     </property>
     <item>
      <widget class="QLabel" name="cMinMaxIncLabel">
@@ -550,7 +524,7 @@
     <rect>
      <x>127</x>
      <y>0</y>
-     <width>119</width>
+     <width>123</width>
      <height>85</height>
     </rect>
    </property>
@@ -570,6 +544,13 @@
     <string>Color Max</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="colorMaxValue">
+      <property name="text">
+       <string>cmaxvalue</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QPushButton" name="cmaxMinus">
       <property name="text">
@@ -584,10 +565,42 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="colorMaxValue">
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>90</y>
+     <width>191</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QCheckBox" name="updateBox">
       <property name="text">
-       <string>cmaxvalue</string>
+       <string>Update</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="scaleBox">
+      <property name="text">
+       <string>Scale</string>
       </property>
      </widget>
     </item>
