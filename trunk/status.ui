@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>160</y>
+     <y>173</y>
      <width>255</width>
      <height>81</height>
     </rect>
@@ -191,7 +191,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>310</y>
+     <y>330</y>
      <width>244</width>
      <height>44</height>
     </rect>
@@ -288,9 +288,9 @@
    <property name="geometry">
     <rect>
      <x>3</x>
-     <y>250</y>
-     <width>254</width>
-     <height>41</height>
+     <y>263</y>
+     <width>255</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="title">
@@ -310,112 +310,120 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="QLabel" name="xLabel_1">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="yLabel_1">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="zLabel_1">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z: </string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="xLabel_1">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>X: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="yLabel_1">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Y: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="zLabel_1">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Z: </string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="xLabel_2">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="yLabel_2">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="zLabel_2">
-      <property name="minimumSize">
-       <size>
-        <width>80</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Z:</string>
-      </property>
-     </widget>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="xLabel_2">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>X:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="yLabel_2">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Y: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="zLabel_2">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Z:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -423,7 +431,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>116</y>
+     <y>125</y>
      <width>241</width>
      <height>41</height>
     </rect>
@@ -477,92 +485,95 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="cminBox">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>120</width>
-     <height>85</height>
+     <width>261</width>
+     <height>91</height>
     </rect>
    </property>
-   <property name="minimumSize">
-    <size>
-     <width>101</width>
-     <height>61</height>
-    </size>
-   </property>
-   <property name="title">
-    <string>Color Min</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="colorMinValue">
-      <property name="text">
-       <string>cminvalue</string>
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetNoConstraint</enum>
+    </property>
+    <item>
+     <widget class="QGroupBox" name="cminBox">
+      <property name="minimumSize">
+       <size>
+        <width>101</width>
+        <height>61</height>
+       </size>
       </property>
+      <property name="title">
+       <string>Color Min</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="colorMinValue">
+         <property name="text">
+          <string>cminvalue</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="cminMinus">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="cminPlus">
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="cminMinus">
-      <property name="text">
-       <string>-</string>
+    <item>
+     <widget class="QGroupBox" name="cmaxBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="cminPlus">
-      <property name="text">
-       <string>+</string>
+      <property name="minimumSize">
+       <size>
+        <width>101</width>
+        <height>81</height>
+       </size>
       </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="cmaxBox">
-   <property name="geometry">
-    <rect>
-     <x>127</x>
-     <y>0</y>
-     <width>123</width>
-     <height>85</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>101</width>
-     <height>81</height>
-    </size>
-   </property>
-   <property name="title">
-    <string>Color Max</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="colorMaxValue">
-      <property name="text">
-       <string>cmaxvalue</string>
+      <property name="title">
+       <string>Color Max</string>
       </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="cmaxMinus">
-      <property name="text">
-       <string>-</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="cmaxPlus">
-      <property name="text">
-       <string>+</string>
-      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="colorMaxValue">
+         <property name="text">
+          <string>cmaxvalue</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="cmaxMinus">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="cmaxPlus">
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -571,7 +582,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>90</y>
+     <y>96</y>
      <width>191</width>
      <height>27</height>
     </rect>
