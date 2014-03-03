@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 macx:QMAKE_CXXFLAGS += -DQt_UI
-win:QMAKE_CXXFLAGS += -DQt_UI_Win
+win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive -D_WIN32 -DWIN32
 unix:!macx: QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive -Wno-unused-parameter
 
 SOURCES += main.cpp\
@@ -71,6 +71,7 @@ macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
 unix:!macx: LIBS += -ljpeg
 
+win32:  LIBS += -ljpeg -lws2_32
 
 
 
@@ -79,13 +80,15 @@ RESOURCES += \
 
 #for Windows
 win32 {
-    EXTRA_FILES = $$_PRO_FILE_PWD_\oma2help.txt
-    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
-    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
-    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
+    SFILE = $$_PRO_FILE_PWD_
+    SFILE ~= s,/,\\,g
+    EXTRA_FILES = $$SFILE\oma2help.txt
+    EXTRA_FILES +=  $$SFILE\Resources\OMApalette.pa1
+    EXTRA_FILES +=  $$SFILE\Resources\OMApalette2.pa1
+    EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
 
     for(FILE,EXTRA_FILES){
-        QMAKE_POST_LINK += $$quote(cp $${FILE} .\$$escape_expand(\\n\\t))
+        QMAKE_POST_LINK += $$quote(copy $${FILE} .\\$$escape_expand(\\n\\t))
     }
 }
 
