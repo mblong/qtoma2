@@ -1,15 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>oma help.txt</file>
+        <file>oma2help.txt</file>
     </qresource>
     <qresource prefix="/Resources">
-        <file>Resources/OMA palette2.pa1</file>
-        <file>Resources/OMA palette.pa1</file>
+        <file>Resources/OMApalette2.pa1</file>
+        <file>Resources/OMApalette.pa1</file>
         <file>Resources/box.jpg</file>
         <file>Resources/c-box.jpg</file>
         <file>Resources/curve.jpg</file>
         <file>Resources/ruler.jpg</file>
         <file>Resources/plus.jpg</file>
-        <file>Resources/OMA palette3.pa1</file>
+        <file>Resources/OMApalette3.pa1</file>
     </qresource>
 </RCC>
