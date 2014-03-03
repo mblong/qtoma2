@@ -68,11 +68,6 @@ macx: INCLUDEPATH += /opt/local/lib
 macx: DEPENDPATH += /opt/local/lib
 macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
-#unix:!macx: INCLUDEPATH += /usr/lib/x86_64-linux-gnu/mesa
-#unix:!macx: DEPENDPATH += /usr/lib/x86_64-linux-gnu/mesa
-#unix:!macx: PRE_TARGETDEPS += /usr/lib/x86_64-linux-gnu/mesa/libGL.so.1
-#unix:!macx: LIBS += -L/usr/lib/x86_64-linux-gnu/mesa
-#unix:!macx: LIBS += -lbsd
 
 unix:!macx: LIBS += -ljpeg
 
@@ -84,12 +79,15 @@ RESOURCES += \
 
 #for Windows
 win32 {
-    #in Windows, you can use & to separate commands
-    #copyfiles.commands += @echo NOW COPYING ADDITIONAL FILE(S) &
-    #copyfiles.commands += @call copy ..\\$${TARGET}\\ffmpeg.exe $${DESTDIR}\\ffmpeg.exe
+    EXTRA_FILES = $$_PRO_FILE_PWD_\oma2help.txt
+    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
+    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
+    EXTRA_FILES +=  $$_PRO_FILE_PWD_\Resources\OMApalette.pa1
+
+    for(FILE,EXTRA_FILES){
+        QMAKE_POST_LINK += $$quote(cp $${FILE} .\$$escape_expand(\\n\\t))
+    }
 }
-#QMAKE_EXTRA_TARGETS += copyfiles
-#POST_TARGETDEPS += copyfiles
 
 #for Mac
 macx {
@@ -101,13 +99,7 @@ macx {
     QMAKE_BUNDLE_DATA += MediaFiles
 }
 
-#unix:!macx:{
-#install_it.path = $$OUT_PWD
-#install_it.files += "oma help.txt"
-
-#INSTALLS += install_it
-#}
-
+#for linux
 unix:!macx:{
     EXTRA_FILES += \
         $$_PRO_FILE_PWD_/oma2help.txt \
