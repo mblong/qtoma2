@@ -111,11 +111,11 @@ int pprintf(const char* format, ...);
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "../Resources/OMA Settings"
-#define PALETTEFILE	"../Resources/OMA palette.pa1"
-#define PALETTEFILE2 "../Resources/OMA palette2.pa1"
-#define PALETTEFILE3 "../Resources/OMA palette3.pa1"
+#define PALETTEFILE	"../Resources/OMApalette.pa1"
+#define PALETTEFILE2 "../Resources/OMApalette2.pa1"
+#define PALETTEFILE3 "../Resources/OMApalette3.pa1"
 
-#define HELPFILE "../Resources/oma help.txt"
+#define HELPFILE "../Resources/oma2help.txt"
 #define HELPURL "../Resources/LightOma2Help/index.html"
 #endif
 
@@ -172,11 +172,11 @@ BOOL dropped_file(char*,char*);
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "./OMA Settings"
-#define PALETTEFILE	"./OMA palette.pa1"
-#define PALETTEFILE2 "./OMA palette2.pa1"
-#define PALETTEFILE3 "./OMA palette3.pa1"
+#define PALETTEFILE	"./OMApalette.pa1"
+#define PALETTEFILE2 "./OMApalette2.pa1"
+#define PALETTEFILE3 "./OMApalette3.pa1"
 
-#define HELPFILE "./oma help.txt"
+#define HELPFILE "./oma2help.txt"
 #define HELPURL "./LightOma2Help/index.html"
 #endif
 
@@ -249,11 +249,11 @@ BOOL dropped_file(char*,char*);
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "./OMA Settings"
-#define PALETTEFILE	"./OMA palette.pa1"
-#define PALETTEFILE2 "./OMA palette2.pa1"
-#define PALETTEFILE3 "./OMA palette3.pa1"
+#define PALETTEFILE	"./OMApalette.pa1"
+#define PALETTEFILE2 "./OMApalette2.pa1"
+#define PALETTEFILE3 "./OMApalette3.pa1"
 
-#define HELPFILE "./oma help.txt"
+#define HELPFILE "./oma2help.txt"
 #define HELPURL "./LightOma2Help/index.html"
 #endif
 

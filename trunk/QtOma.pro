@@ -93,17 +93,29 @@ win32 {
 
 #for Mac
 macx {
-    MediaFiles.files = "oma help.txt"
-    MediaFiles.files += "Resources/OMA palette.pa1"
-    MediaFiles.files += "Resources/OMA palette2.pa1"
-    MediaFiles.files += "Resources/OMA palette3.pa1"
+    MediaFiles.files = "oma2help.txt"
+    MediaFiles.files += "Resources/OMApalette.pa1"
+    MediaFiles.files += "Resources/OMApalette2.pa1"
+    MediaFiles.files += "Resources/OMApalette3.pa1"
     MediaFiles.path = Contents/Resources
     QMAKE_BUNDLE_DATA += MediaFiles
 }
 
-unix:!macx:{
-install_it.path = %{buildDir}
-install_it.files += %{sourceDir}/oma%20help.txt
+#unix:!macx:{
+#install_it.path = $$OUT_PWD
+#install_it.files += "oma help.txt"
 
-INSTALLS += install_it
+#INSTALLS += install_it
+#}
+
+unix:!macx:{
+    EXTRA_FILES += \
+        $$_PRO_FILE_PWD_/oma2help.txt \
+        $$_PRO_FILE_PWD_/Resources/OMApalette.pa1 \
+        $$_PRO_FILE_PWD_/Resources/OMApalette2.pa1 \
+        $$_PRO_FILE_PWD_/Resources/OMApalette3.pa1
+    for(FILE,EXTRA_FILES){
+        QMAKE_POST_LINK += $$quote(cp $${FILE} ./$$escape_expand(\\n\\t))
+    }
 }
+
