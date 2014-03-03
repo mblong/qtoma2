@@ -101,7 +101,7 @@
     <string>Plot Rows</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+1</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionPlot_Columns">
@@ -109,7 +109,7 @@
     <string>Plot Columns</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+2</string>
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>
