@@ -169,6 +169,8 @@ BOOL dropped_file(char*,char*);
 #define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define DJGPP 1
+
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "./OMA Settings"

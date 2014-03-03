@@ -1555,7 +1555,7 @@ int dcrawarg_c(int n, char* args){
 	if(*args == 0){
 		i = argc;
 		argc = 1;
-		dcrawGlue(txt,-1,NULL);
+        //dcrawGlue(txt,-1,NULL);
 		argc = i;
 		printf("\nCurrent settings are: ");
 		for(i=0; i<argc; i++){

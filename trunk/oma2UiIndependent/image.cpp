@@ -81,9 +81,9 @@ Image::Image(char* filename, int kindOfName)
     if (strncmp(&filename[strlen(filename)-4],".nef",4) == 0 ||
         strncmp(&filename[strlen(filename)-4],".NEF",4) == 0) {
         if (kindOfName == LONG_NAME) {
-            color = dcrawGlue(filename,-1,this);
+            //color = dcrawGlue(filename,-1,this);
         } else {
-            color = dcrawGlue(fullname(filename,RAW_DATA),-1,this);
+            //color = dcrawGlue(fullname(filename,RAW_DATA),-1,this);
         }
         if(color < 0) error = FILE_ERR;
         return;
