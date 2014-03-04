@@ -82,13 +82,15 @@ RESOURCES += \
 win32 {
     SFILE = $$_PRO_FILE_PWD_
     SFILE ~= s,/,\\,g
+    DFILE = $$OUT_PWD
+    DFILE ~= s,/,\\,g
     EXTRA_FILES = $$SFILE\oma2help.txt
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette2.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
 
     for(FILE,EXTRA_FILES){
-        QMAKE_POST_LINK += $$quote(copy $${FILE} .\\$$escape_expand(\\n\\t))
+        QMAKE_POST_LINK += $$quote(copy $${FILE} $${DFILE}$$escape_expand(\\n\\t))
     }
 }
 
