@@ -62,10 +62,14 @@ public:
     int activeWindow();
     void updateRowPlot(int theWindowRow, int theWindowNumber);
     void updateStatus();
+    void addForwardedCharacter(QString string);
+
+
+    void keyPressEvent(QKeyEvent*);
 
 
 protected:
-    void keyPressEvent(QKeyEvent*);
+//    void keyPressEvent(QKeyEvent*);
     void closeEvent(QCloseEvent*);
 
 private slots:

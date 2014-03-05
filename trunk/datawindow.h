@@ -4,8 +4,10 @@
 #include <QDialog>
 #include <QMouseEvent>
 #include <QCloseEvent>
-#include <QPainter>
-#include <QRubberBand>
+#include <QKeyEvent>
+
+#include <QCloseEvent>
+
 
 namespace Ui {
 class DataWindow;
@@ -34,6 +36,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
     void closeEvent (QCloseEvent *event);
     void paintEvent(QPaintEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 private:
     Ui::DataWindow *ui;
