@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
     char text[NEW_PREFIX_CHPERLN];
     strlcpy(text,SETTINGSFILE,NEW_PREFIX_CHPERLN);
     loadprefs(text);
+
+    strlcpy(text,DCRAW_ARG,NEW_PREFIX_CHPERLN);
+    dcrawarg_c(0,text);
+
     printf("OMA2>");
     w.show();
     update_UI();
