@@ -1,5 +1,8 @@
 #include "drawingwindow.h"
 #include "ui_drawingwindow.h"
+#include "qtoma2.h"
+
+extern QtOma2* wPointer;
 
 DrawingWindow::DrawingWindow(QWidget *parent) :
     QDialog(parent),
@@ -108,4 +111,9 @@ void DrawingWindow::paintEvent(QPaintEvent*){
 
 
     }
+}
+
+void DrawingWindow::keyPressEvent(QKeyEvent *event){
+      QString string = event->text();
+      wPointer->addForwardedCharacter(string);
 }

@@ -202,9 +202,6 @@ void DataWindow::closeEvent (QCloseEvent *event)
 }
 
 void DataWindow::keyPressEvent(QKeyEvent *event){
-      fprintf(stderr,"key\n");
-      //wPointer->keyPressEvent(event);
-      QChar key = event->key();
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
 }

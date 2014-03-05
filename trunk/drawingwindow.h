@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QPainter>
 #include <stdio.h>
+#include <QKeyEvent>
 
 namespace Ui {
 class DrawingWindow;
@@ -27,6 +28,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent* event);
+    void keyPressEvent(QKeyEvent *event);
 
 
 private:
