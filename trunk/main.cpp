@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QDesktopWidget widget;
     QRect mainScreenSize = widget.availableGeometry(widget.primaryScreen());
     w.setGeometry(0,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,COMMAND_WIDTH,WINDOW_HEIGHT);
-    update_UI();
+
     char text[NEW_PREFIX_CHPERLN];
     strlcpy(text,SETTINGSFILE,NEW_PREFIX_CHPERLN);
     loadprefs(text);
