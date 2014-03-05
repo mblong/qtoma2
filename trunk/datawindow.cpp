@@ -202,6 +202,10 @@ void DataWindow::closeEvent (QCloseEvent *event)
 }
 
 void DataWindow::keyPressEvent(QKeyEvent *event){
+      if(event->modifiers() == Qt::ControlModifier){
+          if(event->key() == Qt::Key_R) wPointer->newRowPlot();
+          return;
+      }
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
 }
