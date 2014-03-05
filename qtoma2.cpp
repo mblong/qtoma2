@@ -165,7 +165,7 @@ void QtOma2::newData(char* name){
     currentDataWindow = numWindows;
 
     numWindows++;
-    ui->plainTextEdit->activateWindow();    // make the command window active
+    //ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
 }
 
@@ -258,7 +258,7 @@ void QtOma2::newRowPlot(){
 
     numWindows++;
 
-    ui->plainTextEdit->activateWindow();    // make the command window active
+    //ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
 }
 
