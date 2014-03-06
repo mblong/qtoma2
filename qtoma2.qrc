@@ -11,5 +11,13 @@
         <file>Resources/ruler.jpg</file>
         <file>Resources/plus.jpg</file>
         <file>Resources/OMApalette3.pa1</file>
+        <file>Resources/pal0.jpg</file>
+        <file>Resources/pal1.jpg</file>
+        <file>Resources/pal2.jpg</file>
+        <file>Resources/pal3.jpg</file>
+        <file>Resources/pal4.jpg</file>
+        <file>Resources/pal5.jpg</file>
+        <file>Resources/pal6.jpg</file>
+        <file>Resources/pal7.jpg</file>
     </qresource>
 </RCC>
