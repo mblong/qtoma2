@@ -21,7 +21,14 @@ Preferences::Preferences(QWidget *parent) :
     ui->settingsPre->setText(QString(UIData.graphicsprefixbuf));
     ui->settingsSuf->setText(QString(UIData.graphicssuffixbuf));
 
-
+    ui->pal0->setDown(UIData.thepalette==0);
+    ui->pal1->setDown(UIData.thepalette==1);
+    ui->pal2->setDown(UIData.thepalette==2);
+    ui->pal3->setDown(UIData.thepalette==3);
+    ui->pal4->setDown(UIData.thepalette==4);
+    ui->pal5->setDown(UIData.thepalette==5);
+    ui->pal6->setDown(UIData.thepalette==6);
+    ui->pal7->setDown(UIData.thepalette==7);
 
 }
 
