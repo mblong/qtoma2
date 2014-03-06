@@ -358,7 +358,7 @@
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="pal0">
           <property name="text">
            <string/>
           </property>
@@ -388,7 +388,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="pal4">
           <property name="text">
            <string/>
           </property>
@@ -409,7 +409,7 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
-         <widget class="QPushButton" name="pushButton_3">
+         <widget class="QPushButton" name="pal1">
           <property name="text">
            <string/>
           </property>
@@ -439,7 +439,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_4">
+         <widget class="QPushButton" name="pal5">
           <property name="text">
            <string/>
           </property>
@@ -460,7 +460,7 @@
       <item row="2" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QPushButton" name="pushButton_5">
+         <widget class="QPushButton" name="pal2">
           <property name="text">
            <string/>
           </property>
@@ -490,7 +490,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_6">
+         <widget class="QPushButton" name="pal6">
           <property name="text">
            <string/>
           </property>
@@ -511,7 +511,7 @@
       <item row="3" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
         <item>
-         <widget class="QPushButton" name="pushButton_7">
+         <widget class="QPushButton" name="pal3">
           <property name="text">
            <string/>
           </property>
@@ -541,7 +541,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_8">
+         <widget class="QPushButton" name="pal7">
           <property name="text">
            <string/>
           </property>
