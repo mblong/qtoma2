@@ -44,4 +44,5 @@ private:
     int myDataWindow;
 };
 
+
 #endif // DRAWINGWINDOW_H
