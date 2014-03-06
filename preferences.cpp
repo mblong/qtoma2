@@ -21,6 +21,10 @@ Preferences::Preferences(QWidget *parent) :
     ui->settingsPre->setText(QString(UIData.graphicsprefixbuf));
     ui->settingsSuf->setText(QString(UIData.graphicssuffixbuf));
 
+    updatePalette();
+}
+
+void Preferences::updatePalette(){
     ui->pal0->setDown(UIData.thepalette==0);
     ui->pal1->setDown(UIData.thepalette==1);
     ui->pal2->setDown(UIData.thepalette==2);
@@ -52,4 +56,52 @@ void Preferences::on_buttonBox_accepted()
     strlcpy(UIData.graphicssuffixbuf,ui->settingsSuf->text().toLocal8Bit().data(),PREFIX_CHPERLN);
 
 
+}
+
+void Preferences::on_pal0_clicked()
+{
+    UIData.thepalette = 0;
+    updatePalette();
+}
+
+void Preferences::on_pal1_clicked()
+{
+    UIData.thepalette = 1;
+    updatePalette();
+}
+
+void Preferences::on_pal2_clicked()
+{
+    UIData.thepalette = 2;
+    updatePalette();
+}
+
+void Preferences::on_pal3_clicked()
+{
+    UIData.thepalette = 3;
+    updatePalette();
+}
+
+void Preferences::on_pal4_clicked()
+{
+    UIData.thepalette = 4;
+    updatePalette();
+}
+
+void Preferences::on_pal5_clicked()
+{
+    UIData.thepalette = 5;
+    updatePalette();
+}
+
+void Preferences::on_pal6_clicked()
+{
+    UIData.thepalette = 6;
+    updatePalette();
+}
+
+void Preferences::on_pal7_clicked()
+{
+    UIData.thepalette = 7;
+    updatePalette();
 }

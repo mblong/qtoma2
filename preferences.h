@@ -14,9 +14,26 @@ class Preferences : public QDialog
 public:
     explicit Preferences(QWidget *parent = 0);
     ~Preferences();
+    void updatePalette();
 
 private slots:
     void on_buttonBox_accepted();
+
+    void on_pal0_clicked();
+
+    void on_pal1_clicked();
+
+    void on_pal2_clicked();
+
+    void on_pal3_clicked();
+
+    void on_pal4_clicked();
+
+    void on_pal6_clicked();
+
+    void on_pal5_clicked();
+
+    void on_pal7_clicked();
 
 private:
     Ui::Preferences *ui;
