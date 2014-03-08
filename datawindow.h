@@ -29,6 +29,7 @@ public:
     void setRowLine(int windowRow);
     void setHasRowPlot(int theWindowNumber);    // this is the number of the row plot drawing window
     void showLine(int theLine);
+    QPoint pixmapCoords(QPoint pos);
 
 protected:
     void mousePressEvent(QMouseEvent*);

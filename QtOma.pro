@@ -49,12 +49,12 @@ HEADERS  += qtoma2.h\
         oma2UiIndependent/ImageBitmap.h \
         oma2UiIndependent/oma2.h \
         datawindow.h \
+        drawingwindow.h \
         preferences.h \
         oma2UiIndependent/tiff.h\
         oma2UiIndependent/tiffio.h\
         oma2UiIndependent/tiffvers.h \
-        status.h \
-        drawingwindow.h
+        status.h
 
 
 FORMS    += qtoma2.ui \
