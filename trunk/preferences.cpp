@@ -20,7 +20,9 @@ Preferences::Preferences(QWidget *parent) :
 
     ui->settingsPre->setText(QString(UIData.graphicsprefixbuf));
     ui->settingsSuf->setText(QString(UIData.graphicssuffixbuf));
-
+    char num[16];
+    sprintf(num,"%3d",(int)(100*(1-UIData.alphaValue)));
+    ui->windowTransparency->setText(QString(num));
     updatePalette();
 }
 
@@ -55,6 +57,14 @@ void Preferences::on_buttonBox_accepted()
     strlcpy(UIData.graphicsprefixbuf,ui->settingsPre->text().toLocal8Bit().data(),PREFIX_CHPERLN);
     strlcpy(UIData.graphicssuffixbuf,ui->settingsSuf->text().toLocal8Bit().data(),PREFIX_CHPERLN);
 
+    char num[16];
+    strlcpy(num,ui->windowTransparency->text().toLocal8Bit().data(),16);
+    int transparent;
+    sscanf(num,"%d",&transparent);
+
+    UIData.alphaValue = (float)(100-transparent)/100.;
+    if(UIData.alphaValue>1.)UIData.alphaValue=1.;
+    if(UIData.alphaValue<0.)UIData.alphaValue=0.;
 
 }
 

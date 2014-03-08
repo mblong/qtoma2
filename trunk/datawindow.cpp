@@ -60,18 +60,34 @@ void DataWindow::showData(char* name){
 
 }
 
+QPoint DataWindow::pixmapCoords(QPoint pos){
+    if(pos.x() < 0)pos.setX(0);
+    if(pos.y() < 0)pos.setY(0);
+    if(pos.x() > width()-1)pos.setX(width()-1);
+    if(pos.y() > height()-1)pos.setY(height()-1);
+
+    float windowWidth = width();
+    float pixWidth = ui->label->pixmap()->width();
+    float windowHeight = height();
+    float pixHeight = ui->label->pixmap()->height();
+    float scaleWidth = pixWidth/windowWidth;
+    float scaleHeight = pixHeight/windowHeight;
+    QPoint pixPos = QPoint(pos.x()*scaleWidth,pos.y()*scaleHeight);
+    return pixPos;
+}
 
 void DataWindow::mousePressEvent(QMouseEvent *event)
 {
         QPoint pos = event->pos();
+        pos = pixmapCoords(pos);  // drawing is in the pixmap
         //fprintf(stderr,"%d %d\n",pos.x(),pos.y());
         // not safe for resized windows
         wPointer->fillDataLabel1(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
 
-        startPoint = event->pos();
+        startPoint = pos;
         static float ovalue = 1;
         if(event->button() == Qt::RightButton){
-            if (ovalue == 1) ovalue = .5;
+            if (ovalue == 1) ovalue = UIData.alphaValue;
             else ovalue =1;
             this->setWindowOpacity(ovalue);
         }
@@ -92,6 +108,7 @@ void DataWindow::showLine(int theLine){
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint pos = event->pos();
+    pos = pixmapCoords(pos);  // drawing is in the pixmap
     //fprintf(stderr,"%d %d\n",pos.x(),pos.y());
     // not safe for resized windows
     if(UIData.toolselected > CROSS )
@@ -99,7 +116,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
     else
         wPointer->fillDataLabel1(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
 
-    nextPoint = event->pos();
+    nextPoint = pos;
     mouseMoving = 1;
     if(hasRowPlot >=0){
         int row = nextPoint.y();
@@ -209,3 +226,4 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
 }
+
