@@ -19,8 +19,6 @@ DataWindow::DataWindow(QWidget *parent) :
     hasRowPlot = -1;
     colLine = -1;
     hasColPlot = -1;
-
-
 }
 
 DataWindow::~DataWindow()
@@ -119,7 +117,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
     nextPoint = pos;
     mouseMoving = 1;
     if(hasRowPlot >=0){
-        int row = nextPoint.y();
+        int row = event->pos().y();    //nextPoint.y();
         if(row<0) row = 0;
         if(row > height()-1) row = height()-1;
         wPointer->updateRowPlot(row,hasRowPlot);
@@ -146,7 +144,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 break;
         }
         startPoint.setX(0);
-        nextPoint.setX(width()-1);
+        nextPoint.setX(ui->label->pixmap()->width()-1);
         startPoint.setY(nextPoint.y());
 
         painter.drawLine(startPoint,nextPoint);

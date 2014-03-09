@@ -230,7 +230,7 @@ void QtOma2::newRowPlot(){
     int bytesPerRow;
     unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
     //float widthScale = windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
-    float heightScale = windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
     int theRow = theWindowRow * heightScale;
     if(pal >= 0) { // we have a monochrome image
         bytes += theRow * windowArray[n].dataWindow->getDataCols();
@@ -245,9 +245,9 @@ void QtOma2::newRowPlot(){
     memcpy(rowData,bytes,bytesPerRow);
 
     // tell the data window what it needs to know
-    windowArray[n].dataWindow->setRowLine(theWindowRow);
+    windowArray[n].dataWindow->setRowLine(theRow);
     windowArray[n].dataWindow->setHasRowPlot(numWindows);
-    windowArray[n].dataWindow->showLine(theWindowRow);
+    windowArray[n].dataWindow->showLine(theRow);
 
     windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
     windowArray[numWindows].drawingWindow->setRowData(rowData);
@@ -270,7 +270,7 @@ void QtOma2::updateRowPlot(int theWindowRow, int theWindowNumber){
     int bytesPerRow;
     unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
     //float widthScale = windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
-    float heightScale = windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
     int theRow = theWindowRow * heightScale;
     if(pal >= 0) { // we have a monochrome image
         bytes += theRow * windowArray[n].dataWindow->getDataCols();
