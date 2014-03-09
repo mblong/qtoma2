@@ -3,6 +3,7 @@
 
 extern Image iBuffer;
 extern ImageBitmap iBitmap;
+extern oma2UIData UIData;
 
 extern char applicationPath[];		// this is the path to the directory that the program is running from
 extern char contentsPath[];         // this is the path to the Contents directory
@@ -260,6 +261,8 @@ void QtOma2::newRowPlot(){
 
     //ui->plainTextEdit->activateWindow();    // make the command window active
     window_placement.x += windowWidth;            // increment for next one
+    UIData.toolselected = CROSS;
+    fillInLabels();
 }
 
 void QtOma2::updateRowPlot(int theWindowRow, int theWindowNumber){
