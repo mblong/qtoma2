@@ -39,6 +39,7 @@ void DataWindow::showData(char* name){
            //data,
            iBitmap.getwidth(),
            iBitmap.getheight(),
+           iBitmap.getwidth()*3,
            QImage::Format_RGB888
        )
    );
@@ -123,6 +124,25 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
         wPointer->updateRowPlot(row,hasRowPlot);
     }
     update();
+    if(UIData.toolselected == SELRECT || UIData.toolselected == CALCRECT){
+        UIData.iRect.ul.h = startPoint.x();
+        UIData.iRect.ul.v = startPoint.y();
+        UIData.iRect.lr.h = nextPoint.x();
+        UIData.iRect.lr.v = nextPoint.y();
+        point start = UIData.iRect.ul;
+        point end = UIData.iRect.lr;
+
+        // remove restriction on the way a rectangle is defined
+        // previously, the assumption was that all rectangles were defined from the upper left to lower right
+        if(end.h < start.h){
+            UIData.iRect.lr.h = start.h;
+            UIData.iRect.ul.h = end.h;
+        }
+        if(end.v < start.v){
+            UIData.iRect.lr.v = start.v;
+            UIData.iRect.ul.v = end.v;
+        }
+    }
 
 }
 
