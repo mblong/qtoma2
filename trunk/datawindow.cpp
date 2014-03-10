@@ -232,8 +232,14 @@ void DataWindow::setHasRowPlot(int theWindowNumber){
 void DataWindow::closeEvent (QCloseEvent *event)
 {
     // this needs work -- doesn't do book keeping and n isn't necessarily what you want
-    int n = wPointer->activeWindow();
-    fprintf(stderr,"%d closing\n",n);
+    //int n = wPointer->activeWindow();
+    if(rowLine == CLOSE_CLEANUP_DONE) return;
+    int n = wPointer->whichDataWindow(this);
+
+    if(n>=0){
+        wPointer->eraseWindow(n);
+        fprintf(stderr,"%d closing\n",n);
+     }
 }
 
 void DataWindow::keyPressEvent(QKeyEvent *event){
