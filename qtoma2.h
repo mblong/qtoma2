@@ -12,7 +12,7 @@
 #include "status.h"
 #include "preferences.h"
 
-
+#define CLOSE_CLEANUP_DONE -10
 #define WINDOW_HEIGHT 376
 #define COMMAND_WIDTH 640
 #define STATUS_WIDTH 260
@@ -63,6 +63,7 @@ public:
     void updateRowPlot(int theWindowRow, int theWindowNumber);
     void updateStatus();
     void addForwardedCharacter(QString string);
+    int whichDataWindow(DataWindow* theWindow);
 
 
     void keyPressEvent(QKeyEvent*);

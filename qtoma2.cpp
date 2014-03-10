@@ -37,6 +37,7 @@ QtOma2::QtOma2(QWidget *parent) :
     wraps = 1;
     windowRow = 0;
     numWindows = 0;
+    currentDataWindow = -1;
     // this is one way to add menu items
     // probably a better way is to go to the action editor
     //      right click on the action name
@@ -78,6 +79,9 @@ void QtOma2::addCString(char* string)
     ui->plainTextEdit->insertPlainText(QString(string));
     lastReturn += strlen(string);
     programmedText = 0;
+    ui->plainTextEdit->ensureCursorVisible();
+    //QTextCursor cursor =ui->plainTextEdit->textCursor();
+    //cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
 
 }
 
@@ -171,7 +175,8 @@ void QtOma2::newData(char* name){
 }
 
 void QtOma2::updateData(){
-    windowArray[currentDataWindow].dataWindow->showData(nil);
+    if(currentDataWindow >=0)
+        windowArray[currentDataWindow].dataWindow->showData(nil);
 }
 
 int QtOma2::activeWindow(){
@@ -297,33 +302,47 @@ void QtOma2::newColPlot(){
     fprintf(stderr,"%d is active\n",activeWindow());
 }
 
+int QtOma2::whichDataWindow(DataWindow* theWindow){
+    int i=-1;
+    for(i=0; i<numWindows;i++){
+        if(theWindow == windowArray[i].dataWindow) break;
+    }
+    if(i == numWindows) i = -1;
+    return i;
+}
+
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){
-          if(windowArray[i].type == DATA)
+          if(windowArray[i].type == DATA){
+              windowArray[i].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
               windowArray[i].dataWindow-> close();
-          else
+          } else{
               windowArray[i].drawingWindow->close();
-           //dwin[i]->close();
+           }
         }
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
         window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
         wraps = 1;
         windowRow = 0;
         numWindows = 0;
+        currentDataWindow = -1;
         return;
     }
     if (n < numWindows){
+        if(n == currentDataWindow) currentDataWindow  = -1;
+        if(currentDataWindow > n) currentDataWindow--;
         //dwin[n]->close();
-        if(windowArray[n].type == DATA)
-            windowArray[n].dataWindow-> close();
-        else
+        if(windowArray[n].type == DATA){
+            windowArray[n].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
+            windowArray[n].dataWindow->close();
+        }else{
             windowArray[n].drawingWindow->close();
+        }
 
         for(int i=n; i<numWindows-1; i++){
             //dwin[i]=dwin[i+1];
             windowArray[i] = windowArray[i+1];
-
         }
         numWindows--;
     }
@@ -334,6 +353,7 @@ void QtOma2::eraseWindow(int n){
         wraps = 1;
         windowRow = 0;
         numWindows = 0;
+        currentDataWindow = -1;
     }
     /*
         if (n < 0) {            // erase everything
