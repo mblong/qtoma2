@@ -229,7 +229,7 @@ void QtOma2::newRowPlot(){
 
     int theWindowRow = windowArray[n].dataWindow->height()/2;  // this is the height of the data window
     windowArray[numWindows].drawingWindow = new DrawingWindow(this);
-    windowArray[numWindows].drawingWindow->setMyDataWindow(n);
+    windowArray[numWindows].drawingWindow->setMyDataWindow(windowArray[n].dataWindow);
     windowArray[numWindows].drawingWindow->setGeometry(placement);
     windowArray[numWindows].drawingWindow->setTheRow( theWindowRow );
     int pal = windowArray[n].dataWindow->getThePalette();
@@ -252,7 +252,7 @@ void QtOma2::newRowPlot(){
 
     // tell the data window what it needs to know
     windowArray[n].dataWindow->setRowLine(theRow);
-    windowArray[n].dataWindow->setHasRowPlot(numWindows);
+    windowArray[n].dataWindow->setHasRowPlot(windowArray[numWindows].drawingWindow);
     windowArray[n].dataWindow->showLine(theRow);
 
     windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
@@ -270,32 +270,32 @@ void QtOma2::newRowPlot(){
     fillInLabels();
 }
 
-void QtOma2::updateRowPlot(int theWindowRow, int theWindowNumber){
-    int n = windowArray[theWindowNumber].drawingWindow->getMyDataWindow();
-
-    windowArray[theWindowNumber].drawingWindow->setTheRow( theWindowRow );
-    int pal = windowArray[n].dataWindow->getThePalette();
+void QtOma2::updateRowPlot(int theWindowRow, DrawingWindow* theWindow){
+    //int n = whichDataWindow(theWindow->getMyDataWindow());
+    DataWindow* theDataWindow = theWindow->getMyDataWindow();
+    theWindow->setTheRow( theWindowRow );
+    int pal = theDataWindow->getThePalette();
     int bytesPerRow;
-    unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
-    //float widthScale = windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
-    float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    unsigned char* bytes = theDataWindow->getIntensity();    // the start of the data
+    //float widthScale = theDataWindow->getDataCols()/theDataWindow->width();
+    float heightScale = (float)theDataWindow->getDataRows()/theDataWindow->height();
     int theRow = theWindowRow * heightScale;
     if(pal >= 0) { // we have a monochrome image
-        bytes += theRow * windowArray[n].dataWindow->getDataCols();
-        bytesPerRow = windowArray[n].dataWindow->getDataCols();
-        windowArray[theWindowNumber].drawingWindow->setIsColor(0);
+        bytes += theRow * theDataWindow->getDataCols();
+        bytesPerRow = theDataWindow->getDataCols();
+        theWindow->setIsColor(0);
     } else {
-        bytes += theRow * windowArray[n].dataWindow->getDataCols()*3;
-        bytesPerRow = windowArray[n].dataWindow->getDataCols()*3;
-        windowArray[theWindowNumber].drawingWindow->setIsColor(1);
+        bytes += theRow * theDataWindow->getDataCols()*3;
+        bytesPerRow = theDataWindow->getDataCols()*3;
+        theWindow->setIsColor(1);
     }
     unsigned char* rowData = new unsigned char[bytesPerRow];
     memcpy(rowData,bytes,bytesPerRow);
 
-    windowArray[theWindowNumber].drawingWindow->setHeightScale(heightScale);
-    windowArray[theWindowNumber].drawingWindow->setRowData(rowData);
-    windowArray[theWindowNumber].drawingWindow->setBytesPer(bytesPerRow);
-    windowArray[theWindowNumber].drawingWindow->update();
+    theWindow->setHeightScale(heightScale);
+    theWindow->setRowData(rowData);
+    theWindow->setBytesPer(bytesPerRow);
+    theWindow->update();
 }
 
 void QtOma2::newColPlot(){
@@ -311,6 +311,15 @@ int QtOma2::whichDataWindow(DataWindow* theWindow){
     return i;
 }
 
+int QtOma2::whichDrawingWindow(DrawingWindow* theWindow){
+    int i=-1;
+    for(i=0; i<numWindows;i++){
+        if(theWindow == windowArray[i].drawingWindow) break;
+    }
+    if(i == numWindows) i = -1;
+    return i;
+}
+
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){
@@ -318,6 +327,8 @@ void QtOma2::eraseWindow(int n){
               windowArray[i].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
               windowArray[i].dataWindow-> close();
           } else{
+              windowArray[i].drawingWindow->setRowData(0);  // free the memory
+              windowArray[i].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
               windowArray[i].drawingWindow->close();
            }
         }
@@ -334,9 +345,28 @@ void QtOma2::eraseWindow(int n){
         if(currentDataWindow > n) currentDataWindow--;
         //dwin[n]->close();
         if(windowArray[n].type == DATA){
+            // maybe this has a row or column plot that needs to know of our imminent demise
+            int theRowPlotWindowNumber = whichDrawingWindow(windowArray[n].dataWindow->getHasRowPlot());
+            if(theRowPlotWindowNumber >=0){
+                windowArray[theRowPlotWindowNumber].drawingWindow->setMyDataWindow(0);
+                windowArray[theRowPlotWindowNumber].drawingWindow->setTheRow(-1);
+            }
             windowArray[n].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
             windowArray[n].dataWindow->close();
-        }else{
+        }else{ //getting rid of row or column plot
+            int dataWindowNumber = whichDataWindow(windowArray[n].drawingWindow->getMyDataWindow());
+            // what kind of drawing window is this anyway?
+            if(windowArray[n].drawingWindow->getTheRow() >=0) {
+                // this is a row plot -- clear information from the data window
+                if(dataWindowNumber >=0){
+                    windowArray[dataWindowNumber].dataWindow->setHasRowPlot(0);
+                    windowArray[dataWindowNumber].dataWindow->setRowLine(-1);
+                }
+            } else{
+                // column plot stuff
+            }
+            windowArray[n].drawingWindow->setRowData(0);  // free the memory
+            windowArray[n].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
             windowArray[n].drawingWindow->close();
         }
 
