@@ -58,7 +58,8 @@ void DrawingWindow::setWidthScale(float scale){
 }
 
 void DrawingWindow::setMyDataWindow(DataWindow* win){
-    myDataWindow = win;
+    //if(win)
+        myDataWindow = win;
 }
 
 DataWindow* DrawingWindow::getMyDataWindow(){

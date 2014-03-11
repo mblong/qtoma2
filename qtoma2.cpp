@@ -557,6 +557,7 @@ void TextEdit::printPreview(QPrinter *printer)
 
 void QtOma2::closeEvent(QCloseEvent *event)
 {
+    numWindows=0;
     char txt[CHPERLN];
     strlcpy(txt,SETTINGSFILE,CHPERLN);
     int err = saveprefs(txt);
