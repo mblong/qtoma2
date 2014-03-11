@@ -16,7 +16,7 @@ DataWindow::DataWindow(QWidget *parent) :
     thereIsDrawing = 0;
     oldP1 = oldP2 = QPoint(0,0);
     rowLine = -1;
-    hasRowPlot = -1;
+    hasRowPlot = 0;
     colLine = -1;
     hasColPlot = -1;
 }
@@ -117,7 +117,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
 
     nextPoint = pos;
     mouseMoving = 1;
-    if(hasRowPlot >=0){
+    if(hasRowPlot){
         int row = event->pos().y();    //nextPoint.y();
         if(row<0) row = 0;
         if(row > height()-1) row = height()-1;
@@ -148,7 +148,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
 
 void DataWindow::paintEvent(QPaintEvent *event)
 {
-    if(hasRowPlot >= 0 && mouseMoving){
+    if(hasRowPlot && mouseMoving){
         QPainter painter( &pixmap);
         painter.setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
         painter.setRenderHint(QPainter::Antialiasing, true);
@@ -225,8 +225,12 @@ void DataWindow::setRowLine(int windowRow){
     rowLine = windowRow;
 }
 
-void DataWindow::setHasRowPlot(int theWindowNumber){
-    hasRowPlot = theWindowNumber;
+void DataWindow::setHasRowPlot(DrawingWindow* theWindow){
+    hasRowPlot = theWindow;
+}
+
+DrawingWindow* DataWindow::getHasRowPlot(){
+    return hasRowPlot;
 }
 
 void DataWindow::closeEvent (QCloseEvent *event)
@@ -247,6 +251,14 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
           if(event->key() == Qt::Key_R) wPointer->newRowPlot();
           return;
       }
+      extern int stopMacroNow;
+      if(event->key() == Qt::Key_Escape)
+      {
+          //addCString((char*)"You pressed ESC\n");
+          stopMacroNow = 1;
+          return;
+      }
+
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
 }

@@ -60,11 +60,11 @@ public:
     void fillDataLabel1(int x, int y, DATAWORD z);
     void fillDataLabel2(int x, int y, DATAWORD z);
     int activeWindow();
-    void updateRowPlot(int theWindowRow, int theWindowNumber);
+    void updateRowPlot(int theWindowRow, DrawingWindow* theWindow);
     void updateStatus();
     void addForwardedCharacter(QString string);
     int whichDataWindow(DataWindow* theWindow);
-
+    int whichDrawingWindow(DrawingWindow* theWindow);
 
     void keyPressEvent(QKeyEvent*);
 

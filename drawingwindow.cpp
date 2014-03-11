@@ -9,6 +9,10 @@ DrawingWindow::DrawingWindow(QWidget *parent) :
     ui(new Ui::DrawingWindow)
 {
     ui->setupUi(this);
+    theRow = -1;
+    theCol = -1;
+    myDataWindow = 0;
+    rowData = 0;
 }
 
 DrawingWindow::~DrawingWindow()
@@ -26,8 +30,14 @@ void DrawingWindow::setTheRow(int windowRow)
     theRow = windowRow;
 }
 
+int DrawingWindow::getTheRow()
+{
+    return theRow;
+}
+
 void DrawingWindow::setRowData(unsigned char* theData)
 {
+    if(rowData) delete rowData;
     rowData=theData;
 }
 
@@ -47,11 +57,11 @@ void DrawingWindow::setWidthScale(float scale){
     widthScale=scale;
 }
 
-void DrawingWindow::setMyDataWindow(int wnum){
-    myDataWindow = wnum;
+void DrawingWindow::setMyDataWindow(DataWindow* win){
+    myDataWindow = win;
 }
 
-int DrawingWindow::getMyDataWindow(){
+DataWindow* DrawingWindow::getMyDataWindow(){
     return myDataWindow;
 }
 
@@ -114,6 +124,31 @@ void DrawingWindow::paintEvent(QPaintEvent*){
 }
 
 void DrawingWindow::keyPressEvent(QKeyEvent *event){
+    if(event->modifiers() == Qt::ControlModifier){
+
+        return;
+    }
+    extern int stopMacroNow;
+    if(event->key() == Qt::Key_Escape)
+    {
+        //addCString((char*)"You pressed ESC\n");
+        stopMacroNow = 1;
+        return;
+    }
+
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
+}
+
+void DrawingWindow::closeEvent (QCloseEvent *event)
+{
+    // this needs work -- doesn't do book keeping and n isn't necessarily what you want
+    //int n = wPointer->activeWindow();
+    if(theRow == CLOSE_CLEANUP_DONE) return;
+    int n = wPointer->whichDrawingWindow(this);
+
+    if(n>=0){
+        wPointer->eraseWindow(n);
+        fprintf(stderr,"%d closing\n",n);
+     }
 }

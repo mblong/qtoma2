@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <QKeyEvent>
 
+class DataWindow;
+
 namespace Ui {
 class DrawingWindow;
 }
@@ -18,17 +20,19 @@ public:
     explicit DrawingWindow(QWidget *parent = 0);
     ~DrawingWindow();
     void setTheRow(int windowRow);
+    int getTheRow();
     void setRowData(unsigned char* theData);
     void setBytesPer(int nbytes);
     void setIsColor(int cflag);
     void setHeightScale(float scale);
     void setWidthScale(float scale);
-    void setMyDataWindow(int wnum);
-    int getMyDataWindow();
+    void setMyDataWindow(DataWindow* win);
+    DataWindow* getMyDataWindow();
 
 protected:
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent *event);
+    void closeEvent (QCloseEvent *event);
 
 
 private:
@@ -41,7 +45,7 @@ private:
     int isColor;
     float heightScale;
     float widthScale;
-    int myDataWindow;
+    DataWindow* myDataWindow;
 };
 
 

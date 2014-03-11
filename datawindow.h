@@ -8,6 +8,7 @@
 
 #include <QCloseEvent>
 
+class DrawingWindow;
 
 namespace Ui {
 class DataWindow;
@@ -27,7 +28,9 @@ public:
     int getMyDataWindow();
     unsigned char* getIntensity();
     void setRowLine(int windowRow);
-    void setHasRowPlot(int theWindowNumber);    // this is the number of the row plot drawing window
+    void setHasRowPlot(DrawingWindow* theWindow);    // this is the row plot drawing window
+    DrawingWindow* getHasRowPlot();    // this is the row plot drawing window
+
     void showLine(int theLine);
     QPoint pixmapCoords(QPoint pos);
 
@@ -47,7 +50,7 @@ private:
     QPoint oldP1,oldP2;
     QPixmap pixmap;
     int thereIsDrawing;
-    int hasRowPlot;     // this is the number of the row plot drawing window
+    DrawingWindow* hasRowPlot;     // this is the  row plot drawing window
     int rowLine;
     int hasColPlot;
     int colLine;

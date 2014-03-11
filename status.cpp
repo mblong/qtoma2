@@ -203,3 +203,20 @@ void Status::on_cMinMaxIncControl_valueChanged(int value)
     sprintf(text,"Min/Max increment %d%%",UIData.cminmaxinc);
     ui->cMinMaxIncLabel->setText(text);
 }
+
+void Status::keyPressEvent(QKeyEvent *event){
+      if(event->modifiers() == Qt::ControlModifier){
+          if(event->key() == Qt::Key_R) wPointer->newRowPlot();
+          return;
+      }
+      extern int stopMacroNow;
+      if(event->key() == Qt::Key_Escape)
+      {
+          //addCString((char*)"You pressed ESC\n");
+          stopMacroNow = 1;
+          return;
+      }
+
+      QString string = event->text();
+      wPointer->addForwardedCharacter(string);
+}
