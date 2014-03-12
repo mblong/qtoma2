@@ -29,16 +29,7 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="leftMargin">
-     <number>2</number>
-    </property>
-    <property name="topMargin">
-     <number>2</number>
-    </property>
-    <property name="rightMargin">
-     <number>2</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>2</number>
     </property>
     <item row="0" column="0">
@@ -297,16 +288,7 @@
     <string/>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -440,16 +422,7 @@
     <string/>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item>
@@ -527,12 +500,21 @@
          <property name="text">
           <string>-</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="cminPlus">
          <property name="text">
           <string>+</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -574,12 +556,18 @@
          <property name="text">
           <string>-</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="cmaxPlus">
          <property name="text">
           <string>+</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
