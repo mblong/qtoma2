@@ -202,6 +202,12 @@ void QtOma2::newRowPlot(){
         beep();
         return;
     }
+    if(windowArray[n].dataWindow->getHasRowPlot()){
+        //can't do this there is one already
+        beep();
+        return;
+    }
+
     int windowWidth = window_placement.width = windowArray[n].dataWindow->width();
     int windowHeight = window_placement.height = 256;
 
