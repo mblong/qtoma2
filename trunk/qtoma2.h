@@ -18,10 +18,32 @@
 #define STATUS_WIDTH 260
 int comdec(char*);
 
+#ifdef Qt_UI
+
 // This isn't the right way to do this
 #define TITLEBAR_HEIGHT 0
-
 #define WINDOW_OFFSET 20
+#define WINDOW_SPACE 0
+
+#endif
+
+#ifdef Qt_UI_Win
+
+// This isn't the right way to do this
+#define TITLEBAR_HEIGHT 0
+#define WINDOW_OFFSET 30
+#define WINDOW_SPACE 14
+
+#endif
+
+#ifdef Qt_UI_Linux
+
+// This isn't the right way to do this
+#define TITLEBAR_HEIGHT 0
+#define WINDOW_OFFSET 20
+#define WINDOW_SPACE 0
+
+#endif
 
 typedef struct{
     int x;

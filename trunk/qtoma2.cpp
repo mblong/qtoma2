@@ -171,7 +171,7 @@ void QtOma2::newData(char* name){
 
     numWindows++;
     //ui->plainTextEdit->activateWindow();    // make the command window active
-    window_placement.x += windowWidth;            // increment for next one
+    window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
 }
 
 void QtOma2::updateData(){
