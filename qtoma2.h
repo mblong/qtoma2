@@ -5,6 +5,7 @@
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QCloseEvent>
+#include <QDesktopServices>
 #include "./oma2UiIndependent/oma2.h"
 #include "./oma2UiIndependent/UI.h"
 #include "datawindow.h"
@@ -106,6 +107,8 @@ private slots:
 
     void on_actionPlot_Columns_triggered();
     void on_actionClose_triggered();
+
+    void on_actionOma2_Help_triggered();
 
 private:
     Ui::QtOma2 *ui;

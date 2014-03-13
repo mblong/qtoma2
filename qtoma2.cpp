@@ -602,3 +602,8 @@ void QtOma2::on_actionClose_triggered()
 {
     eraseWindow(numWindows-1);
 }
+
+void QtOma2::on_actionOma2_Help_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://oma-x.org"));
+}
