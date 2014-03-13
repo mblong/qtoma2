@@ -52,9 +52,16 @@
     <addaction name="actionPlot_Rows"/>
     <addaction name="actionPlot_Columns"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionOma2_Help"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuGraph"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -77,10 +84,16 @@
    <property name="text">
     <string>Save Data File...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionSave_Settings">
@@ -110,6 +123,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionOma2_Help">
+   <property name="text">
+    <string>oma2 Help</string>
    </property>
   </action>
  </widget>

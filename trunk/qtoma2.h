@@ -105,6 +105,7 @@ private slots:
     void on_actionPlot_Rows_triggered();
 
     void on_actionPlot_Columns_triggered();
+    void on_actionClose_triggered();
 
 private:
     Ui::QtOma2 *ui;

@@ -319,6 +319,7 @@ int QtOma2::whichDataWindow(DataWindow* theWindow){
 
 int QtOma2::whichDrawingWindow(DrawingWindow* theWindow){
     int i=-1;
+    if(theWindow == 0) return i;
     for(i=0; i<numWindows;i++){
         if(theWindow == windowArray[i].drawingWindow) break;
     }
@@ -595,4 +596,9 @@ void QtOma2::on_actionPlot_Rows_triggered()
 void QtOma2::on_actionPlot_Columns_triggered()
 {
     newColPlot();
+}
+
+void QtOma2::on_actionClose_triggered()
+{
+    eraseWindow(numWindows-1);
 }
