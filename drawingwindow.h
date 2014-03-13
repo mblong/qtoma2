@@ -19,9 +19,15 @@ class DrawingWindow : public QDialog
 public:
     explicit DrawingWindow(QWidget *parent = 0);
     ~DrawingWindow();
+
     void setTheRow(int windowRow);
     int getTheRow();
     void setRowData(unsigned char* theData);
+
+    void setTheCol(int windowCol);
+    int getTheCol();
+    void setColData(unsigned char* theData);
+
     void setBytesPer(int nbytes);
     void setIsColor(int cflag);
     void setHeightScale(float scale);

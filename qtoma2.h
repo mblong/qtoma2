@@ -84,6 +84,7 @@ public:
     void fillDataLabel2(int x, int y, DATAWORD z);
     int activeWindow();
     void updateRowPlot(int theWindowRow, DrawingWindow* theWindow);
+    void updateColPlot(int theWindowCol, DrawingWindow* theWindow);
     void updateStatus();
     void addForwardedCharacter(QString string);
     int whichDataWindow(DataWindow* theWindow);

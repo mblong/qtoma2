@@ -271,7 +271,7 @@ void QtOma2::newRowPlot(){
     numWindows++;
 
     //ui->plainTextEdit->activateWindow();    // make the command window active
-    window_placement.x += windowWidth;            // increment for next one
+    window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
     UIData.toolselected = CROSS;
     fillInLabels();
 }
@@ -305,8 +305,133 @@ void QtOma2::updateRowPlot(int theWindowRow, DrawingWindow* theWindow){
 }
 
 void QtOma2::newColPlot(){
-    fprintf(stderr,"%d is active\n",activeWindow());
+    int n = activeWindow();
+    //fprintf(stderr,"%d is active\n",n);
+    if(n<0){
+        //can't do this
+        beep();
+        return;
+    }
+    if(windowArray[n].type  != DATA){
+        //can't do this
+        beep();
+        return;
+    }
+    if(windowArray[n].dataWindow->getHasColPlot()){
+        //can't do this there is one already
+        beep();
+        return;
+    }
+
+    int windowWidth = window_placement.width = windowArray[n].dataWindow->height();
+    int windowHeight = window_placement.height = 256;
+
+    // now, figure out where to place the window
+    if(window_placement.x == WINDOW_OFFSET+mainScreenSize.x()) {   // left column
+        window_placement.y = mainScreenSize.y()+WINDOW_OFFSET+windowRow*(windowHeight+WINDOW_OFFSET);
+    }
+    if (window_placement.x+windowWidth > mainScreenSize.width()) {
+        window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
+
+        windowRow++;
+
+        if(window_placement.y + 2*(windowHeight) < mainScreenSize.height()){
+            window_placement.y += (windowHeight + WINDOW_OFFSET) ;
+        } else{
+            wraps++;
+            window_placement.y= mainScreenSize.y()+wraps*WINDOW_OFFSET; // wrap to top
+            windowRow = 0;
+        }
+    }
+    QRect placement(window_placement.x,window_placement.y,window_placement.width,window_placement.height);
+    if(numWindows == MAX_WINDOW_COUNT){
+        eraseWindow(0);
+    }
+
+    int theWindowCol = windowArray[n].dataWindow->width()/2;  // this is half the width of the data window
+    windowArray[numWindows].drawingWindow = new DrawingWindow(this);
+    windowArray[numWindows].drawingWindow->setMyDataWindow(windowArray[n].dataWindow);
+    windowArray[numWindows].drawingWindow->setGeometry(placement);
+    windowArray[numWindows].drawingWindow->setTheCol( theWindowCol );
+    int pal = windowArray[n].dataWindow->getThePalette();
+    int bytesPerCol;
+    unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
+    float widthScale = (float)windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
+    //float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    int theCol = theWindowCol * widthScale;
+    int bytesPerPix;
+    if(pal >= 0) { // we have a monochrome image
+        //bytes += theRow * windowArray[n].dataWindow->getDataCols();
+        bytesPerCol = windowArray[n].dataWindow->getDataRows();
+        windowArray[numWindows].drawingWindow->setIsColor(0);
+        bytesPerPix = 1;
+    } else {
+        //bytes += theRow * windowArray[n].dataWindow->getDataCols()*3;
+        bytesPerCol = windowArray[n].dataWindow->getDataRows()*3;
+        windowArray[numWindows].drawingWindow->setIsColor(1);
+        bytesPerPix = 3;
+    }
+    unsigned char* colData = new unsigned char[bytesPerCol];
+    int cols = windowArray[n].dataWindow->getDataCols();
+    for(int i = 0; i< bytesPerCol/bytesPerPix;i++){
+        for(int j=0; j < bytesPerPix;j++)
+        *(colData+i) = *(bytes + theCol + i*cols + j);
+    }
+
+    // tell the data window what it needs to know
+    windowArray[n].dataWindow->setColLine(theCol);
+    windowArray[n].dataWindow->setHasColPlot(windowArray[numWindows].drawingWindow);
+    windowArray[n].dataWindow->showColLine(theCol);
+
+    windowArray[numWindows].drawingWindow->setWidthScale(widthScale);
+    windowArray[numWindows].drawingWindow->setColData(colData);
+    windowArray[numWindows].drawingWindow->setBytesPer(bytesPerCol);
+    windowArray[numWindows].type = LINE_DRAWING;
+    windowArray[numWindows].drawingWindow->show();
+    windowArray[numWindows].drawingWindow->update();
+
+    numWindows++;
+
+    //ui->plainTextEdit->activateWindow();    // make the command window active
+    window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
+    UIData.toolselected = CROSS;
+    fillInLabels();
+
 }
+
+void QtOma2::updateColPlot(int theWindowCol, DrawingWindow* theWindow){
+    //int n = whichDataWindow(theWindow->getMyDataWindow());
+    DataWindow* theDataWindow = theWindow->getMyDataWindow();
+    theWindow->setTheCol( theWindowCol );
+    int pal = theDataWindow->getThePalette();
+    int bytesPerCol;
+    unsigned char* bytes = theDataWindow->getIntensity();    // the start of the data
+    float widthScale = (float)theDataWindow->getDataCols()/theDataWindow->width();
+    //float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+    int theCol = theWindowCol * widthScale;
+    int bytesPerPix;
+    if(pal >= 0) { // we have a monochrome image
+        bytesPerCol = theDataWindow->getDataRows();
+        theWindow->setIsColor(0);
+        bytesPerPix = 1;
+    } else {
+        bytesPerCol = theDataWindow->getDataRows()*3;
+        theWindow->setIsColor(1);
+        bytesPerPix = 3;
+    }
+    unsigned char* colData = new unsigned char[bytesPerCol];
+    int cols = theDataWindow->getDataCols();
+    for(int i = 0; i< bytesPerCol/bytesPerPix;i++){
+        for(int j=0; j < bytesPerPix;j++)
+        *(colData+i) = *(bytes + theCol + i*cols + j);
+    }
+
+    theWindow->setWidthScale(widthScale);
+    theWindow->setColData(colData);
+    theWindow->setBytesPer(bytesPerCol);
+    theWindow->update();
+}
+
 
 int QtOma2::whichDataWindow(DataWindow* theWindow){
     int i=-1;

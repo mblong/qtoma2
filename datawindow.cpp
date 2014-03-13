@@ -18,7 +18,7 @@ DataWindow::DataWindow(QWidget *parent) :
     rowLine = -1;
     hasRowPlot = 0;
     colLine = -1;
-    hasColPlot = -1;
+    hasColPlot = 0;
 }
 
 DataWindow::~DataWindow()
@@ -104,6 +104,12 @@ void DataWindow::showLine(int theLine){
      update();
 }
 
+void DataWindow::showColLine(int theLine){
+     nextPoint.setX(theLine);
+     mouseMoving = 1;
+     update();
+}
+
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint pos = event->pos();
@@ -124,6 +130,15 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
         wPointer->updateRowPlot(row,hasRowPlot);
     }
     update();
+
+    if(hasColPlot){
+        int col = event->pos().x();    //nextPoint.x();
+        if(col<0) col = 0;
+        if(col > width()-1) col = height()-1;
+        wPointer->updateColPlot(col,hasColPlot);
+    }
+    update();
+
     if(UIData.toolselected == SELRECT || UIData.toolselected == CALCRECT){
         UIData.iRect.ul.h = startPoint.x();
         UIData.iRect.ul.v = startPoint.y();
@@ -152,8 +167,30 @@ void DataWindow::paintEvent(QPaintEvent *event)
         QPainter painter( &pixmap);
         painter.setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
         painter.setRenderHint(QPainter::Antialiasing, true);
-
-        switch(thereIsDrawing){
+        if(hasColPlot){ // we have both row and column plots -- things work differently now
+            // the row information is in the y coordinate
+            // get rid of the old row line
+            QPoint P1,P2;
+            P1 = oldP1;
+            P2 = oldP2;
+            P1.setX(0);
+            P2.setX((ui->label->pixmap()->width()-1));
+            painter.drawLine(P1,P2); // get rid of old one
+            // now draw the new row line
+            startPoint.setY(nextPoint.y());
+            P1 = startPoint;
+            P2 = nextPoint;
+            P1.setX(0);
+            P2.setX((ui->label->pixmap()->width()-1));
+            painter.drawLine(P1,P2); // draw the new one
+            thereIsDrawing = RULER;
+            oldP1.setY(startPoint.y());
+            oldP2.setY(nextPoint.y());
+            mouseMoving = 1;
+            ui->label->setPixmap(pixmap);
+        } else {
+            // row plot only case
+            switch(thereIsDrawing){
             case SELRECT:
                 painter.drawRect(QRect(oldP1,oldP2));
                 thereIsDrawing=0;
@@ -162,19 +199,70 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 painter.drawLine(oldP1,oldP2); // get rid of old one
                 thereIsDrawing=0;
                 break;
-        }
-        startPoint.setX(0);
-        nextPoint.setX(ui->label->pixmap()->width()-1);
-        startPoint.setY(nextPoint.y());
+            }
+            startPoint.setX(0);
+            nextPoint.setX(ui->label->pixmap()->width()-1);
+            startPoint.setY(nextPoint.y());
 
-        painter.drawLine(startPoint,nextPoint);
-        thereIsDrawing = RULER;
-        oldP1 = startPoint;
-        oldP2 = nextPoint;
-        mouseMoving = 0;
-        ui->label->setPixmap(pixmap);
-        return;
+            painter.drawLine(startPoint,nextPoint);
+            thereIsDrawing = RULER;
+            oldP1 = startPoint;
+            oldP2 = nextPoint;
+            mouseMoving = 0;
+            ui->label->setPixmap(pixmap);
+        }
     }
+    if(hasColPlot && mouseMoving){
+        QPainter painter( &pixmap);
+        painter.setCompositionMode(QPainter::RasterOp_NotSourceXorDestination);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        if(hasRowPlot){ // we have both row and column plots -- things work differently now
+            // the col information is in the x coordinate
+            // get rid of the old col line
+            QPoint P1,P2;
+            P1 = oldP1;
+            P2 = oldP2;
+            P1.setY(0);
+            P2.setY((ui->label->pixmap()->height()-1));
+            painter.drawLine(P1,P2); // get rid of old one
+            // now draw the new col line
+            startPoint.setX(nextPoint.x());
+            P1 = startPoint;
+            P2 = nextPoint;
+            P1.setY(0);
+            P2.setY((ui->label->pixmap()->height()-1));
+            painter.drawLine(P1,P2); // draw the new one
+            thereIsDrawing = RULER;
+            oldP1.setX(startPoint.x());
+            oldP2.setX(nextPoint.x());
+            mouseMoving = 0;
+            ui->label->setPixmap(pixmap);
+
+        } else {
+            // column plot only case
+            switch(thereIsDrawing){
+            case SELRECT:
+                painter.drawRect(QRect(oldP1,oldP2));
+                thereIsDrawing=0;
+                break;
+            case RULER:
+                painter.drawLine(oldP1,oldP2); // get rid of old one
+                thereIsDrawing=0;
+                break;
+            }
+            startPoint.setY(0);
+            nextPoint.setY(ui->label->pixmap()->height()-1);
+            startPoint.setX(nextPoint.x());
+
+            painter.drawLine(startPoint,nextPoint);
+            thereIsDrawing = RULER;
+            oldP1 = startPoint;
+            oldP2 = nextPoint;
+            mouseMoving = 0;
+            ui->label->setPixmap(pixmap);
+        }
+    }
+    if(hasRowPlot || hasColPlot) return;
 
     if(mouseMoving ) {
         QPainter painter( &pixmap);
@@ -182,14 +270,14 @@ void DataWindow::paintEvent(QPaintEvent *event)
         painter.setRenderHint(QPainter::Antialiasing, true);
 
         switch(thereIsDrawing){
-            case SELRECT:
-                painter.drawRect(QRect(oldP1,oldP2));
-                thereIsDrawing=0;
-                break;
-            case RULER:
-                painter.drawLine(oldP1,oldP2); // get rid of old one
-                thereIsDrawing=0;
-                break;
+        case SELRECT:
+            painter.drawRect(QRect(oldP1,oldP2));
+            thereIsDrawing=0;
+            break;
+        case RULER:
+            painter.drawLine(oldP1,oldP2); // get rid of old one
+            thereIsDrawing=0;
+            break;
         }
         if(UIData.toolselected == SELRECT || UIData.toolselected == CALCRECT){
             painter.drawRect(QRect(startPoint,nextPoint));
@@ -231,6 +319,18 @@ void DataWindow::setHasRowPlot(DrawingWindow* theWindow){
 
 DrawingWindow* DataWindow::getHasRowPlot(){
     return hasRowPlot;
+}
+
+void DataWindow::setColLine(int windowCol){
+    colLine = windowCol;
+}
+
+void DataWindow::setHasColPlot(DrawingWindow* theWindow){
+    hasColPlot = theWindow;
+}
+
+DrawingWindow* DataWindow::getHasColPlot(){
+    return hasColPlot;
 }
 
 void DataWindow::closeEvent (QCloseEvent *event)

@@ -27,11 +27,18 @@ public:
     int getDataCols();
     int getMyDataWindow();
     unsigned char* getIntensity();
+
     void setRowLine(int windowRow);
     void setHasRowPlot(DrawingWindow* theWindow);    // this is the row plot drawing window
     DrawingWindow* getHasRowPlot();    // this is the row plot drawing window
 
+    void setColLine(int windowRow);
+    void setHasColPlot(DrawingWindow* theWindow);    // this is the row plot drawing window
+    DrawingWindow* getHasColPlot();    // this is the row plot drawing window
+
+
     void showLine(int theLine);
+    void showColLine(int theLine);
     QPoint pixmapCoords(QPoint pos);
 
 protected:
@@ -52,7 +59,7 @@ private:
     int thereIsDrawing;
     DrawingWindow* hasRowPlot;     // this is the  row plot drawing window
     int rowLine;
-    int hasColPlot;
+    DrawingWindow* hasColPlot;
     int colLine;
     int mouseMoving;
     int         thePalette;

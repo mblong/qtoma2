@@ -13,6 +13,7 @@ DrawingWindow::DrawingWindow(QWidget *parent) :
     theCol = -1;
     myDataWindow = 0;
     rowData = 0;
+    colData = 0;
 }
 
 DrawingWindow::~DrawingWindow()
@@ -39,6 +40,22 @@ void DrawingWindow::setRowData(unsigned char* theData)
 {
     if(rowData) delete rowData;
     rowData=theData;
+}
+
+void DrawingWindow::setTheCol(int windowCol)
+{
+    theCol = windowCol;
+}
+
+int DrawingWindow::getTheCol()
+{
+    return theCol;
+}
+
+void DrawingWindow::setColData(unsigned char* theData)
+{
+    if(colData) delete colData;
+    colData=theData;
 }
 
 void DrawingWindow::setBytesPer(int nbytes){
@@ -119,8 +136,57 @@ void DrawingWindow::paintEvent(QPaintEvent*){
                 pt1 = pt2;
             }
         }
+    }
+    if(colData){
+        QPainter painter(this);
+        int theDataCol = theCol*widthScale;
+
+        char string[32];
+        sprintf(string,"Column %d",theDataCol);
+        painter.drawText(QPoint(10,15),QString(string));
+        painter.setRenderHint(QPainter::Antialiasing, true);
+
+        if (isColor) {
+            painter.setPen(QColor("red"));
+            samplesPerPix = 3;
+        } else {
+            painter.setPen(QColor("black"));
+            samplesPerPix = 1;
+        }
+        float scalex = width()/(float)bytesPer;
+        float scaley = height()/(256.);
+        float h = height();
 
 
+
+        QPointF pt1(0,h-*colData*scaley),pt2;
+        for (int i=samplesPerPix; i< bytesPer;i+=samplesPerPix){
+            pt2.setX((float)i*scalex);
+            pt2.setY(h-*(colData+i)*scaley);
+            painter.drawLine(pt1,pt2);
+            pt1 = pt2;
+        }
+        if(isColor){
+            painter.setPen(QColor("green"));
+            pt1.setX(0);
+            pt1.setY(h-*(colData+1)*scaley);
+            for (int i=samplesPerPix; i< bytesPer;i+=samplesPerPix){
+                pt2.setX((float)i*scalex);
+                pt2.setY(h-*(colData+i+1)*scaley);
+                painter.drawLine(pt1,pt2);
+                pt1 = pt2;
+            }
+
+            painter.setPen(QColor("blue"));
+            pt1.setX(0);
+            pt1.setY(h-*(colData+2)*scaley);
+            for (int i=samplesPerPix; i< bytesPer;i+=samplesPerPix){
+                pt2.setX((float)i*scalex);
+                pt2.setY(h-*(colData+i+2)*scaley);
+                painter.drawLine(pt1,pt2);
+                pt1 = pt2;
+            }
+        }
     }
 }
 
