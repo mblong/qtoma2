@@ -259,6 +259,7 @@ void QtOma2::newRowPlot(){
     // tell the data window what it needs to know
     windowArray[n].dataWindow->setRowLine(theRow);
     windowArray[n].dataWindow->setHasRowPlot(windowArray[numWindows].drawingWindow);
+    if(windowArray[n].dataWindow->getHasColPlot()) windowArray[n].dataWindow->setThereIsDrawing(NEWROW);
     windowArray[n].dataWindow->showLine(theRow);
 
     windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
@@ -381,6 +382,8 @@ void QtOma2::newColPlot(){
     // tell the data window what it needs to know
     windowArray[n].dataWindow->setColLine(theCol);
     windowArray[n].dataWindow->setHasColPlot(windowArray[numWindows].drawingWindow);
+    if(windowArray[n].dataWindow->getHasRowPlot())
+        windowArray[n].dataWindow->setThereIsDrawing(NEWCOL);
     windowArray[n].dataWindow->showColLine(theCol);
 
     windowArray[numWindows].drawingWindow->setWidthScale(widthScale);
