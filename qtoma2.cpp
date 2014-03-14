@@ -374,9 +374,10 @@ void QtOma2::newColPlot(){
     }
     unsigned char* colData = new unsigned char[bytesPerCol];
     int cols = windowArray[n].dataWindow->getDataCols();
+    int k=0;
     for(int i = 0; i< bytesPerCol/bytesPerPix;i++){
         for(int j=0; j < bytesPerPix;j++)
-        *(colData+i) = *(bytes + theCol + i*cols + j);
+        *(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
     }
 
     // tell the data window what it needs to know
@@ -424,9 +425,10 @@ void QtOma2::updateColPlot(int theWindowCol, DrawingWindow* theWindow){
     }
     unsigned char* colData = new unsigned char[bytesPerCol];
     int cols = theDataWindow->getDataCols();
+    int k=0;
     for(int i = 0; i< bytesPerCol/bytesPerPix;i++){
         for(int j=0; j < bytesPerPix;j++)
-        *(colData+i) = *(bytes + theCol + i*cols + j);
+            *(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
     }
 
     theWindow->setWidthScale(widthScale);
@@ -486,6 +488,12 @@ void QtOma2::eraseWindow(int n){
                 windowArray[theRowPlotWindowNumber].drawingWindow->setMyDataWindow(0);
                 windowArray[theRowPlotWindowNumber].drawingWindow->setTheRow(-1);
             }
+            int theColPlotWindowNumber = whichDrawingWindow(windowArray[n].dataWindow->getHasColPlot());
+            if(theColPlotWindowNumber >=0){
+                windowArray[theColPlotWindowNumber].drawingWindow->setMyDataWindow(0);
+                windowArray[theColPlotWindowNumber].drawingWindow->setTheCol(-1);
+            }
+
             windowArray[n].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
             windowArray[n].dataWindow->close();
         }else{ //getting rid of row or column plot
@@ -497,10 +505,17 @@ void QtOma2::eraseWindow(int n){
                     windowArray[dataWindowNumber].dataWindow->setHasRowPlot(0);
                     windowArray[dataWindowNumber].dataWindow->setRowLine(-1);
                 }
+                windowArray[n].drawingWindow->setRowData(0);  // free the memory
             } else{
                 // column plot stuff
+                // clear information from the data window
+                if(dataWindowNumber >=0){
+                    windowArray[dataWindowNumber].dataWindow->setHasColPlot(0);
+                    windowArray[dataWindowNumber].dataWindow->setColLine(-1);
+                }
+                windowArray[n].drawingWindow->setColData(0);  // free the memory
             }
-            windowArray[n].drawingWindow->setRowData(0);  // free the memory
+
             windowArray[n].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
             windowArray[n].drawingWindow->close();
         }
