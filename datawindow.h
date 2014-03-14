@@ -36,7 +36,7 @@ public:
     void setHasColPlot(DrawingWindow* theWindow);    // this is the row plot drawing window
     DrawingWindow* getHasColPlot();    // this is the row plot drawing window
 
-
+    void setThereIsDrawing(int type);
     void showLine(int theLine);
     void showColLine(int theLine);
     QPoint pixmapCoords(QPoint pos);

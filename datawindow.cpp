@@ -175,7 +175,8 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P2 = oldP2;
             P1.setX(0);
             P2.setX((ui->label->pixmap()->width()-1));
-            painter.drawLine(P1,P2); // get rid of old one
+            if(thereIsDrawing != NEWROW)
+                painter.drawLine(P1,P2); // get rid of old one
             // now draw the new row line
             startPoint.setY(nextPoint.y());
             P1 = startPoint;
@@ -183,7 +184,8 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P1.setX(0);
             P2.setX((ui->label->pixmap()->width()-1));
             painter.drawLine(P1,P2); // draw the new one
-            thereIsDrawing = RULER;
+            if(thereIsDrawing != NEWCOL)
+                thereIsDrawing = RULER;
             oldP1.setY(startPoint.y());
             oldP2.setY(nextPoint.y());
             mouseMoving = 1;
@@ -224,7 +226,8 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P2 = oldP2;
             P1.setY(0);
             P2.setY((ui->label->pixmap()->height()-1));
-            painter.drawLine(P1,P2); // get rid of old one
+            if(thereIsDrawing != NEWCOL)
+                painter.drawLine(P1,P2); // get rid of old one
             // now draw the new col line
             startPoint.setX(nextPoint.x());
             P1 = startPoint;
@@ -331,6 +334,10 @@ void DataWindow::setHasColPlot(DrawingWindow* theWindow){
 
 DrawingWindow* DataWindow::getHasColPlot(){
     return hasColPlot;
+}
+
+void DataWindow::setThereIsDrawing(int type){
+    thereIsDrawing = type;
 }
 
 void DataWindow::closeEvent (QCloseEvent *event)

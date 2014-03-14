@@ -120,7 +120,7 @@ int pprintf(const char* format, ...);
 #endif
 
 
-enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT,NEWROW,NEWCOL};
 
 typedef struct{
     unsigned char red;
@@ -183,7 +183,7 @@ BOOL dropped_file(char*,char*);
 #endif
 
 
-enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT,NEWROW,NEWCOL};
 
 typedef struct{
     unsigned char red;
@@ -276,7 +276,7 @@ typedef char BOOL;
 typedef char Boolean;
 #define NO 0
 #define YES 1
-enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
+enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT,NEWROW,NEWCOL};
 
 int omaprintf(const char* format, ...);
 void alertSound(char*);
