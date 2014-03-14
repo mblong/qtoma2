@@ -134,7 +134,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
     if(hasColPlot){
         int col = event->pos().x();    //nextPoint.x();
         if(col<0) col = 0;
-        if(col > width()-1) col = height()-1;
+        if(col > width()-1) col = width()-1;
         wPointer->updateColPlot(col,hasColPlot);
     }
     update();
