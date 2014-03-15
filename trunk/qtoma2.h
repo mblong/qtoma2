@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QDesktopServices>
+#include <QUrl>
 #include "./oma2UiIndependent/oma2.h"
 #include "./oma2UiIndependent/UI.h"
 #include "datawindow.h"
@@ -87,6 +88,7 @@ public:
     void updateColPlot(int theWindowCol, DrawingWindow* theWindow);
     void updateStatus();
     void addForwardedCharacter(QString string);
+    void deleteCharacter();
     int whichDataWindow(DataWindow* theWindow);
     int whichDrawingWindow(DrawingWindow* theWindow);
 

@@ -216,7 +216,10 @@ void Status::keyPressEvent(QKeyEvent *event){
           stopMacroNow = 1;
           return;
       }
-
+      if(event->key() == Qt::Key_Backspace ||event->key() == Qt::Key_Delete){
+          wPointer->deleteCharacter();
+          return;
+      }
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
 }

@@ -87,13 +87,14 @@ void QtOma2::addCString(char* string)
 
 void QtOma2::addForwardedCharacter(QString string)
 {
-
     ui->plainTextEdit->insertPlainText(string);
     //lastReturn += string.length();
-
-
 }
 
+void  QtOma2::deleteCharacter(){
+    QTextCursor cursor =ui->plainTextEdit->textCursor();
+    cursor.deletePreviousChar();
+}
 
 void QtOma2::keyPressEvent(QKeyEvent *event)
 {

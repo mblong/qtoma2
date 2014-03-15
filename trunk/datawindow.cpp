@@ -356,6 +356,7 @@ void DataWindow::closeEvent (QCloseEvent *event)
 void DataWindow::keyPressEvent(QKeyEvent *event){
       if(event->modifiers() == Qt::ControlModifier){
           if(event->key() == Qt::Key_R) wPointer->newRowPlot();
+          if(event->key() == Qt::Key_T) wPointer->newColPlot();
           return;
       }
       extern int stopMacroNow;
@@ -365,6 +366,11 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
           stopMacroNow = 1;
           return;
       }
+      if(event->key() == Qt::Key_Backspace ||event->key() == Qt::Key_Delete){
+          wPointer->deleteCharacter();
+          return;
+      }
+
 
       QString string = event->text();
       wPointer->addForwardedCharacter(string);
