@@ -117,8 +117,9 @@ private:
     Ui::QtOma2 *ui;
     int lastReturn;
     int programmedText;
-    char oma2Command[CHPERLN];
-    //DataWindow* dwin[MAX_WINDOW_COUNT];
+    char oma2Command[CHPERLN*2+1];
+    // the factor of 2 above is because strlcpy has been defined as strncpy for windows and linux (they work differently)
+    // without this fullname would clobber the windowArray
     WindowArray windowArray[MAX_WINDOW_COUNT];
     Status *status;
     Preferences* prefs;
