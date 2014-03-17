@@ -161,7 +161,11 @@ BOOL dropped_file(char*,char*);
 
 #include <QApplication>
 #include "qtoma2.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
+#include <io.h>
+#include <fcntl.h>
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
@@ -179,7 +183,7 @@ BOOL dropped_file(char*,char*);
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define DJGPP 1
 
-#define WMODE   O_CREAT|O_WRONLY,0666
+#define WMODE   _O_CREAT|_O_WRONLY|_O_BINARY|_O_TRUNC,S_IWUSR|S_IRUSR
 #define READMODE   O_RDONLY
 #define READBINARY   O_RDONLY|O_BINARY
 
