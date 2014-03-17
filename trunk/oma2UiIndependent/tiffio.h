@@ -26,6 +26,7 @@
 
 #ifndef _TIFFIO_
 #define	_TIFFIO_
+
 #define _TIFF_DATA_TYPEDEFS_
 typedef unsigned char uint8;
 typedef unsigned short uint16;
