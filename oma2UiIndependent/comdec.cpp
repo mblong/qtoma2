@@ -2,6 +2,7 @@
 #include "comdec.h"
 
 
+
 extern char    reply[1024];   // buffer for sending messages to be typed out by the user interface
 extern Image   iBuffer;       // the image buffer
 extern ImageBitmap iBitmap;
@@ -1510,7 +1511,7 @@ int stopmacro()
 
 // ********** 
 
-#define READMODE O_RDONLY  // Read file mode. 
+//#define READMODE O_RDONLY  // Read file mode.
 
 int execut(int n, char* args)
 
@@ -2249,7 +2250,7 @@ int help(int n, char* args)
         }
     }
     else {
-        fd = open(HELPFILE,O_RDONLY);
+        fd = open(HELPFILE,READMODE);
         if( fd == -1) {
             printf("'OMA HELP' File Not Found.\n");
             return FILE_ERR;

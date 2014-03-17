@@ -1555,7 +1555,7 @@ int dcrawarg_c(int n, char* args){
 	if(*args == 0){
 		i = argc;
 		argc = 1;
-        //dcrawGlue(txt,-1,NULL);
+		dcrawGlue(txt,-1,NULL);
 		argc = i;
 		printf("\nCurrent settings are: ");
 		for(i=0; i<argc; i++){
@@ -1740,9 +1740,9 @@ int gmacro_c(int n,char* args)
 	int fd,nread,i;
 	
 	if(*args == 0)
-		fd = open(args,O_RDONLY);
+		fd = open(args,READMODE);
 	else
-		fd = open(fullname(args,MACROS_DATA),O_RDONLY);
+		fd = open(fullname(args,MACROS_DATA),READMODE);
 	
 	if(fd == -1) {
 		beep();
@@ -1820,7 +1820,7 @@ int fclose_c (int n,char* args)
 
 int fecho_c (int n,char* args)
 {
-    if (*args != 0) {
+	if (*args != 0) {
 		if( fptr_local != NULL) {
 			fprintf(fptr_local, "%s\n",args);
 		} else {
@@ -1839,7 +1839,6 @@ int fecho_c (int n,char* args)
 //***************************************************
 int satiff_c(int n, char* args)
 {
-    /*
 	uint32 rowsperstrip = (uint32) -1;
 	double resolution = -1;
 	unsigned char *buf = NULL,*buf2;
@@ -1915,7 +1914,6 @@ int satiff_c(int n, char* args)
 	if (buf)
 		_TIFFfree(buf);
     free(specs);
-    */
 	return NO_ERR;
 }
 
@@ -1927,7 +1925,6 @@ int satiff_c(int n, char* args)
 
 int satiffscaled_c(int n, char* args)
 {
-    /*
 	uint32 rowsperstrip = (uint32) -1;
 	double resolution = -1;
 	unsigned short *buf = NULL,*buf2;
@@ -2017,7 +2014,6 @@ int satiffscaled_c(int n, char* args)
 		_TIFFfree(buf);
     free(specs);
 	return NO_ERR;
-    */
 }
 
 

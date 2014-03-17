@@ -319,9 +319,9 @@ int loadprefs(char* name)
     
 
     
-#ifdef DO_MACH_O
+
 	getcwd(oldname,CHPERLN);
-#endif
+
 	if(name == nil) {
    		/*
         // load using dialog
@@ -340,7 +340,7 @@ int loadprefs(char* name)
     if(len > OLD_SETTINGS_LENGTH) prefixLength = NEW_PREFIX_CHPERLN;
         
     
-    fd = open(name,O_RDONLY);
+    fd = open(name,READBINARY);
     
     if(fd == -1) {
 		beep();
@@ -526,9 +526,9 @@ int loadprefs(char* name)
     close(fd);
 	//err = setvol("", oldvol);
 	//HSetVol(NULL,v_ref_num,dir_ID);
-#ifdef DO_MACH_O
+
 	chdir(oldname);
-#endif
+
 	//setfonts(oldfont,-1);		// removed
     /*
 	if(Status_window != 0){
@@ -545,7 +545,8 @@ int loadprefs(char* name)
 
 int saveprefs(char* name)
 {
-    int fd = creat(name,PMODE);
+    //int fd = creat(name,PMODE);
+    int fd = open(name,WMODE);
     if(fd == -1) {
 		beep();
         printf("Could not open preferences: %s",name);
@@ -632,7 +633,7 @@ int getpalettefile(char* name)
     int fd;
 	unsigned char thecolors[256];
 	
-    fd = open(name,O_RDONLY);
+    fd = open(name,READBINARY);
     if(fd == -1) {
         beep();
         return -1;
@@ -690,7 +691,7 @@ int readTiff(char* filename,Image* im)
     int npts;
 	
     IFDPageNo = 0;
-    /*
+	
 	image = TIFFOpen(filename, "r");
 	if (image == NULL) {
         beep();
@@ -713,7 +714,6 @@ int readTiff(char* filename,Image* im)
      }
      }
 	 */
-    /*
 	// Read the TIFF fields
 	TIFFGetField(image, TIFFTAG_PHOTOMETRIC, &photometric);
 	
@@ -802,7 +802,7 @@ int readTiff(char* filename,Image* im)
 	}
     
 	// Deal with Photometric Interpretations
-    */
+	
 	/*
      if(photometric != PHOTOMETRIC_MINISBLACK){
      // Flip bits
@@ -814,7 +814,7 @@ int readTiff(char* filename,Image* im)
 	
 	//if (photometric == PHOTOMETRIC_MINISBLACK) printf("Photometric: Min is BLACK\n");
 	//if (photometric == PHOTOMETRIC_MINISWHITE) printf("Photometric: Min is WHITE\n");
-    /*
+    
 	// Deal with the FILL Order
 	if(fillorder != FILLORDER_MSB2LSB){
 		// We need to swap bits - ABCDEFGH becomes HGFEDCBA
@@ -874,7 +874,7 @@ int readTiff(char* filename,Image* im)
 	}
 	user_variables[0].fvalue = user_variables[0].ivalue = spp;
 	user_variables[0].is_float = 0;
-    */
+    
 	return NO_ERR;
 }
 

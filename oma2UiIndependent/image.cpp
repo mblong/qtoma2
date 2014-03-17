@@ -83,7 +83,6 @@ Image::Image(char* filename, int kindOfName)
         if (kindOfName == LONG_NAME) {
             color = dcrawGlue(filename,-1,this);
         } else {
-
             color = dcrawGlue(fullname(filename,RAW_DATA),-1,this);
         }
         if(color < 0) error = FILE_ERR;
@@ -127,13 +126,13 @@ Image::Image(char* filename, int kindOfName)
 
     switch (kindOfName) {
         case LONG_NAME:
-            fd = open(filename,O_RDONLY);
+            fd = open(filename,READBINARY);
             break;
         case SHORT_NAME:
-            fd = open(fullname(filename,GET_DATA),O_RDONLY);
+            fd = open(fullname(filename,GET_DATA),READBINARY);
             break;
         case HAS_SUFFIX:
-            fd = open(fullname(filename,RAW_DATA),O_RDONLY);    // means don't add the suffix
+            fd = open(fullname(filename,RAW_DATA),READBINARY);    // means don't add the suffix
             break;
         default:
             fd = -1;
@@ -159,12 +158,14 @@ Image::Image(char* filename, int kindOfName)
         read(fd,&is_big_endian,sizeof(int));
         read(fd,&commentSize,sizeof(int));
         read(fd,&extraSize,sizeof(int));
-        if(commentSize)
+        if(commentSize){
             comment = new char[commentSize];
             read(fd,comment,commentSize);
-        if(extraSize)
+        }
+        if(extraSize){
             extra = new float[extraSize];
             read(fd,extra,extraSize*sizeof(float));
+        }
         // finally the data
         data = new DATAWORD[specs[ROWS]*specs[COLS]];
         if(data == 0){
@@ -555,9 +556,11 @@ void Image::saveFile(char* name, int kindOfName){
     int fd;
     
     if(kindOfName == SHORT_NAME)
-        fd = creat(fullname(name,SAVE_DATA),PMODE);
+        //fd = creat(fullname(name,SAVE_DATA),PMODE);
+        fd = open(fullname(name,SAVE_DATA),WMODE);
     else
-        fd = creat(name,PMODE);
+        //fd = creat(name,PMODE);
+        fd = open(name,WMODE);
     
     if(fd == -1) {
 		beep();
