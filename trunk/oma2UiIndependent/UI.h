@@ -40,13 +40,17 @@ enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 #define checkEvents ;
 
+#define WMODE   O_CREAT|O_WRONLY,0666
+#define READMODE   O_RDONLY
+#define READBINARY   O_RDONLY
+
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "Contents/Resources/OMA Settings"
-#define PALETTEFILE	"Contents/Resources/OMA palette.pa1"
-#define PALETTEFILE2 "Contents/Resources/OMA palette2.pa1"
-#define PALETTEFILE3 "Contents/Resources/OMA palette3.pa1"
+#define PALETTEFILE	"Contents/Resources/OMApalette.pa1"
+#define PALETTEFILE2 "Contents/Resources/OMApalette2.pa1"
+#define PALETTEFILE3 "Contents/Resources/OMApalette3.pa1"
 
-#define HELPFILE "Contents/Resources/oma help.txt"
+#define HELPFILE "Contents/Resources/oma2help.txt"
 #define HELPURL "Contents/Resources/LightOma2Help/index.html"
 #endif
 
@@ -100,6 +104,10 @@ int pprintf(const char* format, ...);
 #define pprintf omaprintf
 #define printf omaprintf
 #define nil 0
+
+#define WMODE   O_CREAT|O_WRONLY,0666
+#define READMODE   O_RDONLY
+#define READBINARY   O_RDONLY
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wsign-compare"
@@ -171,6 +179,10 @@ BOOL dropped_file(char*,char*);
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #define DJGPP 1
 
+#define WMODE   O_CREAT|O_WRONLY,0666
+#define READMODE   O_RDONLY
+#define READBINARY   O_RDONLY|O_BINARY
+
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "./OMA Settings"
@@ -235,6 +247,11 @@ BOOL dropped_file(char*,char*);
 
 #define _H_INTTYPES
 #define _ALL_SOURCE
+
+#define WMODE   O_CREAT|O_WRONLY,0666
+#define READMODE   O_RDONLY
+#define READBINARY   O_RDONLY
+
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wwrite-strings"
