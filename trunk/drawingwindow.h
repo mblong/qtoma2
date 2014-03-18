@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <stdio.h>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 class DataWindow;
 
@@ -39,7 +40,7 @@ protected:
     void paintEvent(QPaintEvent* event);
     void keyPressEvent(QKeyEvent *event);
     void closeEvent (QCloseEvent *event);
-
+    void mousePressEvent(QMouseEvent*);
 
 private:
     Ui::DrawingWindow *ui;

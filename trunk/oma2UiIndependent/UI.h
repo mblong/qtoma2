@@ -214,7 +214,7 @@ typedef struct{
 
 typedef char* Ptr;
 
-//typedef char BOOL;
+typedef int BOOL;
 typedef char Boolean;
 #define NO 0
 #define YES 1

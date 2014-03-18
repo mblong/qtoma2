@@ -26,12 +26,12 @@ SOURCES += main.cpp\
         oma2UiIndependent/image.cpp\
         oma2UiIndependent/image_support.cpp \
         oma2UiIndependent/dofft.cpp \
-        oma2UiIndependent/jpegIO.cpp \
         QtUI.cpp \
         datawindow.cpp \
         preferences.cpp \
         status.cpp \
-        drawingwindow.cpp
+        drawingwindow.cpp \
+    qtimagesupport.cpp
 
 
 HEADERS  += qtoma2.h\
@@ -43,18 +43,13 @@ HEADERS  += qtoma2.h\
         oma2UiIndependent/gluedCommands.h\
         oma2UiIndependent/image.h\
         oma2UiIndependent/image_support.h\
-        oma2UiIndependent/jconfig.h\
-        oma2UiIndependent/jmorecfg.h\
-        oma2UiIndependent/jpeglib.h\
         oma2UiIndependent/ImageBitmap.h \
         oma2UiIndependent/oma2.h \
         datawindow.h \
         drawingwindow.h \
         preferences.h \
-        oma2UiIndependent/tiff.h\
-        oma2UiIndependent/tiffio.h\
-        oma2UiIndependent/tiffvers.h \
-        status.h
+        status.h \
+    qtimagesupport.h
 
 
 FORMS    += qtoma2.ui \
@@ -63,15 +58,16 @@ FORMS    += qtoma2.ui \
     status.ui \
     drawingwindow.ui
 
-macx: LIBS += -L/opt/local/lib/ -ljpeg
-macx: INCLUDEPATH += /opt/local/lib
-macx: DEPENDPATH += /opt/local/lib
-macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
+#macx: LIBS += -L/opt/local/lib/ -ljpeg
+#macx: INCLUDEPATH += /opt/local/lib
+#macx: DEPENDPATH += /opt/local/lib
+#macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
 
-unix:!macx: LIBS += -ljpeg
+#unix:!macx: LIBS += -ljpeg
 
-win32:  LIBS += -ljpeg -lws2_32
+#win32:  LIBS += -ljpeg -lws2_32
+win32:  LIBS += -lws2_32
 
 
 

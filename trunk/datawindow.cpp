@@ -357,6 +357,7 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
       if(event->modifiers() == Qt::ControlModifier){
           if(event->key() == Qt::Key_R) wPointer->newRowPlot();
           if(event->key() == Qt::Key_T) wPointer->newColPlot();
+          if(event->key() == Qt::Key_F) wPointer->showPreferences();
           return;
       }
       extern int stopMacroNow;

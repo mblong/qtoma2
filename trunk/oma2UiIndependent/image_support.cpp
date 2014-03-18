@@ -658,9 +658,9 @@ int getpalettefile(char* name)
 //***         uses LibTIFF
 //***         P. Kalt (2003) after J.Fielding
 //********************************************************
+#ifdef MacOSX_UI
 int readTiff(char* filename,Image* im)
 {
-#ifdef MacOSX_UI
 	uint16 		photometric;
 	uint16 		compression;
 	uint16 		bitspersample;
@@ -875,10 +875,9 @@ int readTiff(char* filename,Image* im)
 	}
 	user_variables[0].fvalue = user_variables[0].ivalue = spp;
 	user_variables[0].is_float = 0;
-#endif
 	return NO_ERR;
 }
-
+#endif
 /***********************************************************************************
  Created:	17:9:2002
  FileName: 	hdrloader.cpp

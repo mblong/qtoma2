@@ -101,9 +101,14 @@ void QtOma2::keyPressEvent(QKeyEvent *event)
     extern int stopMacroNow;
     if(event->key() == Qt::Key_Escape)
     {
-        //addCString((char*)"You pressed ESC\n");
         stopMacroNow = 1;
+    }/*
+    if(event->modifiers() == Qt::ControlModifier){
+        if(event->key() == Qt::Key_Up){
+            int i =2;
+        }
     }
+    */
 }
 
 void QtOma2::showPreferences(){
