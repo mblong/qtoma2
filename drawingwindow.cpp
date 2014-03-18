@@ -3,6 +3,7 @@
 #include "qtoma2.h"
 
 extern QtOma2* wPointer;
+extern oma2UIData UIData;
 
 DrawingWindow::DrawingWindow(QWidget *parent) :
     QDialog(parent),
@@ -192,7 +193,7 @@ void DrawingWindow::paintEvent(QPaintEvent*){
 
 void DrawingWindow::keyPressEvent(QKeyEvent *event){
     if(event->modifiers() == Qt::ControlModifier){
-
+        if(event->key() == Qt::Key_F) wPointer->showPreferences();
         return;
     }
     extern int stopMacroNow;
@@ -222,4 +223,14 @@ void DrawingWindow::closeEvent (QCloseEvent *event)
         wPointer->eraseWindow(n);
         fprintf(stderr,"%d closing\n",n);
      }
+}
+
+void DrawingWindow::mousePressEvent(QMouseEvent *event)
+{
+        static float ovalue = 1;
+       if(event->button() == Qt::RightButton){
+            if (ovalue == 1) ovalue = UIData.alphaValue;
+            else ovalue =1;
+            this->setWindowOpacity(ovalue);
+        }
 }
