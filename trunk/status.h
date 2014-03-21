@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QKeyEvent>
 #include <QDropEvent>
+#include <QUrl>
+#include <QMimeData>
 //#include "./oma2UiIndependent/oma2.h"
 //#include "./oma2UiIndependent/UI.h"
 
@@ -40,6 +42,7 @@ private slots:
 protected:
     void keyPressEvent(QKeyEvent *event);
     void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *ev);
 
 private:
     Ui::Status *ui;
