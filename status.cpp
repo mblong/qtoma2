@@ -13,6 +13,7 @@ Status::Status(QWidget *parent) :
     ui(new Ui::Status)
 {
     ui->setupUi(this);
+    setAcceptDrops(true);
 }
 
 Status::~Status()
@@ -225,6 +226,25 @@ void Status::keyPressEvent(QKeyEvent *event){
       wPointer->addForwardedCharacter(string);
 }
 
-void Status::dropEvent(QDropEvent *event){
+void Status::dragEnterEvent(QDragEnterEvent *ev)
+{
+    ev->accept();
+}
 
+void Status::dropEvent(QDropEvent *event){
+        QList<QUrl> urls = event->mimeData()->urls();
+        foreach(QUrl url, urls)
+        {
+            QString theFile = url.path();
+            QByteArray ba = theFile.toLocal8Bit();
+            char name[CHPERLN],ext[PREFIX_CHPERLN];
+            strlcpy(name,ba.data(),CHPERLN);
+            int i;
+            for(i=strlen(name)-1; i >= 0 ;i--){
+                if(name[i] == '.') break;
+            }
+            strlcpy(ext,&name[i+1],PREFIX_CHPERLN);
+            dropped_file(ext,name);
+
+        }
 }
