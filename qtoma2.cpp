@@ -18,6 +18,10 @@ QtOma2::QtOma2(QWidget *parent) :
     programmedText = 0;
     setUpUIData();
 
+
+    connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)),
+        this, SLOT(onApplicationFocusChanged(QWidget*,QWidget*)));
+
     //char text[NEW_PREFIX_CHPERLN];
 
     QString appPath =  qApp->applicationDirPath();
@@ -762,3 +766,14 @@ void QtOma2::on_actionOma2_Help_triggered()
 {
     QDesktopServices::openUrl(QUrl("http://oma-x.org"));
 }
+
+void QtOma2::onApplicationFocusChanged(QWidget *old, QWidget *now){
+    if( now == ui->plainTextEdit){
+       QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));
+    }
+}
+
+void QtOma2::moveCursorToEnd(){
+    ui->plainTextEdit->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
+}
+

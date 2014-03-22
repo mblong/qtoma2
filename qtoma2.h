@@ -7,6 +7,7 @@
 #include <QCloseEvent>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTimer>
 #include "./oma2UiIndependent/oma2.h"
 #include "./oma2UiIndependent/UI.h"
 #include "datawindow.h"
@@ -95,9 +96,13 @@ public:
     void keyPressEvent(QKeyEvent*);
 
 
+
+
 protected:
 //    void keyPressEvent(QKeyEvent*);
     void closeEvent(QCloseEvent*);
+
+
 
 private slots:
     void on_plainTextEdit_textChanged();
@@ -109,9 +114,14 @@ private slots:
     void on_actionPlot_Rows_triggered();
 
     void on_actionPlot_Columns_triggered();
+
     void on_actionClose_triggered();
 
     void on_actionOma2_Help_triggered();
+
+    void onApplicationFocusChanged(QWidget *old, QWidget *now);
+
+    void moveCursorToEnd();
 
 private:
     Ui::QtOma2 *ui;
