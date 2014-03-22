@@ -18,11 +18,8 @@ QtOma2::QtOma2(QWidget *parent) :
     programmedText = 0;
     setUpUIData();
 
-
     connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)),
         this, SLOT(onApplicationFocusChanged(QWidget*,QWidget*)));
-
-    //char text[NEW_PREFIX_CHPERLN];
 
     QString appPath =  qApp->applicationDirPath();
     QByteArray ba = appPath.toLocal8Bit();
@@ -84,15 +81,11 @@ void QtOma2::addCString(char* string)
     lastReturn += strlen(string);
     programmedText = 0;
     ui->omaCommands->ensureCursorVisible();
-    //QTextCursor cursor =ui->omaCommands->textCursor();
-    //cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
-
 }
 
 void QtOma2::addForwardedCharacter(QString string)
 {
     ui->omaCommands->insertPlainText(string);
-    //lastReturn += string.length();
 }
 
 void  QtOma2::deleteCharacter(){
@@ -106,13 +99,7 @@ void QtOma2::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Escape)
     {
         stopMacroNow = 1;
-    }/*
-    if(event->modifiers() == Qt::ControlModifier){
-        if(event->key() == Qt::Key_Up){
-            int i =2;
-        }
     }
-    */
 }
 
 
@@ -135,7 +122,6 @@ void QtOma2::previousHistory(){
             // we are at the end of the text -- just add the last command
             addCString(gets_string);
             lastReturn -= strlen(gets_string);
-
         } else {
             // need to get rid of the last bit that hasn't been treated as a command
             QTextCursor cursor =ui->omaCommands->textCursor();
@@ -194,7 +180,6 @@ void QtOma2::newData(char* name){
         updateData(); // dont put a new window, just use the current data window
         return;
      }
-
     // figure out where to place image
     // this is for possibly scaling down images that won't fit on screen
     int windowHeight = iBitmap.getheight();
@@ -615,75 +600,6 @@ void QtOma2::eraseWindow(int n){
         numWindows = 0;
         currentDataWindow = -1;
     }
-    /*
-        if (n < 0) {            // erase everything
-            for (id thewindow in windowArray){
-                if ([thewindow isKindOfClass:[DataWindowController class]]){
-                    [thewindow setHasRowPlot:CLOSE_CLEANUP_DONE];
-                    // this is for communication with [dataWindowController windowWillClose]
-                    // we don't need to do any similar thing with hasColPlot, since the whole dataWindowController and imageView go away
-                }
-                if ([thewindow isKindOfClass:[DrawingWindowController class]]){
-                    [thewindow setDrawingType:CLOSE_CLEANUP_DONE];
-                    // see above
-                }
-                [[thewindow window ] close];
-            }
-            [windowArray removeAllObjects];
-            wraps=1;
-            window_placement.origin.x = screenRect.origin.x+WINDOW_OFFSET;
-            window_placement.origin.y = screenRect.size.height;
-            return;
-        }
-
-        if (n < [windowArray count]) {
-            id thewindowController = windowArray[n];
-            if ([thewindowController isKindOfClass:[DataWindowController class]]){
-                // erasing a data window
-                // check to see if this has any row or column plots
-                if([thewindowController hasRowPlot] >=0){
-                    // this data window is going away, so don't leave the pointer laying around
-                    [[[(DataWindowController*)thewindowController imageView] rowWindowController] setDataWindowController:NULL];
-                }
-                if([thewindowController hasColPlot] >=0){
-                    // this data window is going away, so don't leave the pointer laying around
-                    [[[(DataWindowController*)thewindowController imageView] colWindowController] setDataWindowController:NULL];
-                }
-                // signal that we are done with the housekeeping
-                [thewindowController setHasRowPlot:CLOSE_CLEANUP_DONE];
-
-            }
-
-            if ([thewindowController isKindOfClass:[DrawingWindowController class]]){
-                // if we are erasing a row or column plot, let the data window know they are gone
-                if([thewindowController drawingType] == ROW_DRAWING){
-                    [[thewindowController dataWindowController] setHasRowPlot:-1];
-                    [[[thewindowController dataWindowController] imageView] setRowLine:-1];
-                    [[[thewindowController dataWindowController] imageView] setRowWindowController:NULL];
-                }
-                if([thewindowController drawingType] == COL_DRAWING){
-                    [[thewindowController dataWindowController] setHasColPlot:-1];
-                    [[[thewindowController dataWindowController] imageView] setColLine:-1];
-                    [[[thewindowController dataWindowController] imageView] setColWindowController:NULL];
-                }
-                // signal that we are done with the housekeeping
-                [thewindowController setDrawingType:CLOSE_CLEANUP_DONE];
-
-                [[[thewindowController dataWindowController] imageView] setNeedsDisplay:YES];
-            }
-
-            [[thewindowController window ] close];
-            [windowArray removeObjectAtIndex:n];
-
-        }
-        if([windowArray count] == 0){
-            wraps=1;
-            window_placement.origin.x = screenRect.origin.x+WINDOW_OFFSET;
-            window_placement.origin.y = screenRect.size.height;
-        }
-
-    }
-  */
 }
 
 
@@ -836,7 +752,7 @@ void QtOma2::on_actionOma2_Help_triggered()
 // these next two things ensure that when clicking on the commands window when it doesn't have focus, the cursor will be at the end
 void QtOma2::onApplicationFocusChanged(QWidget *old, QWidget *now){
     if( now == ui->omaCommands){
-       QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));
+       QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));   // this gives enough time so that the event that places the cursor is done
     }
 }
 
