@@ -207,6 +207,15 @@ void DrawingWindow::keyPressEvent(QKeyEvent *event){
         wPointer->deleteCharacter();
         return;
     }
+    if(event->key() == Qt::Key_Up){
+                wPointer->previousHistory();
+                return;
+    }
+    if(event->key() == Qt::Key_Down){
+                wPointer->nextHistory();
+                return;
+    }
+
 
       QString string = event->text();
       wPointer->addForwardedCharacter(string);

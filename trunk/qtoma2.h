@@ -90,22 +90,23 @@ public:
     void updateStatus();
     void addForwardedCharacter(QString string);
     void deleteCharacter();
+    void previousHistory();
+    void nextHistory();
     int whichDataWindow(DataWindow* theWindow);
     int whichDrawingWindow(DrawingWindow* theWindow);
 
-    void keyPressEvent(QKeyEvent*);
 
 
 
 
 protected:
-//    void keyPressEvent(QKeyEvent*);
+    void keyPressEvent(QKeyEvent*);
     void closeEvent(QCloseEvent*);
 
 
 
 private slots:
-    void on_plainTextEdit_textChanged();
+    void on_omaCommands_textChanged();
     //void fileOpen();
     void on_actionOpen_triggered();
 

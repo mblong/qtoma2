@@ -61,10 +61,10 @@ QtOma2::~QtOma2()
     delete ui;
 }
 
-void QtOma2::on_plainTextEdit_textChanged()
+void QtOma2::on_omaCommands_textChanged()
 {
     if(programmedText) return;
-    QString thetext = ui->plainTextEdit->toPlainText();
+    QString thetext = ui->omaCommands->toPlainText();
     QChar thechar = thetext.at(thetext.size()-1);
     char ch = thechar.toLatin1();
     if(ch == '\n'){
@@ -80,23 +80,23 @@ void QtOma2::on_plainTextEdit_textChanged()
 void QtOma2::addCString(char* string)
 {
     programmedText = 1;
-    ui->plainTextEdit->insertPlainText(QString(string));
+    ui->omaCommands->insertPlainText(QString(string));
     lastReturn += strlen(string);
     programmedText = 0;
-    ui->plainTextEdit->ensureCursorVisible();
-    //QTextCursor cursor =ui->plainTextEdit->textCursor();
+    ui->omaCommands->ensureCursorVisible();
+    //QTextCursor cursor =ui->omaCommands->textCursor();
     //cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
 
 }
 
 void QtOma2::addForwardedCharacter(QString string)
 {
-    ui->plainTextEdit->insertPlainText(string);
+    ui->omaCommands->insertPlainText(string);
     //lastReturn += string.length();
 }
 
 void  QtOma2::deleteCharacter(){
-    QTextCursor cursor =ui->plainTextEdit->textCursor();
+    QTextCursor cursor =ui->omaCommands->textCursor();
     cursor.deletePreviousChar();
 }
 
@@ -113,6 +113,70 @@ void QtOma2::keyPressEvent(QKeyEvent *event)
         }
     }
     */
+}
+
+
+void QtOma2::previousHistory(){
+    extern char cmnd_history[];
+    extern int hist_index;
+    extern int selected_hist_index;
+    char gets_string[CHPERLN];
+
+    if(selected_hist_index > 0) {
+        selected_hist_index-=2;
+        while(selected_hist_index >= 0 && cmnd_history[selected_hist_index] !=0) {
+            selected_hist_index--;
+        }
+        selected_hist_index++;
+        strcpy(gets_string,&cmnd_history[selected_hist_index]);
+        QString thetext = ui->omaCommands->toPlainText();
+
+        if (lastReturn == thetext.size() ) {
+            // we are at the end of the text -- just add the last command
+            addCString(gets_string);
+            lastReturn -= strlen(gets_string);
+
+        } else {
+            // need to get rid of the last bit that hasn't been treated as a command
+            QTextCursor cursor =ui->omaCommands->textCursor();
+            cursor.setPosition(lastReturn);
+            cursor.setPosition(thetext.size(), QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+            // then add the text
+            addCString(gets_string);
+            lastReturn -= strlen(gets_string);
+        }
+    }
+    return;
+}
+
+void QtOma2::nextHistory(){
+    extern char cmnd_history[];
+    extern int hist_index;
+    extern int selected_hist_index;
+    char gets_string[CHPERLN];
+
+    if(selected_hist_index < hist_index) {
+
+        while(cmnd_history[selected_hist_index] !=0) {
+            selected_hist_index++;
+        }
+        selected_hist_index++;
+        if(selected_hist_index < hist_index){
+            QString thetext = ui->omaCommands->toPlainText();
+            strcpy(gets_string,&cmnd_history[selected_hist_index]);
+            // need to get rid of the last bit that hasn't been treated as a command
+            QTextCursor cursor =ui->omaCommands->textCursor();
+            cursor.setPosition(lastReturn);
+            cursor.setPosition(thetext.size(), QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+            // then add the text
+            addCString(gets_string);
+            lastReturn -= strlen(gets_string);
+        }
+    }
+    return;
+
 }
 
 void QtOma2::showPreferences(){
@@ -186,7 +250,7 @@ void QtOma2::newData(char* name){
     currentDataWindow = numWindows;
 
     numWindows++;
-    //ui->plainTextEdit->activateWindow();    // make the command window active
+    //ui->omaCommands->activateWindow();    // make the command window active
     window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
 }
 
@@ -287,7 +351,7 @@ void QtOma2::newRowPlot(){
 
     numWindows++;
 
-    //ui->plainTextEdit->activateWindow();    // make the command window active
+    //ui->omaCommands->activateWindow();    // make the command window active
     window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
     UIData.toolselected = CROSS;
     fillInLabels();
@@ -412,7 +476,7 @@ void QtOma2::newColPlot(){
 
     numWindows++;
 
-    //ui->plainTextEdit->activateWindow();    // make the command window active
+    //ui->omaCommands->activateWindow();    // make the command window active
     window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
     UIData.toolselected = CROSS;
     fillInLabels();
@@ -771,12 +835,12 @@ void QtOma2::on_actionOma2_Help_triggered()
 
 // these next two things ensure that when clicking on the commands window when it doesn't have focus, the cursor will be at the end
 void QtOma2::onApplicationFocusChanged(QWidget *old, QWidget *now){
-    if( now == ui->plainTextEdit){
+    if( now == ui->omaCommands){
        QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));
     }
 }
 
 void QtOma2::moveCursorToEnd(){
-    ui->plainTextEdit->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
+    ui->omaCommands->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
 }
 
