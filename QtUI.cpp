@@ -188,6 +188,7 @@ void beep(){
 
     isErrorText = 1;
     //NSBeep();
+    QApplication::beep();
 
     if(stop_on_error && (macflag || exflag))
         //stopMacroNow = 1;
@@ -202,7 +203,7 @@ void alertSound(char* sayString){
 
     //NSBeep();
 
-
+    QApplication::beep();
 }
 
 
