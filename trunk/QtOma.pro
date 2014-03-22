@@ -13,7 +13,11 @@ TEMPLATE = app
 
 
 macx:QMAKE_CXXFLAGS += -DQt_UI
-win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive -D_WIN32 -DWIN32
+win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive\
+    -Wno-unused-parameter -Wno-overflow -Wno-aggressive-loop-optimizations -Wno-array-bounds\
+    -Wno-unused-variable -Wno-sign-compare -Wno-write-strings -Wno-unused-but-set-variable\
+    -Wno-unknown-pragmas -Wno-strict-overflow -Wno-narrowing -Wno-type-limits\
+    -D_WIN32 -DWIN32
 unix:!macx: QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive -Wno-unused-parameter
 
 SOURCES += main.cpp\

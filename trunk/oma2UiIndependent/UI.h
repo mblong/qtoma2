@@ -197,6 +197,14 @@ BOOL dropped_file(char*,char*);
 #define HELPFILE "./oma2help.txt"
 #define HELPURL "./LightOma2Help/index.html"
 #endif
+/*
+#pragma gcc diagnostic ignored "-Wsign-compare"
+#pragma gcc diagnostic ignored "-Wwrite-strings"
+#pragma gcc diagnostic ignored "-Wunused-variable"
+#pragma gcc diagnostic ignored "-Wunused-but-set-variable"
+#pragma gcc diagnostic ignored "-Wcomment"
+#pragma gcc diagnostic ignored "-Wtype-limits"
+*/
 
 
 enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT,NEWROW,NEWCOL};
