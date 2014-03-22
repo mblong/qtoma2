@@ -207,7 +207,7 @@ int QtOma2::activeWindow(){
 
 void QtOma2::newRowPlot(){
     int n = activeWindow();
-    fprintf(stderr,"%d is active\n",n);
+    //fprintf(stderr,"%d is active\n",n);
     if(n<0){
         //can't do this
         beep();
@@ -726,8 +726,8 @@ void QtOma2::closeEvent(QCloseEvent *event)
     numWindows=0;
     char txt[CHPERLN];
     strlcpy(txt,SETTINGSFILE,CHPERLN);
-    int err = saveprefs(txt);
-    fprintf(stderr,"closing the app with status %d\n",err);
+    saveprefs(txt);
+    //fprintf(stderr,"closing the app with status %d\n",err);
 }
 
 void QtOma2::on_actionTest_triggered()
@@ -759,7 +759,9 @@ void QtOma2::on_actionPlot_Columns_triggered()
 
 void QtOma2::on_actionClose_triggered()
 {
-    eraseWindow(numWindows-1);
+    int n = activeWindow();
+    if( n >= 0 )
+        eraseWindow(n);
 }
 
 void QtOma2::on_actionOma2_Help_triggered()
@@ -767,6 +769,7 @@ void QtOma2::on_actionOma2_Help_triggered()
     QDesktopServices::openUrl(QUrl("http://oma-x.org"));
 }
 
+// these next two things ensure that when clicking on the commands window when it doesn't have focus, the cursor will be at the end
 void QtOma2::onApplicationFocusChanged(QWidget *old, QWidget *now){
     if( now == ui->plainTextEdit){
        QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));
