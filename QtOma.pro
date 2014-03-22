@@ -35,7 +35,8 @@ SOURCES += main.cpp\
         preferences.cpp \
         status.cpp \
         drawingwindow.cpp \
-    qtimagesupport.cpp
+    qtimagesupport.cpp \
+    oma2commands.cpp
 
 
 HEADERS  += qtoma2.h\
@@ -53,7 +54,8 @@ HEADERS  += qtoma2.h\
         drawingwindow.h \
         preferences.h \
         status.h \
-    qtimagesupport.h
+    qtimagesupport.h \
+    oma2commands.h
 
 
 FORMS    += qtoma2.ui \
