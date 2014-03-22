@@ -244,7 +244,12 @@ void Status::dropEvent(QDropEvent *event){
                 if(name[i] == '.') break;
             }
             strlcpy(ext,&name[i+1],PREFIX_CHPERLN);
+#ifdef Qt_UI_Win
+            // need to get rid of the leading / in windows
+            dropped_file(ext,&name[1]);
+#else
             dropped_file(ext,name);
+#endif
 
         }
 }
