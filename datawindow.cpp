@@ -94,8 +94,68 @@ void DataWindow::mousePressEvent(QMouseEvent *event)
 
 void DataWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+    QPoint start,next;
+    start = startPoint;
+    next = nextPoint;
 
+    // remove restriction on the way a rectangle is defined
+    // previously, the assumption was that all rectangles were defined from the upper left to lower right
 
+    int x = nextPoint.x();
+    int y = nextPoint.y();
+
+    if(nextPoint.x() < startPoint.x()){
+        next.setX(start.x()) ;
+        start.setX(x) ;
+    }
+    if(nextPoint.y() < startPoint.y()){
+        next.setY(startPoint.y()) ;
+        start.setY(y) ;
+    }
+
+    switch  (UIData.toolselected){
+        case CALCRECT:
+            // add calculation here
+            point begin,end;
+            begin.h = start.x();
+            begin.v = start.y();
+            end.h = next.x();
+            end.v = next.y();
+            calc(begin,end);
+            //break;    // in this implementation, this does redefine the image rectangle
+        case SELRECT:
+            UIData.iRect.ul.h = start.x();
+            UIData.iRect.ul.v = start.y();
+            UIData.iRect.lr.h = next.x();
+            UIData.iRect.lr.v = next.y();
+            break;
+        case RULER:
+            DATAWORD* buffervalues = iBuffer.getvalues();
+            int* bufferspecs = iBuffer.getspecs();
+            char* unit_text = iBuffer.getunit_text();
+            float dist,dx,dy;
+            extern char reply[];
+
+            dx = -(start.x() - next.x());
+            dy = -(start.y() - next.y());
+            dist = sqrt( dx*dx + dy*dy);
+
+            if( bufferspecs[HAS_RULER] ) {
+                dist /= buffervalues[RULER_SCALE];
+                dx /= buffervalues[RULER_SCALE];
+                dy /= buffervalues[RULER_SCALE];
+            }
+            printf("dx:\t%g\tdy:\t%g\tL:\t%g",dx,dy,dist);
+            if( bufferspecs[HAS_RULER]!= 0  && unit_text[0]!=0 ){
+                printf("\t%s\n",unit_text);
+            } else {
+                printf("\n");
+            }
+            free( buffervalues);
+            free( bufferspecs);
+            free( unit_text);
+            break;
+    }
 }
 
 void DataWindow::showLine(int theLine){
@@ -114,8 +174,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint pos = event->pos();
     pos = pixmapCoords(pos);  // drawing is in the pixmap
-    //fprintf(stderr,"%d %d\n",pos.x(),pos.y());
-    // not safe for resized windows
+
     if(UIData.toolselected > CROSS )
         wPointer->fillDataLabel2(pos.x(),pos.y(),iBuffer.getpix(pos.y(),pos.x()));
     else
@@ -138,7 +197,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
         wPointer->updateColPlot(col,hasColPlot);
     }
     update();
-
+/* this is now done in mouseRelease
     if(UIData.toolselected == SELRECT || UIData.toolselected == CALCRECT){
         UIData.iRect.ul.h = startPoint.x();
         UIData.iRect.ul.v = startPoint.y();
@@ -158,7 +217,7 @@ void DataWindow::mouseMoveEvent(QMouseEvent *event)
             UIData.iRect.ul.v = end.v;
         }
     }
-
+*/
 }
 
 void DataWindow::paintEvent(QPaintEvent *event)
