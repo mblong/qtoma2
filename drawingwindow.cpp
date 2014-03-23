@@ -142,11 +142,12 @@ void DrawingWindow::paintEvent(QPaintEvent*){
         QPainter painter(this);
         int theDataCol = theCol*widthScale;
 
-        char string[32];
-        sprintf(string,"Column %d",theDataCol);
-        painter.drawText(QPoint(10,15),QString(string));
+        if(theCol >= 0){
+            char string[32];
+            sprintf(string,"Column %d",theDataCol);
+            painter.drawText(QPoint(10,15),QString(string));
+        }
         painter.setRenderHint(QPainter::Antialiasing, true);
-
         if (isColor) {
             painter.setPen(QColor("red"));
             samplesPerPix = 3;
@@ -157,8 +158,6 @@ void DrawingWindow::paintEvent(QPaintEvent*){
         float scalex = width()/(float)bytesPer;
         float scaley = height()/(256.);
         float h = height();
-
-
 
         QPointF pt1(0,h-*colData*scaley),pt2;
         for (int i=samplesPerPix; i< bytesPer;i+=samplesPerPix){

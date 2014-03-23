@@ -79,6 +79,7 @@ public:
     void updateData();
     void newRowPlot();
     void newColPlot();
+    void newLinePlot(QPoint start, QPoint end);
     void eraseWindow(int n);
     void showPreferences();
     void fillInLabels();

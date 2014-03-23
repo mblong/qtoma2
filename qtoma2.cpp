@@ -522,6 +522,117 @@ int QtOma2::whichDrawingWindow(DrawingWindow* theWindow){
     return i;
 }
 
+void QtOma2::newLinePlot(QPoint start, QPoint end){
+    int n = activeWindow();
+    //fprintf(stderr,"%d is active\n",n);
+    if(n<0){
+        //can't do this
+        beep();
+        return;
+    }
+    if(windowArray[n].type  != DATA){
+        //can't do this
+        beep();
+        return;
+    }
+    if(windowArray[n].dataWindow->getHasColPlot()){
+        //can't do this there is one already
+        beep();
+        return;
+    }
+    if(windowArray[n].dataWindow->getHasRowPlot()){
+        //can't do this there is one already
+        beep();
+        return;
+    }
+
+    float widthScale = (float)windowArray[n].dataWindow->getDataCols()/windowArray[n].dataWindow->width();
+    float heightScale = (float)windowArray[n].dataWindow->getDataRows()/windowArray[n].dataWindow->height();
+
+    //int windowWidth = window_placement.width = windowArray[n].dataWindow->height();
+    int windowWidth = window_placement.width = sqrt(powf((start.x()-end.x())/widthScale,2)+powf((start.y()-end.y())/heightScale,2));
+    int dataWidth = sqrt(powf((start.x()-end.x()),2)+powf((start.y()-end.y()),2));
+
+    int windowHeight = window_placement.height = 256;
+
+    // now, figure out where to place the window
+    if(window_placement.x == WINDOW_OFFSET+mainScreenSize.x()) {   // left column
+        window_placement.y = mainScreenSize.y()+WINDOW_OFFSET+windowRow*(windowHeight+WINDOW_OFFSET);
+    }
+    if (window_placement.x+windowWidth > mainScreenSize.width()) {
+        window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
+
+        windowRow++;
+
+        if(window_placement.y + 2*(windowHeight) < mainScreenSize.height()){
+            window_placement.y += (windowHeight + WINDOW_OFFSET) ;
+        } else{
+            wraps++;
+            window_placement.y= mainScreenSize.y()+wraps*WINDOW_OFFSET; // wrap to top
+            windowRow = 0;
+        }
+    }
+    QRect placement(window_placement.x,window_placement.y,window_placement.width,window_placement.height);
+    if(numWindows == MAX_WINDOW_COUNT){
+        eraseWindow(0);
+    }
+
+    //int theWindowCol = windowArray[n].dataWindow->width()/2;  // this is half the width of the data window
+    windowArray[numWindows].drawingWindow = new DrawingWindow(this);
+    windowArray[numWindows].drawingWindow->setMyDataWindow(windowArray[n].dataWindow);
+    windowArray[numWindows].drawingWindow->setGeometry(placement);
+    windowArray[numWindows].drawingWindow->setTheCol( -1 );
+    int pal = windowArray[n].dataWindow->getThePalette();
+    int bytesPerLine;
+    unsigned char* bytes = windowArray[n].dataWindow->getIntensity();    // the start of the data
+
+    //int theCol = theWindowCol * widthScale;
+    int bytesPerPix;
+    if(pal >= 0) { // we have a monochrome image
+        //bytes += theRow * windowArray[n].dataWindow->getDataCols();
+        bytesPerLine = dataWidth;
+        windowArray[numWindows].drawingWindow->setIsColor(0);
+        bytesPerPix = 1;
+    } else {
+        //bytes += theRow * windowArray[n].dataWindow->getDataCols()*3;
+        bytesPerLine = dataWidth*3;
+        windowArray[numWindows].drawingWindow->setIsColor(1);
+        bytesPerPix = 3;
+    }
+    unsigned char* lineData = new unsigned char[bytesPerLine];
+    int cols = windowArray[n].dataWindow->getDataCols();
+    int k=0;
+    float dx = (float)(end.x() - start.x())/dataWidth;
+    float dy = (float)(end.y() - start.y())/dataWidth;
+    int x,y;
+    for(int i = 0; i< bytesPerLine/bytesPerPix;i++){
+        x = start.x() + dx*i;
+        y = start.y() + dy*i;
+        for(int j=0; j < bytesPerPix;j++)
+            *(lineData+k++) = *(bytes + (x + y*cols)*bytesPerPix + j);
+            //*(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
+    }
+
+    // tell the data window what it needs to know
+    //windowArray[n].dataWindow->setColLine(theCol);
+    //windowArray[n].dataWindow->setHasColPlot(windowArray[numWindows].drawingWindow);
+    //if(windowArray[n].dataWindow->getHasRowPlot())
+    //    windowArray[n].dataWindow->setThereIsDrawing(NEWCOL);
+    //windowArray[n].dataWindow->showColLine(theCol);
+
+    windowArray[numWindows].drawingWindow->setWidthScale(widthScale);
+    windowArray[numWindows].drawingWindow->setHeightScale(heightScale);
+    windowArray[numWindows].drawingWindow->setColData(lineData);
+    windowArray[numWindows].drawingWindow->setBytesPer(bytesPerLine);
+    windowArray[numWindows].type = LINE_DRAWING;
+    windowArray[numWindows].drawingWindow->show();
+    windowArray[numWindows].drawingWindow->update();
+
+    numWindows++;
+    window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
+
+ }
+
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){

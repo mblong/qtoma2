@@ -129,7 +129,7 @@ void DataWindow::mouseReleaseEvent(QMouseEvent *event)
             UIData.iRect.lr.h = next.x();
             UIData.iRect.lr.v = next.y();
             break;
-        case RULER:
+        case RULER:{
             DATAWORD* buffervalues = iBuffer.getvalues();
             int* bufferspecs = iBuffer.getspecs();
             char* unit_text = iBuffer.getunit_text();
@@ -155,6 +155,11 @@ void DataWindow::mouseReleaseEvent(QMouseEvent *event)
             free( bufferspecs);
             free( unit_text);
             break;
+        }
+        case LINEPLOT:
+            wPointer->newLinePlot(startPoint,nextPoint);
+            break;
+
     }
 }
 
