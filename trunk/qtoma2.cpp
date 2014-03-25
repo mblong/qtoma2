@@ -821,7 +821,7 @@ void QtOma2::closeEvent(QCloseEvent *event)
     //fprintf(stderr,"closing the app with status %d\n",err);
 }
 
-void QtOma2::on_actionTest_triggered()
+void QtOma2::on_actionPreferences_triggered()
 {
     showPreferences();
 }
@@ -871,3 +871,8 @@ void QtOma2::moveCursorToEnd(){
     ui->omaCommands->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
 }
 
+
+void QtOma2::on_actionExit_triggered()
+{
+    exit(0);
+}

@@ -111,7 +111,7 @@ private slots:
     //void fileOpen();
     void on_actionOpen_triggered();
 
-    void on_actionTest_triggered();
+    void on_actionPreferences_triggered();
 
     void on_actionPlot_Rows_triggered();
 
@@ -124,6 +124,8 @@ private slots:
     void onApplicationFocusChanged(QWidget *old, QWidget *now);
 
     void moveCursorToEnd();
+
+    void on_actionExit_triggered();
 
 private:
     Ui::QtOma2 *ui;
