@@ -39,7 +39,7 @@
     <addaction name="actionSave_Data_File"/>
     <addaction name="actionSave_Settings"/>
     <addaction name="separator"/>
-    <addaction name="actionQuit"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -156,7 +156,7 @@
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionQuit">
+  <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>
