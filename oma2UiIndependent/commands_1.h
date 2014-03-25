@@ -6,7 +6,7 @@
 #include "ImageBitmap.h"
 #include "UI.h"
 
-#ifdef MaxOSX_UI
+#ifdef MacOSX_UI
 extern "C" {
 #include "tiffio.h"
 }
@@ -51,8 +51,10 @@ int echo_c(int,char*);
 int fopen_c (int,char*);
 int fclose_c (int,char*);
 int fecho_c (int,char*);
+int frame_c(int n, char* args);
 int ftemp_c(int, char*);
 int findbad_c(int,char*);
+int fwdatm_c(int n,char* args);
 
 int getfile_c(int,char*);
 int getFileNames_c(int,char*);

@@ -101,6 +101,35 @@ int savefile_c(int n,char* args)
 
 /* ********** */
 
+int fwdatm_c(int n,char* args)
+{
+	int	i,nt,nc;
+	FILE *fp;
+	
+	n = 0;
+	fp = fopen(fullname(args,SAVE_DATA),"w");
+	if( fp != NULL) {
+		i=0;
+        int* specs = iBuffer.getspecs();
+		for(nt=0; nt<specs[ROWS]; nt++){
+			for(nc=0; nc<specs[COLS]; nc++){
+				fprintf(fp,"%g\t",iBuffer.getpix(nt,nc));
+			}
+			fprintf(fp,"\n");
+		}
+    	fclose(fp);
+	}
+	else {
+        
+		beep();
+        printf("Could not open file: %s\n",args);
+		return FILE_ERR;
+	}
+	return NO_ERR;
+}
+
+/* ********** */
+
 int getfile_c(int n,char* args){
     Image new_im(args,SHORT_NAME);
     if(new_im.err()){
@@ -243,6 +272,83 @@ int croprectangle_c(int n,char* args){
     iBuffer.getmaxx();
     update_UI();
     return NO_ERR;
+}
+
+/* ***************** */
+
+/* Put a "frame" around the current image -- making it a new size
+ 
+ FRAME NewWidth NewHeight [Value] [X0] [Y0]
+ 
+ default value is 0
+ default of x0 and y0 center the old image in the frame
+ 
+ */
+
+int frame_c(int n, char* args)
+{
+	int sizx,sizy,j,i,fraction=0;
+	float x0,y0;
+    
+	DATAWORD value = 0;
+	i = sscanf(args,"%d %d %f %f %f",&sizx,&sizy,&value,&x0,&y0);
+	if( i < 2) {
+		beep();
+		printf("Arguments are: NewWidth NewHeight [Value] [X0] [Y0]\n");
+		return(CMND_ERR);
+	}
+    
+    int* specs = iBuffer.getspecs();
+	
+	switch(i) {
+        case 2:
+        case 3:
+            x0 = -(sizx - (float)specs[COLS])/2.;
+        case 4:
+            y0 = -(sizy - (float)specs[ROWS])/2.;
+	}
+	
+	Image im;
+    // error check?
+    im.copyABD(iBuffer);
+    int oldWidth = specs[COLS];
+    int oldHeight = specs[ROWS];
+    specs[ROWS] = sizy;
+    specs[COLS] = sizx;
+    im.setspecs(specs); // this will allocate the memory
+    
+	i = x0;
+	j = y0;
+	if( x0-i != 0.0 || y0-j != 0.0)fraction=1;
+    
+	printf("%d x %d Image.\n",sizx,sizy);
+	if(fraction)
+		printf("Interpolation from current image starts at: %.2f\t%.2f\n",x0,y0);
+	else
+		printf("Current image starts at: %.0f\t%.0f\n",x0,y0);
+	printf("Frame Value: %d\n",value);
+	
+	
+	for(i=0; i<sizy; i++){
+		for(j=0; j<sizx; j++) {
+			if(i+y0<0 || i+y0 >=oldHeight ||
+			   j+x0<0 || j+x0 >=oldWidth) {
+                im.setpix(i,j,value);
+			}else {
+                if(fraction)
+                    im.setpix(i,j,iBuffer.getpix(j+x0,i+y0));
+                else
+                    im.setpix(i,j,iBuffer.getpix((int)j+x0,(int)i+y0));
+			}
+		}
+	}
+    free(specs);  // release specs copy
+    iBuffer.free();     // release the old data
+    iBuffer = im;   // this is the new data
+    iBuffer.getmaxx();
+    update_UI();
+	return 0;
+    
 }
 
 /* ********** */
@@ -565,6 +671,8 @@ int smooth_c(int n,char* args){
     
     bufferspecs = iBuffer.getspecs();
     Image smoothed(bufferspecs[ROWS],bufferspecs[COLS]);
+    smoothed.copyABD(iBuffer);
+    
     
     if(smoothed.err()){
         return smoothed.err();
@@ -1766,7 +1874,7 @@ int gmacro_c(int n,char* args)
 	*(macbuf+nread+1) = 0;
 	
 	close(fd);
-	clear_macro_to_end();		/* insert trailing zeros after the macro */
+	clear_buffer_to_end(macbuf);		/* insert trailing zeros after the macro */
 	return NO_ERR;
 }
 /* ********** */
