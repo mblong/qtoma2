@@ -49,7 +49,14 @@ Image::Image()              // create an empty Image with default values
     extra = NULL;
 }
 
-
+/*
+Image::~Image()
+{
+    if(data)delete data;
+    if(comment)delete comment;
+    if(extra)delete extra;
+}
+*/
 
 Image::Image(int rows, int cols)
 {
@@ -61,7 +68,7 @@ Image::Image(int rows, int cols)
     } else {
         specs[ROWS]=rows;
         specs[COLS]=cols;
-        error = 0;
+        error = NO_ERR;
     }
 }
 
@@ -415,11 +422,15 @@ void Image::free(){
     if(commentSize != 0){
         delete[] comment;
         commentSize = 0;
+        comment = NULL;
     }
     if(extraSize != 0){
         delete[] extra;
         extraSize = 0;
+        extra = NULL;
     }
+    specs[ROWS] = 0;
+    specs[COLS] = 0;
     
 }
 
@@ -733,6 +744,20 @@ char* Image::getComment()     // returns a copy of comment buffer (NULL if no su
         for(int i=0; i<commentSize;i++) thecomment[i]=comment[i];
     }
     return thecomment;
+}
+
+void Image::setComment(char* buffer,int n){
+    if (comment){
+        delete[] comment;
+        comment = 0;
+    }
+    if (n<=2) {
+        commentSize = 0;
+        return;
+    }
+    comment = new char[n];
+    for(int i=0; i<n; i++) comment[i] = buffer[i];
+    commentSize = n;
 }
 
 void Image::setspecs(int* newspecs){
