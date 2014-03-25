@@ -1,6 +1,6 @@
 <RCC>
-    <qresource prefix="/">
-        <file>oma2help.txt</file>
+    <qresource prefix="/oma2UiIndependent">
+        <file>oma2UiIndependent/oma2help.txt</file>
     </qresource>
     <qresource prefix="/Resources">
         <file>Resources/OMApalette2.pa1</file>

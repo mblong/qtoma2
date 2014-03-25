@@ -102,7 +102,7 @@ BOOL dropped_file(char* extension, char* name){
         *(macbuf+nread+1) = 0;
 
         close(fd);
-        clear_macro_to_end();		// insert trailing zeros after the macro
+        clear_buffer_to_end(macbuf);		// insert trailing zeros after the macro
         //[appController appendText: @"OMA2>"];
         wPointer->addCString((char*)"OMA2>");
         return YES;
