@@ -98,7 +98,7 @@ win32 {
 
 #for Mac
 macx {
-    MediaFiles.files = "oma2help.txt"
+    MediaFiles.files = "oma2UiIndependent/oma2help.txt"
     MediaFiles.files += "Resources/OMApalette.pa1"
     MediaFiles.files += "Resources/OMApalette2.pa1"
     MediaFiles.files += "Resources/OMApalette3.pa1"
