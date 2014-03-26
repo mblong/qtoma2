@@ -857,7 +857,7 @@ void QtOma2::on_actionClose_triggered()
 
 void QtOma2::on_actionOma2_Help_triggered()
 {
-    QDesktopServices::openUrl(QUrl("http://oma-x.org"));
+    QDesktopServices::openUrl(QUrl("http://oma-x.org/LightOma2Help"));
 }
 
 // these next two things ensure that when clicking on the commands window when it doesn't have focus, the cursor will be at the end
