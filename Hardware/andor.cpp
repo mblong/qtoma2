@@ -448,7 +448,7 @@ int open_serial_port(char* dev_name){
 	return 0;
 }
 
-int serclo(int n, int index)
+int serclo(int n, char* args)
 {
 	if(serial_inited == 0) {
 		beep();
@@ -493,10 +493,10 @@ int serial(int n, int index)
 	return 0;
 }
 */
-int serial(int n, int index)
+int serial(int n, char* args)
 {
 	int length,i;
-	extern char cmnd[];
+    //extern char cmnd[];
 	char buffer[ESTRING_LENGTH];
 	extern Variable user_variables[];
 	
@@ -517,7 +517,7 @@ int serial(int n, int index)
 		printf("Nothing sent\n");
 		return -1;
 	}
-	cmnd[index+length] = 13;	// add a <CR> (=13)
+    args[length] = 13;	// add a <CR> (=13)
 	length++;
     write(serial_fd, args, length);
 	//echo any reply

@@ -121,6 +121,11 @@ ComDef   commands[] =    {
     {{"SAVSETTINGS    "},	savsettings},
     {{"SATIFF         "},	satiff_c},
     {{"SATIFFSCALED   "},	satiffscaled_c},
+#ifdef SERIAL_PORT
+    {{"SERIAL         "},	serial},
+    {{"SERCLOSE       "},	serclo},
+#endif
+    {{"SATIFFSCALED   "},	satiffscaled_c},
     {{"SIZE           "},	size_c},
     {{"SINGRID        "},	sinGrid_c},
     {{"STEMPIMAGE     "},	stemp_c},

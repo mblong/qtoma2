@@ -23,6 +23,11 @@
 #ifdef ANDOR_
 int andor(int, char*);
 #endif
+#ifdef SERIAL_PORT
+int serial(int, char*);
+int serclo(int, char*);
+#endif
+
 
 
 // function prototypes for routines in comdec.cpp
