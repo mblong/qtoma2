@@ -265,6 +265,7 @@ BOOL dropped_file(char*,char*);
 #define READBINARY   O_RDONLY
 
 #define ANDOR_
+#define SERIAL_PORT
 
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
