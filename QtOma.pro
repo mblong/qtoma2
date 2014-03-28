@@ -36,7 +36,8 @@ SOURCES += main.cpp\
         status.cpp \
         drawingwindow.cpp \
     qtimagesupport.cpp \
-    oma2commands.cpp
+    oma2commands.cpp \
+    Hardware/andor.cpp
 
 
 HEADERS  += qtoma2.h\
@@ -70,7 +71,7 @@ FORMS    += qtoma2.ui \
 #macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
 
-#unix:!macx: LIBS += -ljpeg
+unix:!macx: LIBS += -landor
 
 #win32:  LIBS += -ljpeg -lws2_32
 win32:  LIBS += -lws2_32
