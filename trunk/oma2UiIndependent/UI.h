@@ -264,6 +264,8 @@ BOOL dropped_file(char*,char*);
 #define READMODE   O_RDONLY
 #define READBINARY   O_RDONLY
 
+#define ANDOR_
+
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wwrite-strings"

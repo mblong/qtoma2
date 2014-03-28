@@ -23,6 +23,9 @@ ComDef   commands[] =    {
     {{"ACDELETE       "},   acdelete_c},
     {{"ACADD          "},   acadd_c},
     {{"ACGET          "},   acget_c},
+#ifdef ANDOR_
+    {{"ANDOR          "},   andor},
+#endif
     {{"BLOCK          "},	block_g},
     {{"BIT8           "},	bit8_c},
     {{"BIT16          "},	bit16_c},
