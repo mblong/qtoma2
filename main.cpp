@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     strlcpy(text,SETTINGSFILE,NEW_PREFIX_CHPERLN);
     loadprefs(text);
 
+    extern oma2UIData UIData;
+    UIData.newwindowflag = 1;   // this default is set initially
+
     strlcpy(text,DCRAW_ARG,NEW_PREFIX_CHPERLN);
     dcrawarg_c(0,text);
 

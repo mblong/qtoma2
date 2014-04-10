@@ -18,13 +18,13 @@ int argc = 0;               // these three fro dcraw
 char *argv[200];
 char dcraw_arg[CHPERLN];
 
-int newWindowFlag = 1;      // set by NEWWINDOW
+//int newWindowFlag = 1;      // set by NEWWINDOW
 
 FILE* nameFilePtr = NULL;   // used in the GETFILENAMES and NEXTFILE commands
 
 char applicationPath[CHPERLN];	// this is the path to the directory that the program is running from
 char contentsPath[CHPERLN];		// this is the path to the Contents directory where things like palettes are stored
-
+float windowScaleFactor = 1.;
 
 
 
@@ -99,9 +99,11 @@ Image::Image(char* filename, int kindOfName)
     if (strncmp(&filename[strlen(filename)-4],".jpg",4) == 0 ||
         strncmp(&filename[strlen(filename)-4],".JPG",4) == 0) {
         if (kindOfName == LONG_NAME) {
-            error = read_jpeg(filename,-1,this);
+            //error = read_jpeg(filename,-1,this);
+            error = readJpeg(filename,this);
         } else {
-            error = read_jpeg(fullname(filename,RAW_DATA),-1,this);
+            //error = read_jpeg(fullname(filename,RAW_DATA),-1,this);
+            error = readJpeg(fullname(filename,RAW_DATA),this);
         }
         
         return;
@@ -141,6 +143,14 @@ Image::Image(char* filename, int kindOfName)
         case HAS_SUFFIX:
             fd = open(fullname(filename,RAW_DATA),READBINARY);    // means don't add the suffix
             break;
+        case LEAVE_OPEN:
+            fd = open(fullname(filename,GET_DATA),READBINARY);    // assume a short name
+            extern int openFileFd;
+            openFileFd = fd;
+            break;
+        case IS_OPEN:
+            fd = *(int*)filename;    // we have an open file
+            break;
         default:
             fd = -1;
             break;
@@ -150,59 +160,78 @@ Image::Image(char* filename, int kindOfName)
         error = FILE_ERR;
         return;
     }
-    
-    nr = read(fd,(char*)header,HEADLEN);
-    if (strncmp((char*)header, OMA2_BINARY_DATA_STRING,HEADLEN) == 0) { // new save format
-        int nspecs,nvalues,nrulerchar;
-        read(fd,&nspecs,sizeof(int));
-        read(fd,&nvalues,sizeof(int));
-        read(fd,&nrulerchar,sizeof(int));
-        // we'll assume that the number of specs, values, and ruler characters won't decrease in future versions, but allow for them to increase
-        read(fd,specs,sizeof(int)*nspecs);
-        read(fd,values,sizeof(DATAWORD)*nvalues);
-        read(fd,unit_text,nrulerchar);
-        read(fd,&error,sizeof(int));
-        read(fd,&is_big_endian,sizeof(int));
-        read(fd,&commentSize,sizeof(int));
-        read(fd,&extraSize,sizeof(int));
-        if(commentSize){
-            comment = new char[commentSize];
-            read(fd,comment,commentSize);
+    static int newFormat = 0;
+    static int openFileRows;
+    static int openFileCols;
+    if(kindOfName != IS_OPEN){
+        // read the header
+        nr = read(fd,(char*)header,HEADLEN);
+        if (strncmp((char*)header, OMA2_BINARY_DATA_STRING,HEADLEN) == 0) { // new save format
+            newFormat = 1;
+            int nspecs,nvalues,nrulerchar;
+            read(fd,&nspecs,sizeof(int));
+            read(fd,&nvalues,sizeof(int));
+            read(fd,&nrulerchar,sizeof(int));
+            // we'll assume that the number of specs, values, and ruler characters won't decrease in future versions, but allow for them to increase
+            read(fd,specs,sizeof(int)*nspecs);
+            read(fd,values,sizeof(DATAWORD)*nvalues);
+            read(fd,unit_text,nrulerchar);
+            read(fd,&error,sizeof(int));
+            read(fd,&is_big_endian,sizeof(int));
+            read(fd,&commentSize,sizeof(int));
+            read(fd,&extraSize,sizeof(int));
+            if(commentSize){
+                comment = new char[commentSize];
+                read(fd,comment,commentSize);
+            }
+            if(extraSize){
+                extra = new float[extraSize];
+                read(fd,extra,extraSize*sizeof(float));
+            }
+            // finally the data
+            data = new DATAWORD[specs[ROWS]*specs[COLS]];
+            openFileRows = specs[ROWS];
+            openFileCols = specs[COLS];
+            if(data == 0){
+                specs[ROWS]=specs[COLS]=0;
+                error = MEM_ERR;
+                close(fd);
+                return;
+            }
+        } else {
+            newFormat = 0;
+            // old data save format
+            nr = read((int)fd,comment_,COMLEN);
+            nr = read((int)fd,(char*)trailer,TRAILEN);
+            
+            swap_bytes = process_old_header((TWOBYTE*)header,(char*)comment_,(TWOBYTE*)trailer, this);
+            // add the comment
+            commentSize = COMLEN;
+            comment = new char[COMLEN];
+            for(int i = 0; i<COMLEN;i++){
+                comment[i] = comment_[i];
+            }
+            openFileRows = header[NTRAK];
+            openFileCols = header[NCHAN];
+
         }
-        if(extraSize){
-            extra = new float[extraSize];
-            read(fd,extra,extraSize*sizeof(float));
-        }
-        // finally the data
-        data = new DATAWORD[specs[ROWS]*specs[COLS]];
-        if(data == 0){
-            specs[ROWS]=specs[COLS]=0;
-            error = MEM_ERR;
-            close(fd);
-            return;
-        }
+    } else {
+        data = new DATAWORD[openFileRows*openFileCols];
+        specs[ROWS] = openFileRows;
+        specs[COLS] = openFileCols;
+    }
+    // now read the data
+    if (newFormat) {
         nr = read(fd,data,sizeof(DATAWORD)*specs[ROWS]*specs[COLS]);
         if (nr != sizeof(DATAWORD)*specs[ROWS]*specs[COLS]) {
             error = FILE_ERR;
         }
-        close(fd);
+        if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN) close(fd);
         return;
     }
     
-    // old data save format
-    nr = read((int)fd,comment_,COMLEN);
-    nr = read((int)fd,(char*)trailer,TRAILEN);
-    
-    swap_bytes = process_old_header((TWOBYTE*)header,(char*)comment_,(TWOBYTE*)trailer, this);
-    // add the comment
-    commentSize = COMLEN;
-    comment = new char[COMLEN];
-    for(int i = 0; i<COMLEN;i++){
-        comment[i] = comment_[i];
-    }
-    
+    // read data part of old format
     nbyte = specs[ROWS]*specs[COLS]*DATABYTES;
-    
     
     // problem of how to get rid of the old 80 data word offset and still read in old oma files
     data = new DATAWORD[specs[ROWS]*specs[COLS]];
@@ -211,19 +240,20 @@ Image::Image(char* filename, int kindOfName)
         error = MEM_ERR;
         return;
     }
-    
     // in old oma files, there is an 80 element data offset -- skip over this
     // could be 2-byte or 4-byte
     // find length
     int dataSize = DATABYTES;
     FILE* f=fopen(filename ,"r");
     fseek(f, 0, SEEK_END);
-    long size = ftell(f)-HEADLEN+COMLEN+TRAILEN;
-    fclose(f);
-    if (roundf((float)nbyte/size) == 2.) {
-        dataSize = 2;
+    if(f != NULL){
+        long size = ftell(f)-HEADLEN+COMLEN+TRAILEN;
+        fclose(f);
+        if (roundf((float)nbyte/size) == 2.) {
+            dataSize = 2;
+            nbyte = specs[ROWS]*specs[COLS]*dataSize;
+        }
     }
-    
     // in the unlikely event that an old oma file has fewer than doffset points
     if (doffset > specs[ROWS]*specs[COLS]) {
         char* junkBuf = new char[doffset*dataSize];
@@ -233,6 +263,9 @@ Image::Image(char* filename, int kindOfName)
         nr = read((int)fd,data,doffset*dataSize);   // this will be ignored
     }
     nr = read((int)fd,(char*)data, nbyte);
+    if (nr != nbyte) {
+        error = FILE_ERR;
+    }
     printf("%d Bytes read.\n",(int)nr);
     
     if(dataSize == 2) {
@@ -245,7 +278,7 @@ Image::Image(char* filename, int kindOfName)
         if(swap_bytes) swap_bytes_routine((char*) data, (int)nr, DATABYTES);
     }
     
-    close(fd);
+    if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN) close(fd);
     return;
 }
 
@@ -471,7 +504,10 @@ void Image::getmaxx()
     
     //if( specs[HAVE_MAX] == 1)return;      // Disable for now. May want to add an argument to this to look at the
                                             // flag or not.
-    
+    if(data == NULL){
+        error = MEM_ERR;
+        return;
+    }
     mydatpt = data;
     locmin = locmax = mydatpt;
     locrmin = locrmax = locgmin = locgmax = locbmin = locbmax = mydatpt;
@@ -565,37 +601,54 @@ void Image::saveFile(char* name, int kindOfName){
     int nvalues = NVALUES;
     int nrulerchar = NRULERCHAR;
     int fd;
-    
-    if(kindOfName == SHORT_NAME)
-        //fd = creat(fullname(name,SAVE_DATA),PMODE);
-        fd = open(fullname(name,SAVE_DATA),WMODE);
-    else
-        //fd = creat(name,PMODE);
-        fd = open(name,WMODE);
+    switch (kindOfName) {
+        case LONG_NAME:
+            fd = open(name,WMODE);
+            break;
+        case SHORT_NAME:
+            fd = open(fullname(name,SAVE_DATA),WMODE);
+            break;
+        case HAS_SUFFIX:
+            fd = open(fullname(name,RAW_DATA),WMODE);    // means don't add the suffix
+            break;
+        case LEAVE_OPEN:
+            fd = *(int*)name;    // assumes the argument is a valid fd; don't close the file
+            break;
+        case IS_OPEN:
+            fd = *(int*)name;    // assumes the argument is an open fd; don't write the header information
+            break;
+        default:
+            fd = -1;
+            break;
+    }
     
     if(fd == -1) {
 		beep();
 		error = FILE_ERR;
         return;
 	}
-    strcpy(txt, OMA2_BINARY_DATA_STRING);
-    write(fd,txt,HEADLEN);   // data identifier string
-    // now write information on the sizes of fixed-length buffers (in case this changes)
-    write(fd,&nspecs,sizeof(int));
-    write(fd,&nvalues,sizeof(int));
-    write(fd,&nrulerchar,sizeof(int));
-    // now write the image data minus the pointers
-    write(fd,this,sizeof(Image)- NUM_IMAGE_PTRS*sizeof(Ptr));
-    if (commentSize) {
-        write(fd,comment,commentSize);
-    }
-    if (extraSize) {
-        write(fd,extra,extraSize*sizeof(float));
+    if (kindOfName != IS_OPEN) {
+        // write the header
+        strcpy(txt, OMA2_BINARY_DATA_STRING);
+        write(fd,txt,HEADLEN);   // data identifier string
+        // now write information on the sizes of fixed-length buffers (in case this changes)
+        write(fd,&nspecs,sizeof(int));
+        write(fd,&nvalues,sizeof(int));
+        write(fd,&nrulerchar,sizeof(int));
+        // now write the image data minus the pointers
+        write(fd,this,sizeof(Image)- NUM_IMAGE_PTRS*sizeof(Ptr));
+        if (commentSize) {
+            write(fd,comment,commentSize);
+        }
+        if (extraSize) {
+            write(fd,extra,extraSize*sizeof(float));
+        }
     }
     // now the data
     write(fd,data,sizeof(DATAWORD)*specs[ROWS]*specs[COLS ]);
 
-    close(fd);
+    if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN)
+        close(fd);
     error = NO_ERR;
     
 }

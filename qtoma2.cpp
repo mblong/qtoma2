@@ -175,15 +175,17 @@ void QtOma2::updateStatus(){
 }
 
 void QtOma2::newData(char* name){
-    extern int newWindowFlag;
-    if(!newWindowFlag && (currentDataWindow >= 0)){
+    //extern int newWindowFlag;
+    extern float windowScaleFactor;
+
+    if(!UIData.newwindowflag && (currentDataWindow >= 0)){
         updateData(); // dont put a new window, just use the current data window
         return;
      }
     // figure out where to place image
     // this is for possibly scaling down images that won't fit on screen
-    int windowHeight = iBitmap.getheight();
-    int windowWidth = iBitmap.getwidth();
+    int windowHeight = iBitmap.getheight()*windowScaleFactor;
+    int windowWidth = iBitmap.getwidth()*windowScaleFactor;
 
     float scaleWidth = (float)windowWidth/(float)mainScreenSize.width();
     // leave a little space at the bottom of the sreen
