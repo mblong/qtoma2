@@ -135,7 +135,13 @@ DELAY nticks
 DMNMX
 	Displays the color min and max in the window.
 
-ERASE [n] 
+DX n
+	Specifies the number of detector pixels (not display screen pixels) to be grouped (or binned) in the X direction.
+
+DY n
+	Specifies the number of detector pixels (not display screen pixels) to be grouped (or binned) in the Y direction.
+
+ERASE [n]
 	If no argument is given, all image windows currently on the screen are closed. If a value n is specified, only window n is erased.
 
 ECHO string
@@ -313,8 +319,8 @@ NEWWINDOW flag
 NEXTFILE [prefix]
 	Open the next file specified in the FileNames file that was opened with the GetFileNames command. If a prefix is specified, that is added to the name before trying to open the file. command_return_1 is the the filename without any prefix and without the extension (last 4 characters).
 
-PALETTE n
-	Specifies that the nth predefined color palette should be used. Palette 0 is a color palette; 1 is a gray-scale palette.
+PIXSIZE [WindowScaleFactor]
+	Specifies a scale factor used to determine the size of a window displayed. PIXSIZE 1 associates one screen point with one data point. If WindowScaleFactor is negative, a scale factor of -1/WindowScaleFactor is used. If no argument is given, the current WindowScaleFactor is printed.
 
 POSITVE
 	Sets all negative values in the image buffer to 0.  Positive values are unaffected.
@@ -374,11 +380,17 @@ SATIFF <filename>
 SATIFFSCALED min max <filename>
 	Convert image to 16 bit and save as a TIFF file. Uses the specified min and max for scaling rather than the min and max of the image in the buffer. Results will be between 0 - 65535. Depending on min and max, the image may be clipped or the full 16-bit dynamic range may not be used. To save as a color image, use the COLORFLAG command to set the flag appropriately.
 
-SIZE rows cols
+SERCLOSE
+	Closes the serial port opened with the last "SERIAL device_name" command. This can be used if you need to talk to more than one serial device -- open device 1, send commands, close the serial port, open device 2, send commands, and so forth. Available in oma2cam.
+
+SERIAL device_name (or character_string)
+	Provides a simple way of sending text strings to a serial device. For example, a KeySpan USB to serial converter can be used to control a variety stepping motor controllers, spectrographs, etc. The device name should be something like "/dev/tty.KeySpan1" Note that upper/lower case matters on these specifications. Look in the "/dev" directory to find the name of your specific hardware. After opening the device with the first SERIAL command, subsequent SERIAL commands will send across the specified character_string, followed by a <CR>. This uses standard POSIX calls.  Available in oma2cam.
+
+SIZE rows cols 
 	Set the number of rows and columns of the current image and zero the data.
 
 SINGRID radius
-	Draw grid from the sine function.
+	Draw a grid from the sine function.
 
 STEMPIMAGE name
 	Save current image as temporary image with specified name. The name can be 0-9 or a text string beginning with a lower case letter. This can be retrieved with GTEMP.
@@ -429,6 +441,13 @@ WRITEBADPIX filename
 	.
 	.
 	.
+
+X0 n
+	Specifies that the detector is to be read out starting at column n.
+
+Y0 n
+	Specifies that the detector is to be read out starting at row n.
+
 
 
 

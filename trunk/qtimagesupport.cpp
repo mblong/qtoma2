@@ -52,7 +52,7 @@ int readTiff(char* filename,Image* im){
 
 // this is just the same as the routine above for rading tiff fils for now
 
-int read_jpeg(char* filename,int thecolor,Image* im)
+int readJpeg(char* filename,Image* im)
 {
     QString name = QString(filename);
     QImage image = QImage(name,0);

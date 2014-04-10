@@ -37,6 +37,10 @@ int clipfraction_c(int,char*);
 int clipbottom_c(int,char*);
 int clipfbottom_c(int,char*);
 int clearbad_c(int,char*);
+int createfile_c(int n,char* args);
+int concatfile_c(int n,char* args);
+int closefile_c(int n,char* args);
+
 
 int dcrawarg_c(int,char*);
 int divfile_c(int,char*);
@@ -45,6 +49,8 @@ int diffy_c(int,char*);
 int divtmp_c(int,char*);
 int divide_c(int,char*);
 int delay_c(int,char*);
+int dx_c(int n,char* args);
+int dy_c(int n,char* args);
 
 int echo_c(int,char*);
 
@@ -58,6 +64,7 @@ int fwdatm_c(int n,char* args);
 
 int getfile_c(int,char*);
 int getFileNames_c(int,char*);
+int getNext_c(int,char*);
 int getfun_c(int,char*);
 int gaussian_c(int,char*);
 int grey2rgb_c(int,char*);
@@ -87,6 +94,9 @@ int multiply_c(int,char*);
 int newWindow_c(int,char*);
 int nextFile_c(int,char*);
 
+int openfile_c(int,char*);
+
+int pixSize_c(int,char*);
 int palette_c(int,char*);
 int plus_c(int,char*);
 int power_c(int,char*);
@@ -120,6 +130,9 @@ int sysCommand_c(int,char*);
 int tsmooth_c(int,char*);
 
 int writebad_c(int,char*);
+
+int x0_c(int n,char* args);
+int y0_c(int n,char* args);
 
 // Others
 int temp_image_index (char* name,int define);
