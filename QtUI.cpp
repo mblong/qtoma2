@@ -71,7 +71,7 @@ BOOL dropped_file(char* extension, char* name){
         iBuffer.getmaxx();
         update_UI();
 
-        display(0,(char*)"Data");
+        display(0,(char*)"");
         //[appController appendText: @"OMA2>"];
         wPointer->addCString((char*)"OMA2>");
         return YES;

@@ -26,7 +26,10 @@ ComDef   commands[] =    {
 #ifdef ANDOR_
     {{"ANDOR          "},   andor},
 #endif
-    
+#ifdef LJU3 
+    {{"AINPUT         "},   ain},
+    {{"AOUTPUT        "},   aout},
+#endif
     {{"BLOCK          "},	block_g},
     {{"BIT8           "},	bit8_c},
     {{"BIT16          "},	bit16_c},
@@ -38,6 +41,7 @@ ComDef   commands[] =    {
     {{"CLIPFBOTTOM    "},	clipfbottom_c},
     {{"CROP           "},	croprectangle_c},
     {{"CROPR          "},	croprectangle_c},
+    {{"COLUMNS        "},	columns_c},
     {{"COMPOSITE      "},	compositefile_c},
     {{"COMTEMPIMAGE   "},	comtmp_c},
     {{"COLORFLAG      "},	colorflag_c},
@@ -47,7 +51,14 @@ ComDef   commands[] =    {
     {{"CREATEFILE     "},	createfile_c},
     {{"CONCATFILE     "},	concatfile_c},
     {{"CLOSEFILE      "},	closefile_c},
-
+#ifdef GPHOTO
+    {{"CAPTURE        "},	capture},
+    {{"CAMLISTSETTINGS"},	camlistsettings},
+    {{"CAMEXPOSE      "},	camexpose},
+    {{"CAMGETSETTING  "},	camgetsetting},
+    {{"CAMSETSETTING  "},	camsetsetting},
+#endif
+    
     {{"DISPLAY        "},	display},
     {{"DMACRO         "},	defmac},
     {{"DMNMX          "},	dmnmx},
@@ -59,7 +70,10 @@ ComDef   commands[] =    {
     {{"DELAY          "},	delay_c},
     {{"DX             "},	dx_c},
     {{"DY             "},	dy_c},
-        
+#ifdef LJU3
+    {{"DOUTPUT        "},   dout},
+#endif
+    
     {{"ERASE          "},	erase},
     {{"ENDIF          "},	endifcmnd},
     {{"ECHO           "},	echo_c},
@@ -95,6 +109,7 @@ ComDef   commands[] =    {
     {{"HELP           "},	help},
         
     {{"IF             "},	ifcmnd},
+    {{"IFNOT          "},	ifnotcmnd},
     {{"INVERT         "},	invert_c},
     {{"INTEGRATE      "},	integrate_c},
     {{"INTFILL        "},	intfill_c},
@@ -104,7 +119,7 @@ ComDef   commands[] =    {
     {{"KWABEL         "},	kwabel_g},
         
     {{"LIST           "},	list_c},
-    {{"LOG           "},	logg},
+    {{"LOG            "},	logg},
     {{"LMACRO         "},	lmacro},
     {{"LABELDATA      "},	labelData},
     {{"LOOP           "},	loop},
@@ -122,9 +137,9 @@ ComDef   commands[] =    {
         
     {{"NEWWINDOW      "},	newWindow_c},
     {{"NEXTFILE       "},	nextFile_c},
-
+        
     {{"OPENFILE       "},	openfile_c},
-
+        
     {{"PIXSIZE        "},	pixSize_c},
     {{"PALETTE        "},	palette_c},
     {{"POSITIVE       "},	positive_c},
@@ -136,16 +151,19 @@ ComDef   commands[] =    {
     {{"RGB2RED        "},	rgb2red_c},
     {{"RGB2GREEN      "},	rgb2green_c},
     {{"RGB2BLUE       "},	rgb2blue_c},
+    {{"ROWS           "},	rows_c},
     {{"ROTATE         "},	rotate_c},
     {{"READBADPIX     "},	readbad_c},
     {{"RAMP           "},	ramp_c},
     {{"RNDOFF         "},	roundoff_c},
     {{"RNDUP          "},	roundUp_c},
+    {{"RULER         "},	ruler_c},
+    
+    
     {{"SAVEFILE       "},	savefile_c},
     {{"SAVSETTINGS    "},	savsettings},
     {{"SATIFF         "},	satiff_c},
     {{"SATIFFSCALED   "},	satiffscaled_c},
-
 #ifdef SERIAL_PORT
     {{"SERIAL         "},	serial},
     {{"SERCLOSE       "},	serclo},
@@ -153,7 +171,6 @@ ComDef   commands[] =    {
 #ifdef SBIG
     {{"SBIG           "},	sbig},
 #endif
-
     {{"SIZE           "},	size_c},
     {{"SINGRID        "},	sinGrid_c},
     {{"STEMPIMAGE     "},	stemp_c},
@@ -166,6 +183,10 @@ ComDef   commands[] =    {
     {{"TSMOOTH        "},	tsmooth_c},
     {{"VARIABLES      "},	variab},
     {{"WRITEBADPIX    "},	writebad_c},
+#ifdef LJU3
+    {{"WAITHI         "},   waithi},
+#endif
+
     
     {{"X0             "},	x0_c},
     
@@ -274,6 +295,7 @@ int comdec(char* cmnd)
     //extern char* exbuf[];     /* the execute buffer */
     char  txtbuf[CHPERLN];		// temp text buffer
     extern int maccount,macflag,macptr,macval,macincrement;
+    extern int windowNameMemory;
     //extern int exflag,exptr[],exval[];
     
     int     (*fnc)(int,char*);
@@ -529,7 +551,7 @@ int comdec(char* cmnd)
             break;
         }
     }
-    
+    windowNameMemory--;
     return command_return;
 }
 
@@ -1942,6 +1964,56 @@ int ifcmnd(int n, char* args)
 		if(if_condition[ifdepth-1]){
 			if_condition_met = this_test;
 		}	
+	}
+    
+	if_condition[ifdepth] = this_test;
+	ifdepth++;
+    if(ifdepth >= NESTDEPTH){
+        beep();
+        printf("IF buffer overflow.\n");
+        return -1;
+    }
+	//printf("if condition: %d; depth %d\n",if_condition_met,ifdepth);
+	return 0;
+    
+}
+
+int ifnotcmnd(int n, char* args)
+{
+	extern int macflag,exflag;
+	Expression_Element ex_result;
+	int this_test,i,j;
+	
+	if( (macflag == 0) && (exflag == 0)) {
+		beep();
+		printf("IF must be within a Macro.\n");
+		return -1;
+	}
+	
+	// get rid of spaces in the expression -- we just don't need them
+	for(i=0; i< strlen(args); i++){
+		if(args[i] == ' '){
+			j= i;
+			while(args[j] != 0){
+				args[j] = args[j+1];
+				j++;
+			}
+			i--;	// maybe we have multiple spaces
+		}
+	}
+	
+	ex_result = evaluate_string(args);
+	
+	if( ex_result.ivalue == 0){	// IF condition is NOT met
+		this_test = 1;
+	} else {
+		this_test = 0;
+	}
+	if(ifdepth == 0) if_condition_met = this_test;
+	else{	// we're nested -- check to make sure that one above is true
+		if(if_condition[ifdepth-1]){
+			if_condition_met = this_test;
+		}
 	}
     
 	if_condition[ifdepth] = this_test;

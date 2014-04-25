@@ -29,9 +29,17 @@ DataWindow::~DataWindow()
 
 void DataWindow::showData(char* name){
     extern int macflag,exflag;
+    extern int windowNameMemory;
+    extern char windowName[];
+
     if(name){
-        if(strlen(name))
+        if(strlen(name)){
             this->setWindowTitle(QString(name));
+        }else {
+                if (windowNameMemory > 0) this->setWindowTitle(QString(windowName));
+        }
+    } else {
+        if (windowNameMemory > 0) this->setWindowTitle(QString(windowName));
     }
     pixmap = QPixmap::fromImage(
        QImage(

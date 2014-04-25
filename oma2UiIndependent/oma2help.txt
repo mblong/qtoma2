@@ -41,6 +41,12 @@ ACDELETE
 ACGET
 	Moves the data from the accumulator buffer into the current image data area. The previous contents of the image data buffer are destroyed.
 
+AINPUT channel
+	Read analog input from the specified channel on a LabJack U3. Channel must be in the range 0-3; The voltage is returned in command_return_1. [oma2cam only]
+
+AOUTPUT v1 v2
+	Sends voltages to D/A converters 0 and 1 on a Labjack USB U3 analog/digital I/O device. [oma2cam only]
+
 BLOCK n [m]
 	Group the image data into n x m blocks (rows x cols). This command reduces the size of the data buffer. The values are summed, pending implementation of the BLKAVE command. If the image is flagged as color, the three color planes are treated separately.
 
@@ -71,7 +77,10 @@ CLIPFRACTION fraction
 CROP
 	Use the current rectangle to crop the image in the buffer.
 
-COMPOSITE  <filename> 
+COLUMNS n
+	Resets the number of columns in the current image to n.
+
+COMPOSITE  <filename>
 	Create a composite image by appending the data in the specified file to that which exists in the current image buffer. The width of the specified file must be the same as that of the current image. 
 
 COMTEMPIMAGE name 
@@ -89,7 +98,22 @@ CYL2
 CLEARBADPIX
  	Sets pixels tagged as bad to the value of their 8 nearest neighbors. This will not work well if there are contiguous bad pixels. For that, consider using the FILBOX or FILMSK commands.
 
-DISPLAY [string] 
+CAPTURE file_name
+	[This command is only available in oma2cam. libgphoto2 must be installed.] Uses libgphoto2 calls to capture and download an image from a digital camera that is recognized by libgphoto2 (and supports capture).
+
+CAMLISTSETTINGS
+	[This command is only available in oma2cam. libgphoto2 must be installed.] Uses gphoto2 calls to list the settings of the camera that can be set, along with their current values.
+
+CAMGETSETTING  name
+	[This command is only available in oma2cam. libgphoto2 must be installed.] Uses gphoto2 calls to list the current value of the specified setting, along with the allowed values for resetting it.
+
+CAMSETSETTING  name  new_setting_value
+	[This command is only available in oma2cam. libgphoto2 must be installed.] Uses gphoto2 calls to reset the value of the specified setting to the new value. For a listing of valid setting values, use the GETCAMSETTING command.
+
+CAMCLOSE
+	[This command is only available in oma2cam. libgphoto2 must be installed.] Disconnects from the digital camera accessed through gphoto2.
+
+DISPLAY [string]
 	Opens a window on the Macintosh screen and displays the contents of the current data buffer. The color palette used can be determined by the PALETTE command. The color minimum and maximum are specified by the CMINMX command. There can be up to 9 image windows open at one time. Windows can be resized, moved around the screen, and closed as in other Macintosh applications. If the optional string is specified, the window will be named according to the string.
 
 DMACRO [n] [command]
@@ -140,6 +164,9 @@ DX n
 
 DY n
 	Specifies the number of detector pixels (not display screen pixels) to be grouped (or binned) in the Y direction.
+
+DOUTPUT channel state
+	Sets the specified digital output channel on a Labjack U3 to the specified state (0 or 1). Channel must be in the range 4-7. [oma2cam only]
 
 ERASE [n]
 	If no argument is given, all image windows currently on the screen are closed. If a value n is specified, only window n is erased.
@@ -232,6 +259,9 @@ HELP [command name or fragment]
 
 IF condition
 	If condition evaluates to a non-zero value, the commands following the IF are executed. However, if the condition is zero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
+
+IFNOT condition
+	If condition evaluates to a ZERO value, the commands following the IF are executed. However, if the condition is nonzero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
 
 INVERT
 	Inverts the image in the current image data buffer, causing the first data point to become the last data point.
@@ -346,6 +376,9 @@ RGB2BLUE
 RMACRO [n m] 
 	Starts executing commands in the macro buffer with %d being replaced first by value n. Subsequently, n is incremented by the amount specified in the INCMACRO command (default is 1). If the new numeric value is equal to m, the macro will be executed again. Menu items can be selected and the appropriate commands executed during macros. Commands typed during the execution of a macro will be echoed to the terminal but not performed. To stop a macro during execution type "cmd ." (hold down the apple key and type ".")
 
+ROW n
+	Resets the number of rows in the current image to n.
+
 ROTATE [value]
 	Rotates the data in the current image buffer.  If no value is specified, the image is rotated by 90 degrees. If a value is specified, the image is rotated by the specified number of degrees (this may be a real number).
 
@@ -367,6 +400,9 @@ RNDOFF
 
 RNDUP
 	Round the DATAWORD values UP to the nearest integer value.
+
+RULER [numpix] [numunits] [unit name] 
+	Can be used to specify the number of pixels that correspond to a length unit. "numpix" and "numunits" are both floating point arguments. An optional string can be included to define the units (e.g., "mm" or "feet"). If no arguments are given, the current scale factor will be printed. The scale factor defined with the RULER command is used (1) when printing lengths using the ruler tool in the status window, (2) when reporting contour lengths generated by the "Plot Contours" menu command, and (3) when reporting the x and y "center of mass" using the calculate rectangle tool in the status window. Scale factor info is saved with data files and will be reloaded automatically when the files are retrieved. To "un-define" a ruler, give only one argument.
 
 SAVEFILE <filename>
 	Saves the current data buffer to the specified file.
@@ -410,6 +446,32 @@ SHELL shell_command
 STOPONERROR flag
 	If flag = 1, macro or execute commands will stop on error conditions. If flag = 0 (default) execution will continue.
 
+SBIG command_string [parameters]
+	[This command is only available in oma2cam. The SBIG drivers must be installed.]
+	command_string specifies the SBIG command (listed below).
+ 	Only the first 3 characters of SBIG commands matter.
+ 	The values for parameters depend on the particular command.
+	.
+ 	SBIG command_strings:
+ 	.
+ 	EXPosure exposure_time
+		Specify exposure_time in seconds. Does not take an image.
+	.
+	 FILter
+		 Specify which fillter to use.
+	.
+	 TEMperature
+		 Specify set temperature of the CCD in degrees C.
+	.
+	 DISconnect
+		 Close the device and driver.
+	.
+ 	STAtus 
+		 Print out CCD info, temperature, exposure, etc.
+	.
+	 ACQuire 
+		Get an image using the current settings.
+
 SUBTMPIMAGE name
 	Subtracts the contents of the named temporary image from the data in the current buffer.
 
@@ -441,6 +503,9 @@ WRITEBADPIX filename
 	.
 	.
 	.
+
+WAITHI Channel
+	Waits until the specified digital I/O channel is aserted high on a LabJack U3. Channel must be in the range 4-7. [oma2cam only]
 
 X0 n
 	Specifies that the detector is to be read out starting at column n.
