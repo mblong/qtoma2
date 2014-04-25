@@ -175,7 +175,6 @@ void QtOma2::updateStatus(){
 }
 
 void QtOma2::newData(char* name){
-    //extern int newWindowFlag;
     extern float windowScaleFactor;
 
     if(!UIData.newwindowflag && (currentDataWindow >= 0)){

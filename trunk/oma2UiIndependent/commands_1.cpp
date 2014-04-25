@@ -1010,7 +1010,7 @@ int size_c(int n,char* args){
             Image new_im(height,width);
             if(new_im.err()){
                 beep();
-                printf("Could not load %s\n",args);
+                printf("Could not create image.\n",args);
                 return new_im.err();
             }
             iBuffer.free();     // release the old data
@@ -1028,6 +1028,53 @@ int size_c(int n,char* args){
 }
 
 /* ********** */
+
+int rows_c(int n,char* args){
+    int* specs = iBuffer.getspecs();
+    if(n > 0){
+        Image new_im(n,specs[COLS]);
+        if(new_im.err()){
+            beep();
+            printf("Could not create image.\n");
+            return new_im.err();
+        }
+        iBuffer.free();     // release the old data
+        iBuffer = new_im;   // this is the new data
+        iBuffer.getmaxx();
+        update_UI();
+        free(specs);
+        return NO_ERR;
+    }
+    printf("Current Image is %d by %d\n",specs[COLS],specs[ROWS]);
+    free(specs);
+    return NO_ERR;
+}
+
+/* ********** */
+
+int columns_c(int n,char* args){
+    int* specs = iBuffer.getspecs();
+    if(n > 0){
+        Image new_im(specs[ROWS],n);
+        if(new_im.err()){
+            beep();
+            printf("Could not create image.\n");
+            return new_im.err();
+        }
+        iBuffer.free();     // release the old data
+        iBuffer = new_im;   // this is the new data
+        iBuffer.getmaxx();
+        update_UI();
+        free(specs);
+        return NO_ERR;
+    }
+    printf("Current Image is %d by %d\n",specs[COLS],specs[ROWS]);
+    free(specs);
+    return NO_ERR;
+}
+
+/* ********** */
+
 
 int setcminmax_c(int n,char* args)		/* get color min and max */
 {
@@ -2983,4 +3030,74 @@ int pixSize_c(int n,char* args){
     return NO_ERR;
 }
 
+/* ********** */
 
+int ruler_c(int n, char* args)
+{
+	
+	int i=0;
+	float pix,unit,rulerScale;
+	
+	
+    int* specs = iBuffer.getspecs();
+    
+	if (*args == 0) {
+		if( specs[HAS_RULER]) {
+            char* unit_text = iBuffer.getunit_text();
+            float* values = iBuffer.getvalues();
+			if( unit_text[0] )
+				printf("%f Pixels per %s.\n",values[RULER_SCALE],unit_text);
+			else
+				printf("%f Pixels per Unit.\n",values[RULER_SCALE]);
+            free(values);
+            free(unit_text);
+		} else {
+			printf("No Ruler Defined.\n");
+		}
+        free(specs);
+		return NO_ERR;
+	}
+	
+	if( sscanf(args,"%f %f",&pix,&unit) != 2) {
+		beep();
+		printf("Two Arguments Needed.\n");
+        specs[HAS_RULER] = 0;
+        iBuffer.setspecs(specs);
+        free(specs);
+		return CMND_ERR;
+	}
+	rulerScale = pix/unit;
+	
+	char unit_text[NRULERCHAR];
+    unit_text[0] = 0;
+    
+    //if( sscanf(args,"%f %f %s",&pix,&unit,unit_text) == 3)
+	int index = 0;
+	/* Now see if a unit was specified */
+    while (args[index] != EOL && args[index] != ';') {
+	 	if(args[index] == ' ') {
+			i++;
+			if(i==2) {		/* if this is the second space, assume we have a comment */
+				index++;
+				for(n=0; (n<NRULERCHAR-1) && (args[index] != EOL) && (args[index] != ';') ; n++) {
+					unit_text[n] = args[index];
+					index++;
+				}
+				unit_text[n] = EOL;
+				break;
+			}
+		}
+	 	index++;
+	}
+    iBuffer.setRuler(rulerScale,unit_text);
+    
+	if( unit_text[0] )
+		printf("%f Pixels per %s.\n",rulerScale,unit_text);
+	else
+		printf("%f Pixels per Unit.\n",rulerScale);
+    free(specs);
+    return NO_ERR;
+	
+}
+
+/* ********** */

@@ -23,13 +23,24 @@
 #ifdef ANDOR_
 int andor(int, char*);
 #endif
-#ifdef SERIAL_PORT
-int serial(int, char*);
-int serclo(int, char*);
-#endif
 
 #ifdef SBIG
 int sbig(int,char*);
+#endif
+
+#ifdef LJU3
+int ain(int,char*);
+int waithi(int,char*);
+int dout(int,char*);
+int aout(int,char*);
+#endif
+
+#ifdef GPHOTO
+int capture(int n, char* args);
+int camlistsettings(int n, char* args);
+int camexpose(int n, char* args);
+int camgetsetting(int n, char* args);
+int camsetsetting(int n, char* args);
 #endif
 
 
@@ -52,6 +63,7 @@ int endifcmnd(int, char*);
 int execut(int, char*);
 int help(int n, char* args);
 int ifcmnd(int, char*);
+int ifnotcmnd(int, char*);
 int lmacro(int, char*);
 int loop(int, char*);
 int loopend(int, char*);
