@@ -165,6 +165,13 @@ DX n
 DY n
 	Specifies the number of detector pixels (not display screen pixels) to be grouped (or binned) in the Y direction.
 
+DOC2RGB c1 c2 c3 c4
+	Treat the image in the current image buffer as a raw document (output from the dcraw routine with options -d or -D selected) and convert it to an RGB image. This is assumed to have a 2 x 2 color matrix of R G B values in a Bayer pattern. c1 - c4 have values 0, 1 or 2, corresponding to red, green, and blue. For example, if Bayer Matrix is:
+	G B
+	R G
+	c1 - c4 should be 1 2 0 1
+	Appropriate values depend on the specific camera. (See the output from the GET command when reading raw files.)
+
 DOUTPUT channel state
 	Sets the specified digital output channel on a Labjack U3 to the specified state (0 or 1). Channel must be in the range 4-7. [oma2cam only]
 
@@ -477,6 +484,12 @@ SUBTMPIMAGE name
 
 TSMOOTH
 	Smooth radius based on x_dim = Temp[0], y_dim = Temp[1]. This is a function that enables (Rectangular) smoothing of an image, with variable filter size. It works basically like SMOOTH 13 13, say, but it takes the x_dim and y_dim locally based on the values in the  Temporary buffers T[0] and T[1]. It has been used to variably smooth an image based on the local length scale which was modelled.
+
+UPREFX type 
+	Force use of prefix/suffix specified by 'type.' Possible cases for 'type' include the following:
+	s   Use Save File prefix and suffix for both saving and getting files
+	g   Use Get File prefix and suffix for both saving and getting files
+	d   Use Default prefix and suffix
 
 VARIABLES
 	Lists currently defined variables and their values. Variables are defined using simple arithmetic expressions, such as

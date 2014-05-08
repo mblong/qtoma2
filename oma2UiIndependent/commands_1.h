@@ -52,6 +52,7 @@ int divide_c(int,char*);
 int delay_c(int,char*);
 int dx_c(int n,char* args);
 int dy_c(int n,char* args);
+int doc2rgb_c(int n, char* args);
 
 int echo_c(int,char*);
 
@@ -131,6 +132,8 @@ int satiffscaled_c(int,char*);
 int sysCommand_c(int,char*);
 
 int tsmooth_c(int,char*);
+
+int uprefix_c(int n,char* args);
 
 int writebad_c(int,char*);
 
