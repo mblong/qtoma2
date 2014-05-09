@@ -96,6 +96,7 @@ public:
     int whichDataWindow(DataWindow* theWindow);
     int whichDrawingWindow(DrawingWindow* theWindow);
     void openDataFile();
+    void saveDataFile();
 
 
 
@@ -110,22 +111,15 @@ private slots:
     void on_omaCommands_textChanged();
     //void fileOpen();
     void on_actionOpen_triggered();
-
     void on_actionPreferences_triggered();
-
     void on_actionPlot_Rows_triggered();
-
     void on_actionPlot_Columns_triggered();
-
     void on_actionClose_triggered();
-
     void on_actionOma2_Help_triggered();
-
     void onApplicationFocusChanged(QWidget *old, QWidget *now);
-
     void moveCursorToEnd();
-
     void on_actionExit_triggered();
+    void on_actionSave_Data_File_triggered();
 
 private:
     Ui::QtOma2 *ui;
