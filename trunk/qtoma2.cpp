@@ -715,32 +715,6 @@ void QtOma2::eraseWindow(int n){
 }
 
 
-void QtOma2::on_actionOpen_triggered()
-{
-    openDataFile();
-}
-
-void QtOma2::openDataFile()
-{
-    QString fn = QFileDialog::getOpenFileName(this, tr("Open File..."),
-                                              QString(), tr("Data Files (*.dat *.o2d);;All Files (*)"));
-    if (!fn.isEmpty()){
-        QByteArray ba = fn.toLocal8Bit();
-
-        fprintf(stderr,"File is: %s\n",ba.data());
-        char name[CHPERLN],ext[PREFIX_CHPERLN];
-        strlcpy(name,ba.data(),CHPERLN);
-        int i;
-        for(i=strlen(name)-1; i >= 0 ;i--){
-            if(name[i] == '.') break;
-        }
-        strlcpy(ext,&name[i+1],PREFIX_CHPERLN);
-        fprintf(stderr,"Ext: %s\n",ext);
-        dropped_file(ext,name);
-    }
-}
-
-
 // Some Sample Code That Should Be Helpful
 /*
  * void TextEdit::fileNew()
@@ -880,5 +854,54 @@ void QtOma2::moveCursorToEnd(){
 
 void QtOma2::on_actionExit_triggered()
 {
+    closeEvent(NULL);
     exit(0);
+}
+
+void QtOma2::on_actionOpen_triggered()
+{
+    openDataFile();
+}
+
+void QtOma2::openDataFile()
+{
+    QString fn = QFileDialog::getOpenFileName(NULL, tr("Open File..."),
+                                              QString(), tr("Data Files (*.dat *.o2d);;All Files (*)"));
+    if (!fn.isEmpty()){
+        QByteArray ba = fn.toLocal8Bit();
+
+        fprintf(stderr,"File is: %s\n",ba.data());
+        char name[CHPERLN],ext[PREFIX_CHPERLN];
+        strlcpy(name,ba.data(),CHPERLN);
+        int i;
+        for(i=strlen(name)-1; i >= 0 ;i--){
+            if(name[i] == '.') break;
+        }
+        strlcpy(ext,&name[i+1],PREFIX_CHPERLN);
+        fprintf(stderr,"Ext: %s\n",ext);
+        dropped_file(ext,name);
+    }
+}
+
+void QtOma2::on_actionSave_Data_File_triggered()
+{
+    saveDataFile();
+}
+
+void QtOma2::saveDataFile()
+{
+    extern Image iBuffer;
+    extern oma2UIData UIData;
+    QString fn = QFileDialog::getSaveFileName(NULL, tr("Save Data File"),
+                                      QString(UIData.saveprefixbuf)+QString("oma2Data"),
+
+                                tr("Data Files (*.o2d);;All Files (*)"));
+    if (!fn.isEmpty()){
+        QByteArray ba = fn.toLocal8Bit();
+        printf("File is: %s\nOMA2>",ba.data());
+
+        iBuffer.saveFile(ba.data(),LONG_NAME);
+        if(iBuffer.err())
+            printf("Could not save file.\nOMA2>");
+     }
 }
