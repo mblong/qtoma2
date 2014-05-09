@@ -717,6 +717,11 @@ void QtOma2::eraseWindow(int n){
 
 void QtOma2::on_actionOpen_triggered()
 {
+    openDataFile();
+}
+
+void QtOma2::openDataFile()
+{
     QString fn = QFileDialog::getOpenFileName(this, tr("Open File..."),
                                               QString(), tr("Data Files (*.dat *.o2d);;All Files (*)"));
     if (!fn.isEmpty()){

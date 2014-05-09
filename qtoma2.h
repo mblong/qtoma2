@@ -95,7 +95,7 @@ public:
     void nextHistory();
     int whichDataWindow(DataWindow* theWindow);
     int whichDrawingWindow(DrawingWindow* theWindow);
-
+    void openDataFile();
 
 
 
