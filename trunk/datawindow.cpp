@@ -430,6 +430,7 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
           if(event->key() == Qt::Key_R) wPointer->newRowPlot();
           if(event->key() == Qt::Key_T) wPointer->newColPlot();
           if(event->key() == Qt::Key_F) wPointer->showPreferences();
+          if(event->key() == Qt::Key_O) wPointer->openDataFile();
           return;
       }
       extern int stopMacroNow;
