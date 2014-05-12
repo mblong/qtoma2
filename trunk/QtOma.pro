@@ -37,7 +37,8 @@ SOURCES += main.cpp\
         drawingwindow.cpp \
     qtimagesupport.cpp \
     oma2commands.cpp \
-    Hardware/andor.cpp
+    Hardware/andor.cpp \
+    Hardware/serial.c
 
 
 HEADERS  += qtoma2.h\
@@ -110,7 +111,7 @@ macx {
 #for linux
 unix:!macx:{
     EXTRA_FILES += \
-        $$_PRO_FILE_PWD_/oma2help.txt \
+        $$_PRO_FILE_PWD_/oma2UiIndependent/oma2help.txt \
         $$_PRO_FILE_PWD_/Resources/OMApalette.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMApalette2.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMApalette3.pa1
