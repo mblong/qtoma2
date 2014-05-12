@@ -57,7 +57,8 @@ HEADERS  += qtoma2.h\
         preferences.h \
         status.h \
     qtimagesupport.h \
-    oma2commands.h
+    oma2commands.h \
+    Hardware/cameraSelector.h
 
 
 FORMS    += qtoma2.ui \

@@ -14,6 +14,13 @@
 #include "commands_1.h"
 #include "comdec.h"
 
+// these definitions allow C++ functions to be called from C
+
+extern "C" void cbeep();
+extern "C" int cprintf(const char* format, ...);
+extern "C" int cpprintf(const char* format, ...);
+
+
 // do this at compile time with -DQt_UI (for example)
 //#define MacOSX_UI
 //#define Qt_UI
@@ -243,6 +250,7 @@ BOOL dropped_file(char*,char*);
 
 #include <QApplication>
 #include "qtoma2.h"
+#include "Hardware/cameraSelector.h"
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
@@ -263,22 +271,6 @@ BOOL dropped_file(char*,char*);
 #define WMODE   O_CREAT|O_WRONLY,0666
 #define READMODE   O_RDONLY
 #define READBINARY   O_RDONLY
-
-#define ANDOR_
-#define SERIAL_PORT
-
-#ifdef SERIAL_PORT
-#ifdef __cplusplus
-extern "C"{
-#endif
-int serial(int, char*);
-int serclo(int, char*);
-int open_serial_port(char* dev_name);
-#ifdef __cplusplus
-}
-#endif
-#endif
-
 
 
 #pragma GCC diagnostic ignored "-Wsign-compare"

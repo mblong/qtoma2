@@ -153,6 +153,39 @@ int omaprintf(const char* format, ...)
     return return_status;
 }
 
+// these C++ functions are called by C functions
+
+
+int cprintf(const char* format, ...)
+{
+    va_list args;
+    va_start(args,format);
+    extern unsigned char printall,no_print;
+
+    if(!printall) return NO_ERR;
+    if(no_print) return NO_ERR;
+
+
+    int return_status = NO_ERR;
+
+    return_status = vsprintf(reply,format, args);
+    //[appController appendCText: reply];
+    /*
+    dispatch_queue_t theQueue = dispatch_get_current_queue();
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    if (theQueue == mainQueue) {
+        [appController appendCText: reply];
+    } else {
+        dispatch_sync(mainQueue,^{[appController appendCText: reply];});
+    }
+    */
+    //fprintf(stderr,"%s",reply);
+    wPointer->addCString((char*)reply);
+    va_end(args);
+    return return_status;
+}
+
+
 
 /*
 int pprintf(const char* format, ...)		// priority printing!
@@ -182,6 +215,14 @@ int pprintf(const char* format, ...)		// priority printing!
 
 }
 */
+
+
+
+void cbeep(){
+    beep();
+}
+
+// end of UI functions to be called by C functions
 
 void beep(){
     extern int stop_on_error,macflag,exflag,isErrorText;
