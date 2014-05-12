@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Yale University. All rights reserved.
 //
 
+#include "Hardware/cameraSelector.h"
 
 #ifdef SERIAL_PORT
 
-#include "oma2.h"
+#include "oma2UiIndependent/oma2.h"
 #include <unistd.h>
 
 #define beep cbeep
