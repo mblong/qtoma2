@@ -267,6 +267,19 @@ BOOL dropped_file(char*,char*);
 #define ANDOR_
 #define SERIAL_PORT
 
+#ifdef SERIAL_PORT
+#ifdef __cplusplus
+extern "C"{
+#endif
+int serial(int, char*);
+int serclo(int, char*);
+int open_serial_port(char* dev_name);
+#ifdef __cplusplus
+}
+#endif
+#endif
+
+
 
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wwrite-strings"
