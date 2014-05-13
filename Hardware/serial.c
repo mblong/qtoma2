@@ -6,7 +6,9 @@
 //  Copyright (c) 2014 Yale University. All rights reserved.
 //
 
+#ifdef Qt_UI_Linux
 #include "Hardware/cameraSelector.h"
+#endif
 
 #ifdef SERIAL_PORT
 
