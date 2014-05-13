@@ -16,6 +16,9 @@ the CCD. The image is saved in file image.bmp*/
 #define INTERNAL 0
 #define EXTERNAL 1
 
+// timeout (sec) for data axqusition
+#define TIMEOUT 5
+
 
 
 static int inited = 0;
@@ -46,7 +49,7 @@ int andor(int n, char* args)
 
     	at_32 lNumCameras;
 	int status,i;
-	at_32 *imageData;
+    at_32* imageData=0;
 
     char txt[CHPERLN];
 
@@ -342,7 +345,7 @@ int andor(int n, char* args)
 		//SetExposureTime(ExposureTime);
 		
 		//Initialize Shutter
-		//SetShutter(1,0,50,50);
+		//SetShutter(1,0,50,50);        
         
         width = specs[COLS];
         height = specs[ROWS];
@@ -361,16 +364,31 @@ int andor(int n, char* args)
             free(specs);
 			return -1;
 		}
-		
-		
+				
+        imageData = (at_32*) malloc(width*height*sizeof(at_32));
+        if(imageData == 0){
+            beep();
+            printf("Memory Allocation Problem.\n");
+            free(specs);
+            return -1;
+        }
+
+        float timeOut = TIMEOUT + ExposureTime;
+        clock_t endWait = clock () + timeOut * CLOCKS_PER_SEC ;
+
 		StartAcquisition();
-		
-		imageData = malloc(width*height*sizeof(at_32));
 		
 		//Loop until acquisition finished
 		GetStatus(&status);
-		while(status==DRV_ACQUIRING) GetStatus(&status);
+        while(status==DRV_ACQUIRING && clock() < endWait) GetStatus(&status);
 		
+        if(status==DRV_ACQUIRING){
+            beep();
+            printf("Acqusition Timeout.\n");
+            free(imageData);
+            free(specs);
+
+        }
 		GetAcquiredData(imageData, width*height);
         int k=0;
         for( i=0;i<height;i++) {

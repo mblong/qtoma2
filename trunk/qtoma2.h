@@ -17,7 +17,7 @@
 
 #define CLOSE_CLEANUP_DONE -10
 #define WINDOW_HEIGHT 376
-#define COMMAND_WIDTH 640
+
 #define STATUS_WIDTH 260
 int comdec(char*);
 
@@ -27,6 +27,8 @@ int comdec(char*);
 #define TITLEBAR_HEIGHT 0
 #define WINDOW_OFFSET 20
 #define WINDOW_SPACE 0
+#define COMMAND_WIDTH 640
+#define STATUS_OFFSET 20
 
 #endif
 
@@ -36,6 +38,9 @@ int comdec(char*);
 #define TITLEBAR_HEIGHT 0
 #define WINDOW_OFFSET 30
 #define WINDOW_SPACE 14
+#define COMMAND_WIDTH 640
+#define STATUS_OFFSET 20
+
 
 #endif
 
@@ -43,8 +48,11 @@ int comdec(char*);
 
 // This isn't the right way to do this
 #define TITLEBAR_HEIGHT 0
-#define WINDOW_OFFSET 20
+#define WINDOW_OFFSET 40
 #define WINDOW_SPACE 0
+#define COMMAND_WIDTH 760
+#define STATUS_OFFSET 60
+
 
 #endif
 
