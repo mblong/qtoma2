@@ -31,7 +31,7 @@ QtOma2::QtOma2(QWidget *parent) :
     window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
     window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
     status = new Status(this);
-    status->setGeometry(COMMAND_WIDTH+WINDOW_OFFSET,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,STATUS_WIDTH,WINDOW_HEIGHT);
+    status->setGeometry(COMMAND_WIDTH+STATUS_OFFSET,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,STATUS_WIDTH,WINDOW_HEIGHT);
     status->show();
 
 
