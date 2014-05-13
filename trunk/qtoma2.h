@@ -29,6 +29,7 @@ int comdec(char*);
 #define WINDOW_SPACE 0
 #define COMMAND_WIDTH 640
 #define STATUS_OFFSET 20
+#define FONT_SIZE 12
 
 #endif
 
@@ -40,6 +41,7 @@ int comdec(char*);
 #define WINDOW_SPACE 14
 #define COMMAND_WIDTH 640
 #define STATUS_OFFSET 20
+#define FONT_SIZE 12
 
 
 #endif
@@ -52,6 +54,7 @@ int comdec(char*);
 #define WINDOW_SPACE 0
 #define COMMAND_WIDTH 760
 #define STATUS_OFFSET 60
+#define FONT_SIZE 9
 
 
 #endif
