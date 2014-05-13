@@ -7,10 +7,10 @@ oma2Commands::oma2Commands(QWidget *parent) :
     QPlainTextEdit(parent)
 {
     QFont font;
-    font.setFamily("Monaco");
-    font.setStyleHint(QFont::Monospace);
-    font.setFixedPitch(true);
-    font.setPointSize(9);
+    //font.setFamily("Monaco");
+    //font.setStyleHint(QFont::Monospace);
+    //font.setFixedPitch(true);
+    font.setPointSize(FONT_SIZE);
 
     QTextEdit* editor = new QTextEdit();
     this->setFont(font);
