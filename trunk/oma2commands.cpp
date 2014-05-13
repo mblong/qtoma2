@@ -15,7 +15,7 @@ oma2Commands::oma2Commands(QWidget *parent) :
     QTextEdit* editor = new QTextEdit();
     this->setFont(font);
 
-    const int tabStop = 3;  // 3 characters
+    const int tabStop = 4;  // 4 characters
 
     QFontMetrics metrics(font);
     this->setTabStopWidth(tabStop * metrics.width(' '));
