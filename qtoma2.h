@@ -52,9 +52,9 @@ int comdec(char*);
 #define TITLEBAR_HEIGHT 0
 #define WINDOW_OFFSET 40
 #define WINDOW_SPACE 0
-#define COMMAND_WIDTH 760
-#define STATUS_OFFSET 60
-#define FONT_SIZE 9
+#define COMMAND_WIDTH 640
+#define STATUS_OFFSET 70
+#define FONT_SIZE 10
 
 
 #endif
