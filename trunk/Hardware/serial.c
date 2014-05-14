@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Yale University. All rights reserved.
 //
 
-#ifdef Qt_UI_Linux
+#ifndef Qt_UI_Win
 #include "Hardware/cameraSelector.h"
 #endif
 
