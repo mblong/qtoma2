@@ -387,7 +387,8 @@ int andor(int n, char* args)
             printf("Acqusition Timeout.\n");
             free(imageData);
             free(specs);
-
+            AbortAcquisition();
+            return -1;
         }
 		GetAcquiredData(imageData, width*height);
         int k=0;
