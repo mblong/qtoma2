@@ -19,6 +19,8 @@ DataWindow::DataWindow(QWidget *parent) :
     hasRowPlot = 0;
     colLine = -1;
     hasColPlot = 0;
+    minMaxString[0] = 0;
+    labelString[0] = 0;
 }
 
 DataWindow::~DataWindow()
@@ -182,6 +184,14 @@ void DataWindow::showColLine(int theLine){
      mouseMoving = 1;
      update();
 }
+
+void DataWindow::labelMinMax(){
+    DATAWORD* values = iBuffer.getvalues();
+     sprintf(minMaxString, "%g\n%g",values[MIN],values[MAX]);
+     free(values);
+     update();
+}
+
 
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
@@ -365,6 +375,10 @@ void DataWindow::paintEvent(QPaintEvent *event)
         oldP2 = nextPoint;
         mouseMoving = 0;
         ui->label->setPixmap(pixmap);
+    }
+    if(minMaxString[0]){
+        QPainter painter( this);
+        painter.drawText(QPoint(10,15),QString(minMaxString));
     }
 }
 

@@ -8,6 +8,8 @@
 
 #include <QCloseEvent>
 
+#include "oma2UiIndependent/oma2.h"
+
 class DrawingWindow;
 
 namespace Ui {
@@ -41,6 +43,8 @@ public:
     void showColLine(int theLine);
     QPoint pixmapCoords(QPoint pos);
 
+    void labelMinMax();
+
 protected:
     void mousePressEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
@@ -67,6 +71,8 @@ private:
     int         intensitySize;
     int         dataRows;
     int         dataCols;
+    char minMaxString[PREFIX_CHPERLN];
+    char labelString[PREFIX_CHPERLN];
 
 };
 
