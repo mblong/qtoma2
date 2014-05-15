@@ -634,6 +634,26 @@ void QtOma2::newLinePlot(QPoint start, QPoint end){
 
  }
 
+void QtOma2::addDataWindowLabel(char* string){
+    int n = activeWindow();
+    if(n<0 || windowArray[n].type  != DATA){
+        //can't do this
+        beep();
+        return;
+    }
+
+}
+
+void QtOma2::addDataWindowMinMax(){
+    int n = activeWindow();
+    if(n<0 || windowArray[n].type  != DATA){
+        //can't do this
+        beep();
+        return;
+    }
+    windowArray[n].dataWindow->labelMinMax();
+}
+
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){
