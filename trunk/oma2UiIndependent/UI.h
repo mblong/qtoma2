@@ -104,7 +104,7 @@ int pprintf(const char* format, ...);
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
-#define label_data ;
+#define label_data labelData(args);
 #define label_data_minMax labelDataMinMax();
 #define checkEvents QCoreApplication::processEvents();
 
@@ -161,6 +161,7 @@ void beep();
 void displayData(char*);
 void eraseWindow(int);
 void labelDataMinMax();
+void labelData(char*);
 BOOL dropped_file(char*,char*);
 
 #endif
@@ -177,8 +178,8 @@ BOOL dropped_file(char*,char*);
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
-#define label_data ;
-#define label_data_minMax ;
+#define label_data labelData(args);
+#define label_data_minMax labelDataMinMax();
 #define checkEvents QCoreApplication::processEvents();
 
 #define pprintf omaprintf
@@ -242,6 +243,8 @@ void alertSound(char*);
 void beep();
 void displayData(char*);
 void eraseWindow(int);
+void labelDataMinMax();
+void labelData(char*);
 BOOL dropped_file(char*,char*);
 
 #endif
@@ -255,8 +258,8 @@ BOOL dropped_file(char*,char*);
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
-#define label_data ;
-#define label_data_minMax ;
+#define label_data labelData(args);
+#define label_data_minMax labelDataMinMax();
 #define checkEvents QCoreApplication::processEvents();
 
 #define pprintf omaprintf
@@ -321,6 +324,8 @@ void alertSound(char*);
 void beep();
 void displayData(char*);
 void eraseWindow(int);
+void labelDataMinMax();
+void labelData(char*);
 BOOL dropped_file(char*,char*);
 
 

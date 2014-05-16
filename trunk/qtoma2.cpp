@@ -641,7 +641,7 @@ void QtOma2::addDataWindowLabel(char* string){
         beep();
         return;
     }
-
+    windowArray[n].dataWindow->label(string);
 }
 
 void QtOma2::addDataWindowMinMax(){

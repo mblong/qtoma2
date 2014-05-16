@@ -44,6 +44,7 @@ public:
     QPoint pixmapCoords(QPoint pos);
 
     void labelMinMax();
+    void label(char* string);
 
 protected:
     void mousePressEvent(QMouseEvent*);
