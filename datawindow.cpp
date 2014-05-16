@@ -385,8 +385,8 @@ void DataWindow::paintEvent(QPaintEvent *event)
         QPainter painter( &pixmap);
         painter.setRenderHint(QPainter::TextAntialiasing, true);
         //painter.setCompositionMode(QPainter::CompositionMode_Source);
-        //QPen penHText(QColor("#909090"));
-        //painter.setPen(penHText);
+        QPen penHText(QColor("#909090"));
+        painter.setPen(penHText);
         int index;
         for(index = 0;minMaxString[index] != ' ';index++ );
         minMaxString[index] = 0;
@@ -399,8 +399,8 @@ void DataWindow::paintEvent(QPaintEvent *event)
         QPainter painter( &pixmap);
         painter.setRenderHint(QPainter::TextAntialiasing, true);
         //painter.setCompositionMode(QPainter::CompositionMode_Source);
-        //QPen penHText(QColor("#909090"));
-        //painter.setPen(penHText);
+        QPen penHText(QColor("#909090"));
+        painter.setPen(penHText);
         painter.drawText(QPoint(10,15),QString(labelString));
         ui->label->setPixmap(pixmap);
     }
