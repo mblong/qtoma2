@@ -187,8 +187,13 @@ void DataWindow::showColLine(int theLine){
 
 void DataWindow::labelMinMax(){
     DATAWORD* values = iBuffer.getvalues();
-     sprintf(minMaxString, "%g\n%g",values[MIN],values[MAX]);
+     sprintf(minMaxString, "%g %g",values[MIN],values[MAX]);
      free(values);
+     update();
+}
+
+void DataWindow::label(char* string){
+     strncpy(labelString,string,PREFIX_CHPERLN);
      update();
 }
 
@@ -377,9 +382,29 @@ void DataWindow::paintEvent(QPaintEvent *event)
         ui->label->setPixmap(pixmap);
     }
     if(minMaxString[0]){
-        QPainter painter( this);
-        painter.drawText(QPoint(10,15),QString(minMaxString));
+        QPainter painter( &pixmap);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+        //painter.setCompositionMode(QPainter::CompositionMode_Source);
+        //QPen penHText(QColor("#909090"));
+        //painter.setPen(penHText);
+        int index;
+        for(index = 0;minMaxString[index] != ' ';index++ );
+        minMaxString[index] = 0;
+        painter.drawText(QPoint(10,ui->label->pixmap()->height()-30),QString(minMaxString));
+        painter.drawText(QPoint(10,ui->label->pixmap()->height()-15),QString(&minMaxString[index+1]));
+        minMaxString[index] = ' ';
+        ui->label->setPixmap(pixmap);
     }
+    if(labelString[0]){
+        QPainter painter( &pixmap);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+        //painter.setCompositionMode(QPainter::CompositionMode_Source);
+        //QPen penHText(QColor("#909090"));
+        //painter.setPen(penHText);
+        painter.drawText(QPoint(10,15),QString(labelString));
+        ui->label->setPixmap(pixmap);
+    }
+
 }
 
 int DataWindow::getThePalette(){

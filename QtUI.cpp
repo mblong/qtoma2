@@ -48,6 +48,10 @@ void labelDataMinMax(){
    wPointer->addDataWindowMinMax();
 }
 
+void labelData(char* label){
+   wPointer->addDataWindowLabel(label);
+}
+
 void eraseWindow(int n){
    wPointer->eraseWindow(n);
 }
