@@ -36,10 +36,13 @@ SOURCES += main.cpp\
         status.cpp \
         drawingwindow.cpp \
     qtimagesupport.cpp \
-    oma2commands.cpp \
-    Hardware/andor.cpp \
-    Hardware/serial.c
+    oma2commands.cpp
 
+
+unix:!macx: {
+SOURCES += Hardware/andor.cpp \
+    Hardware/serial.c
+}
 
 HEADERS  += qtoma2.h\
         oma2UiIndependent/UI.h\
