@@ -92,7 +92,7 @@ win32 {
     SFILE ~= s,/,\\,g
     DFILE = $$OUT_PWD
     DFILE ~= s,/,\\,g
-    EXTRA_FILES = $$SFILE\oma2help.txt
+    EXTRA_FILES = $$SFILE\oma2UiIndependent\oma2help.txt
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette2.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
