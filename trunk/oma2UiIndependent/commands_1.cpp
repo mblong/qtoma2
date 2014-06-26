@@ -9,6 +9,10 @@ extern oma2UIData UIData;
 
 extern Image  iTempImages[];
 extern Image   accumulator;   // the accumulator
+extern Image   hdrAccumulator;   // the HDR accumulator
+extern Image   hdrCounter;       // the HDR counter
+extern DATAWORD hdrCutoff;       // the HDR saturation value
+extern int      hdrFrames;     // HDR frame counter
 extern int numberNamedTempImages;
 extern Variable namedTempImages[];
 
@@ -140,6 +144,15 @@ int getfile_c(int n,char* args){
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
     iBuffer.getmaxx(PRINT_RESULT);
+    int extraSize = iBuffer.getExtraSize();
+    if (extraSize) {
+        printf("Image has %d extra floating point values.\n",extraSize);
+    }
+    int* specs = iBuffer.getspecs();
+    if (specs[NFRAMES]) {
+        printf("Showing image 1 of %d.\n",specs[NFRAMES]+1);
+    }
+    free(specs);
     update_UI();
     return NO_ERR;
 }
@@ -447,6 +460,7 @@ int list_c(int n, char* args){
     i = 0;
     char* comment = iBuffer.getComment();
     int* specs = iBuffer.getspecs();
+    DATAWORD* values = iBuffer.getvalues();
     if(comment){
         while (comment[i]) {
             printf( "Line #%d: ",lc++);
@@ -466,6 +480,7 @@ int list_c(int n, char* args){
     printf(" %7d  Y0\n",specs[Y0]);
     printf(" %7d  Delta X\n",specs[DX]);
     printf(" %7d  Delta Y\n",specs[DY]);
+    printf(" %g  Exposure \n",values[EXPOSURE]);
     /*
      #ifdef FLOAT
      printf(" %g  Color Minimum\n %g  Color Maximum\n",cmin,cmax);
@@ -486,6 +501,7 @@ int list_c(int n, char* args){
      else
      pprintf("\nUnknown Commands Flagged.\n");  */
     free(specs);
+    free(values);
     return NO_ERR;
     
     
@@ -616,6 +632,7 @@ int rotate_c(int n,char* args){
             beep();
             printf("Error: %d.\n",err);
             iBuffer.errclear();
+            free(specs);
             return err;
         }
         free(specs);
@@ -675,9 +692,9 @@ int smooth_c(int n,char* args){
     
     
     if(smoothed.err()){
+        free(bufferspecs);
         return smoothed.err();
     }
-    smoothed.copyABD(iBuffer);
     
     dxs = -dx/2;
     dys = -dy/2;
@@ -707,7 +724,7 @@ int smooth_c(int n,char* args){
             smoothed.setpix(nt, nc, sum/count);
         }
     }
-    free(bufferspecs);  // release buffer copy
+    free(bufferspecs);  // release specs copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
     iBuffer.getmaxx(PRINT_RESULT);
@@ -2756,12 +2773,13 @@ int accumulate_c(int n,char* args)
     accumulator.free();
     int* specs = iBuffer.getspecs();
     accumulator = Image(specs[ROWS],specs[COLS]);
+    free(specs);
     if(accumulator.err()){
         return accumulator.err();
     }
     accumulator.copyABD(iBuffer);
     accumulator.zero();
-
+    free(specs);
     return NO_ERR;
 }
 
@@ -2814,12 +2832,143 @@ int acget_c(int n,char* args){
         printf("Accumulator has not been initialized.\n");
         return CMND_ERR;
     }
+    iBuffer.free();
     iBuffer << accumulator;
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return iBuffer.err();
 }
 
+/* ********** */
+/* --------------------------- */
+
+/*
+HDRACCUMULATE cutoff
+ Allocates and clears memory for an image accumulator buffer that can be used to sum
+ individual images. The size of the accumulator is determined by the image size parameters
+ when the accumulate command is first given.
+ */
+
+int hdrAccumulate_c(int n,char* args)
+{
+    hdrCutoff = n;
+    hdrFrames = 0;
+    hdrAccumulator.free();
+    hdrCounter.free();
+    int* specs = iBuffer.getspecs();
+    hdrAccumulator = Image(specs[ROWS],specs[COLS]);
+    if(hdrAccumulator.err()){
+        free(specs);
+        return hdrAccumulator.err();
+    }
+    hdrAccumulator.copyABD(iBuffer);
+    hdrAccumulator.zero();
+
+    hdrCounter = Image(specs[ROWS],specs[COLS]);
+    if(hdrCounter.err()){
+        free(specs);
+        return hdrCounter.err();
+    }
+    hdrCounter.zero();
+    free(specs);
+    return NO_ERR;
+}
+
+
+/*
+ ACDELETE
+ Frees the memory associated with the accumulator.
+ */
+
+int hdrAcdelete_c(int n,char* args)
+{
+    if (!hdrAccumulator.isEmpty()) {
+        hdrAccumulator.free();
+        hdrCounter.free();
+    }
+    hdrFrames = 0;
+    return NO_ERR;
+}
+
+
+/*
+ ACADD
+ Adds the current image data buffer to the accumulator buffer.
+ */
+
+int hdrAcadd_c(int n,char* args)
+{
+    if (hdrAccumulator.isEmpty()) {
+        beep();
+        printf("HDR Accumulator has not been initialized.\n");
+        return CMND_ERR;
+    }
+    
+    if(hdrAccumulator != iBuffer){
+        beep();
+        printf("HDR Accumulator is not the corret size for the current image.\n");
+        return SIZE_ERR;
+    }
+    static float firstExposure = 1;
+    int* specs = iBuffer.getspecs();
+    DATAWORD* values = iBuffer.getvalues();
+    if(hdrFrames == 0){
+        firstExposure = values[EXPOSURE];
+    }
+    float normalize = values[EXPOSURE]/firstExposure;
+    printf("%f\n",normalize);
+    hdrFrames++;
+    for( int row=0; row < specs[ROWS]; row++){
+        for( int col=0; col < specs[COLS]; col++){
+            DATAWORD val = iBuffer.getpix(row,col);
+            if (val < hdrCutoff) {
+                hdrAccumulator.setpix(row, col, hdrAccumulator.getpix(row,col)+val/normalize);
+                hdrCounter.setpix(row, col, hdrCounter.getpix(row,col)+1);
+            }
+        }
+    }
+    free(specs);
+    free(values);
+    return NO_ERR;
+}
+
+/*
+ ACGET
+ Moves the data from the accumulator buffer into the current image data area. The
+ previous contents of the image data buffer are destroyed.
+ */
+
+int hdrAcget_c(int n,char* args){
+    if (hdrAccumulator.isEmpty()) {
+        beep();
+        printf("HDR Accumulator has not been initialized.\n");
+        return CMND_ERR;
+    }
+    iBuffer.free();
+    int* specs = hdrAccumulator.getspecs();
+    iBuffer = Image(specs[ROWS],specs[COLS]);
+    iBuffer.copyABD(hdrAccumulator);
+    
+    for( int row=0; row < specs[ROWS]; row++){
+        for( int col=0; col < specs[COLS]; col++){
+            iBuffer.setpix(row, col, hdrAccumulator.getpix(row,col)/hdrCounter.getpix(row,col));
+            
+        }
+    }
+    free(specs);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return iBuffer.err();
+}
+
+int exposure_c(int n,char* args){
+    DATAWORD* values = iBuffer.getvalues();
+    float exp;
+    sscanf(args,"%f",&exp);
+    values[EXPOSURE] = exp;
+    iBuffer.setvalues(values);
+    return NO_ERR;
+}
 /* ********** */
 
 /*
@@ -3023,6 +3172,7 @@ int ln_c(int n,char* args){
 int 	bigfile_fd;
 int 	bigfile_open = 0;
 char 	bigfile_name[CHPERLN] = {0};
+int     bigfileFrames = 0;
 
 int createfile_c(int n,char* args)
 {
@@ -3031,6 +3181,7 @@ int createfile_c(int n,char* args)
     bigfile_fd = open(fullname(args,SAVE_DATA),WMODE);
 	strcpy(bigfile_name,args);
     iBuffer.saveFile((char*)&bigfile_fd,LEAVE_OPEN);
+    bigfileFrames++;
 	bigfile_open = 1;
 	return iBuffer.err();
 }
@@ -3044,6 +3195,7 @@ int concatfile_c(int n,char* args)
 		return FILE_ERR;
 	}
     iBuffer.saveFile((char*)&bigfile_fd,IS_OPEN);
+    bigfileFrames++;
     return iBuffer.err();
 }
 
@@ -3051,8 +3203,35 @@ int concatfile_c(int n,char* args)
 
 int closefile_c(int n,char* args)
 {
+    if(bigfile_open == 0){
+        beep();
+        printf("There is no open file from the CREATEFILE command.\n");
+        return FILE_ERR;
+    }
+
     close(bigfile_fd);
+    FILE* big;
+    big = fopen(bigfile_name, "r+");
+    if (big) {                      // set the number of frames
+        char txt[HEADLEN];
+        int nspecs = NSPECS;
+        int nvalues = NVALUES;
+        int nrulerchar = NRULERCHAR;
+        
+        int* specs = iBuffer.getspecs();
+        specs[ NFRAMES] = --bigfileFrames;
+
+        strcpy(txt, OMA2_BINARY_DATA_STRING);
+        fwrite(txt, sizeof(char), HEADLEN, big);
+        fwrite(&nspecs,sizeof(int),1,big);
+        fwrite(&nvalues,sizeof(int),1,big);
+        fwrite(&nrulerchar,sizeof(int),1,big);
+        fwrite(specs,sizeof(int),nspecs,big);
+        fclose(big);
+        free(specs);
+    }
 	bigfile_open = 0;
+    bigfileFrames = 0;
 	//setdata(bigfile_name);
 	//fileflush(bigfile_name);	/* for updating directory */
 	printf("File %s Closed.\n",bigfile_name);
@@ -3064,9 +3243,14 @@ int closefile_c(int n,char* args)
 
 int	fileIsOpen = 0;
 int openFileFd = -1;
+int remainingFrames = 0;
 
 
 int openfile_c(int n,char* args){
+    extern Variable user_variables[];
+    char txt[CHPERLN];
+    strncpy(txt, args, CHPERLN);
+    unsigned long filesize = fsize(fullname(txt, GET_DATA));
     Image new_im(args,LEAVE_OPEN);
     if(new_im.err()){
         beep();
@@ -3077,6 +3261,16 @@ int openfile_c(int n,char* args){
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
     iBuffer.getmaxx(PRINT_RESULT);
+    int* specs = iBuffer.getspecs();
+    if (filesize < specs[ROWS]*specs[COLS]*sizeof(DATAWORD)*specs[NFRAMES]) { // number of frames must not have been set
+        specs[NFRAMES] = (int)(filesize-sizeof(Image))/(specs[ROWS]*specs[COLS]*sizeof(DATAWORD))-1;    // this is a reasonable guess
+        iBuffer.setspecs(specs);
+    }
+    printf("%d Frames.\n",specs[NFRAMES]+1);
+    remainingFrames = specs[NFRAMES];
+    user_variables[0].ivalue = user_variables[0].fvalue = specs[NFRAMES]+1;
+	user_variables[0].is_float = 0;
+    free(specs);
     update_UI();
     return NO_ERR;
 }
@@ -3087,7 +3281,7 @@ int getNext_c(int n,char* args)
 {
     if (!fileIsOpen) {
         beep();
-        printf("No file has been opend. Use the OPENFILE command.\n");
+        printf("No file has been opened. Use the OPENFILE command.\n");
         return FILE_ERR;
 
     }
@@ -3098,11 +3292,28 @@ int getNext_c(int n,char* args)
         fileIsOpen = 0;
         close(openFileFd);
         openFileFd= -1;
+        new_im.free();
         return new_im.err();
+    }
+    // some potential problems here if sizes aren't right
+    // probably need more checking
+    new_im.copyABD(iBuffer);
+    remainingFrames--;
+    if (remainingFrames == 0) {
+        fileIsOpen = 0;
+        close(openFileFd);
+        printf("Last image -- file is now closed.\n");
+        openFileFd= -1;
+
     }
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    if (strncmp(args, "NoPrint", 7)== 0) {
+        iBuffer.getmaxx(NO_PRINT);
+    } else {
+        iBuffer.getmaxx(PRINT_RESULT);
+    }
+
     update_UI();
     return NO_ERR;
 }
@@ -3345,3 +3556,223 @@ int uprefix_c(int n,char* args)		/* force the use of a particular prefix andsuff
     
 }
 
+/* ********** */
+
+/*
+ SEQ2HDR filename cutoff
+    Convert a sequence of images with different exposures to an HDR image. The file contains all images and must have information on exposures stored in the EXTRA data (see the EXTRA command). This type of file can be created by GigE cameras in oma2cam or can be created using the CREATEFILE/CONCATENATEFILE/COLSEFILE commands. Note that all exposure information must be entered in the extra space before CREATEFILE is used to open the file.
+ */
+
+int seq2hdr_c(int n,char* args){
+    int ex;
+    DATAWORD cutoff;
+    char filename[FILENAME_MAX];
+    int narg = sscanf(args,"%s %f",filename, &cutoff);
+    if (narg != 2) {
+        beep();
+        printf("Need two arguments: filename cutoff\n");
+        return CMND_ERR;
+    }
+    
+    int err = openfile_c(0, filename);
+    if (err) {
+        beep();
+        printf("Could not open %s\n",filename);
+        return err;
+    }
+    int* specs = iBuffer.getspecs();
+    int extraSize = iBuffer.getExtraSize();
+    if (extraSize < specs[NFRAMES]+ 1) {
+        beep();
+        printf("The sequence does not contain enough exposure values.\n");
+        free(specs);
+        return FILE_ERR;
+    }
+    extraSize = specs[NFRAMES]+ 1;
+    
+    Image* exp = new Image[specs[NFRAMES]+ 1];
+    
+    for(ex=0; ex < specs[NFRAMES]; ex++){
+        exp[ex] << iBuffer;
+        getNext_c(0,(char*) "NoPrint");
+    }
+    exp[ex] << iBuffer;
+    
+    
+    float* expValues = iBuffer.getextra();
+
+    for( int row=0; row < specs[ROWS]; row++){
+        for( int col=0; col < specs[COLS]; col++){
+            DATAWORD sum = 0.;
+            int num = 0;
+            for(int ex=0; ex < extraSize; ex++){
+                DATAWORD val = exp[ex].getpix(row,col);
+                if (val < cutoff) {
+                    sum += val/(expValues[ex]/expValues[0]);
+                    num++;
+                }
+            }
+            iBuffer.setpix(row,col, sum/num);
+        }
+    }
+    
+    specs[NFRAMES] = 0;     // this is just a single image now
+    iBuffer.setspecs(specs);
+    
+    for(int ex=0; ex < extraSize; ex++){
+        exp[ex].free();
+        //printf("%f\n",expValues[ex]);
+    }
+    
+    free(specs);
+    free(expValues);
+    delete[] exp;
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+
+    return NO_ERR;
+}
+/* ********** */
+
+/*
+ SEQ2IMAGE filename
+    Open all frames of a sequence of images to a single image whose height is NFRAMES*FRAMEHEIGHT.
+ */
+
+int seq2Image_c(int n,char* args){
+    int ex;
+    int err;
+    err = openfile_c(0, args);
+    if (err) {
+        beep();
+        printf("Could not open %s\n",args);
+        return err;
+    }
+    int* specs = iBuffer.getspecs();    // iBuffer has the first frame
+    int frames = specs[NFRAMES];    // this is the index of the last frame
+    specs[NFRAMES] = 0;     // this is just a single image now
+    iBuffer.setspecs(specs);
+    free(specs);
+    
+    Image result;
+    result << iBuffer;
+    
+    for(ex=0; ex < frames; ex++){
+        getNext_c(0,(char*) "NoPrint");
+        result.composite(iBuffer);
+        err = result.err();
+        if (err) {
+            beep();
+            printf("Composite error.\n");
+            return err;
+        }
+
+    }
+    iBuffer.free();
+    iBuffer = result;
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    
+    return NO_ERR;
+}
+/* ********** */
+
+/*
+ IM2SEQUENCE filename frames
+    Save the current image as a sequence of images with the specified number of frames. This type of data file can be used by the SEQ2HDR command.
+ */
+
+int im2Sequence_c(int n,char* args){
+    
+    int err,frames;
+    char filename[FILENAME_MAX];
+    int narg = sscanf(args,"%s %d",filename, &frames);
+    
+    if (narg != 2) {
+        beep();
+        printf("Need two arguments: filename frames\n");
+        return CMND_ERR;
+    }
+    if(frames < 1) frames = 1;
+    int* specs = iBuffer.getspecs();
+    iBuffer.saveFile(filename, SAVE_DATA);
+    err = iBuffer.err();
+    if (err) {
+        beep();
+        printf("Could not open %s\n",filename);
+        return err;
+    }
+    specs[NFRAMES] = frames-1;
+    specs[ROWS] /= frames;
+    
+    FILE* big;
+    big = fopen(filename, "r+");
+    if (big) {                      // set the number of frames
+        char txt[HEADLEN];
+        int nspecs = NSPECS;
+        int nvalues = NVALUES;
+        int nrulerchar = NRULERCHAR;
+        
+        strcpy(txt, OMA2_BINARY_DATA_STRING);
+        fwrite(txt, sizeof(char), HEADLEN, big);
+        fwrite(&nspecs,sizeof(int),1,big);
+        fwrite(&nvalues,sizeof(int),1,big);
+        fwrite(&nrulerchar,sizeof(int),1,big);
+        fwrite(specs,sizeof(int),nspecs,big);
+        fclose(big);
+    }
+    free(specs);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    
+    return NO_ERR;
+}
+
+/* ********** */
+/*
+ EXTRA [index] [value]
+    Add extra information to the current image in the form of a floating point value. If no argument is given, the command lists extra values in the current image buffer. Indexing starts at 1.
+ */
+
+int extra_c(int n,char* args){
+    int size = iBuffer.getExtraSize();
+    if (*args == 0) {
+        if ( size) {
+            printf("Extra values are as follows:\n");
+            float* extra = iBuffer.getextra();
+            for (int i = 0; i< size; i++){
+                printf("%g\n",extra[i]);
+            }
+            free(extra);
+            return NO_ERR;
+        } else {
+            printf("No extra values are present.\n");
+            return NO_ERR;
+        }
+    }
+    float value;
+    sscanf(args, "%d %f)",&n,&value);
+    if (--n < 0) {
+        printf("Index must be > 0.\n");
+        return CMND_ERR;
+    }
+    
+    if (n < size) {
+        // we aready have space, just fill in the value
+        float* extra = iBuffer.getextra();
+        extra[n] = value;
+        iBuffer.setExtra(extra, size);
+        return NO_ERR;
+    }
+    // need more space
+    float* newextra = new float[n+1];
+    float* extra = iBuffer.getextra();
+    for (int i = 0; i < size; i++) {
+        newextra[i] = extra[i];
+    }
+    newextra[n] = value;
+    iBuffer.setExtra(newextra, n+1);
+    
+    return NO_ERR;
+    
+}
