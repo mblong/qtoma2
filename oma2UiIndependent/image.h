@@ -18,10 +18,10 @@
 
 // locations within the specs array
 enum {ROWS,COLS,X0,Y0,DX,DY,LMAX,LMIN,IS_COLOR,HAVE_MAX,HAS_RULER,
-        LRMAX,LRMIN,LGMAX,LGMIN,LBMAX,LBMIN};
+        LRMAX,LRMIN,LGMAX,LGMIN,LBMAX,LBMIN,NFRAMES};
 
 // locations within the values array
-enum {MIN,MAX,RMAX,RMIN,GMAX,GMIN,BMAX,BMIN,RULER_SCALE};
+enum {MIN,MAX,RMAX,RMIN,GMAX,GMIN,BMAX,BMIN,RULER_SCALE,EXPOSURE,APERTURE,ISO};
 
 // Image error codes and command return codes
 enum {NO_ERR,SIZE_ERR,FILE_ERR,MEM_ERR,ARG_ERR,CMND_ERR,HARD_ERR,GET_MACRO_LINE,GET_COMMENT_LINE};
@@ -40,7 +40,7 @@ protected:
     int         error;              ///< An error flag
     int         is_big_endian;  ///< You guessed it.
     int         commentSize;    ///< Size of text entered with the LOG command
-    int         extraSize;      ///< Space of extra buffer to be stored with an image. Not used so far.
+    int         extraSize;      ///< Space of extra buffer to be stored with an image. Used for exposure values in HDR sequence files.
     char*       comment;        ///< Text entered with the LOG command
     float*      extra;          ///< Pointer to extra data (float)
     DATAWORD*   data;           ///< Pointer to image data (DATAWORD=float currently)
@@ -86,10 +86,14 @@ public:
     
     void copyABD(Image);        ///< copy All But Data from one image to another
     int* getspecs();            ///< returns a copy of the image specs array
+    float* getextra();          ///< returns a copy of the extra data array
+    void setExtra(float*,int);  ///< Loads the extra buffer with the specified number of floating point values
+    int getExtraSize();         ///< returns the size of the extra data array
     int rows();                 ///< returns the number of rows in the current image (height)
     int cols();                 ///< returns the number of columns in the current image (width)
     void setspecs(int*);        ///< sets the image specs array
     DATAWORD* getvalues();      ///< returns a copy of the image values array
+    void setvalues(DATAWORD*);  ///< sets the image values array
     char* getunit_text();       ///< returns a copy of the image ruler units
     char* getComment();        ///< returns a copy of the comment buffer
     void setComment(char*,int);        ///< Loads the comment buffer with the specified number of characters
@@ -118,6 +122,9 @@ public:
     friend int readTiff(char* filename, Image*);
     friend int readHDR(char* filename, Image*);
     friend void oma_write_ppm_tiff (int thecolor, Image* im);
+#ifdef GIGE_
+    friend int gige(int n, char* args);
+#endif
     // Special friends that need to go fast
     friend  int dofft(int,char*);
     friend class ImageBitmap;

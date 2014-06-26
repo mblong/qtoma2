@@ -63,6 +63,8 @@ ComDef   commands[] =    {
     {{"ENDIF          "},	endifcmnd},
     {{"ECHO           "},	echo_c},
     {{"EXECUTE        "},	execut},
+    {{"EXTRA          "},	extra_c},
+    {{"EXPOSURE       "},	exposure_c},
         
     {{"FLOATVARIABLE  "},	vfloat},
     {{"FCLOSE         "},	fclose_c},
@@ -89,13 +91,18 @@ ComDef   commands[] =    {
     {{"GETNEXT        "},	getNext_c},
     
     {{"HELP           "},	help},
-        
+    {{"HDRACCUMULATE  "},	hdrAccumulate_c},
+    {{"HDRACADD       "},	hdrAcadd_c},
+    {{"HDRACDELETE    "},	hdrAcdelete_c},
+    {{"HDRACGET       "},	hdrAcget_c},
+    
     {{"IF             "},	ifcmnd},
     {{"IFNOT          "},	ifnotcmnd},
     {{"INVERT         "},	invert_c},
     {{"INTEGRATE      "},	integrate_c},
     {{"INTFILL        "},	intfill_c},
     {{"INTVARIABLE    "},	vint},
+    {{"IM2SEQUENCE    "},	im2Sequence_c},
         
     {{"KILLBOX        "},	killBox_c},
     {{"KWABEL         "},	kwabel_g},
@@ -139,7 +146,7 @@ ComDef   commands[] =    {
     {{"RAMP           "},	ramp_c},
     {{"RNDOFF         "},	roundoff_c},
     {{"RNDUP          "},	roundUp_c},
-    {{"RULER         "},	ruler_c},
+    {{"RULER          "},	ruler_c},
     
     
     {{"SAVEFILE       "},	savefile_c},
@@ -155,10 +162,12 @@ ComDef   commands[] =    {
     {{"SUBFILE        "},	subfile_c},
     {{"SUBTMPIMAGE    "},	subtmp_c},
     {{"SHELL          "},	sysCommand_c},
+    {{"SEQ2HDR        "},	seq2hdr_c},
+    {{"SEQ2IMAGE      "},	seq2Image_c},
     
     {{"TSMOOTH        "},	tsmooth_c},
     
-    {{"UPREFIX       "},	uprefix_c},
+    {{"UPREFIX        "},	uprefix_c},
     
     {{"VARIABLES      "},	variab},
     

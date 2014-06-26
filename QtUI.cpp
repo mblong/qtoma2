@@ -84,7 +84,7 @@ BOOL dropped_file(char* extension, char* name){
         wPointer->addCString((char*)"OMA2>");
         return YES;
     }
-    if(strcmp(extension, "MAC")==0){
+    if(strcmp(extension, "MAC")==0 || strcmp(extension, "O2M")==0){
         extern char	macbuf[];
         int fd,nread,i;
         fd = open(name,O_RDONLY);

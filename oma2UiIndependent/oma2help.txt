@@ -196,6 +196,12 @@ ENDIF
 EXECUTE <filename>
 	Reads OMA commands stored in the specified file into a special execute buffer and then performs those commands. Unlike macros, these should not contain dummy numerical arguments (%d).
 
+EXPOSURE exposureValue
+	Sets an exposure time to be used in generating HDR images.
+
+EXTRA [index] [value]
+    Add extra information to the current image in the form of a floating point value. If no argument is given, the command lists extra values in the current image buffer. Indexing starts at 1.
+
 FFT mode scale_factor
 	mode = 0  return the magnitude scaled by scale_factor
 	mode = 1  return the real part scaled by scale_factor
@@ -273,8 +279,39 @@ GTEMPIMAGE name
 GETNEXT
 	Get the next image from the file opened with the OPENFILE command. If no additional image data is available, the open file is closed.
 
+GIGE command
+	Available in oma2cam. Commands are as follows:
+	ACQuire (gets frames in MULTIFRAME mode)
+	EXPosure <exposureTime> (in microseconds)
+	GAIn <gain> (0 or 33)
+	NUMber <numberOfFrames> (to be acquired by the ACQUIRE command; default is 1)
+	RATe <frameRate>
+	LABON (label frames)
+	LABOFf (don't label frames)
+	PREview <numberFrames> (show preview for specified number of frames)
+	EXTernal (set external triggering)
+	INTernal (set internal triggering)
+	DELay <triggerDelay> (set the trigger delay [microseconds])
+	SFRames <filename> <numFrames> (save the specified number of frames using the specified filename. Uses FREERUN mode. Also saves a text file showing frame times.)
+	STAtus (print camera settings)
+	FIXbad <flag> (set flag to 1 to clear bad pixels before display or save --> must use FINDBAD first)
+	DISplay <flag> (set flag to 1 to display during acqusition)
+	HDR <filename> <numFrames> <multiplier> (save the specified number of frames using the specified filename. Subsequent exposure times are multiplied by the multiplier.)
+
 HELP [command name or fragment]
 	If a command name is given, a brief explanation of the command is printed in the command window. If only part of the command is given, a description of all commands that match the command fragment is printed. All help information is from the file "OMA HELP." If no argument is given, all command names are printed with no explanation.
+
+HDRACADD
+	Adds the current image data buffer to the HDR accumulator buffer. Values greater than the cutoff are excluded and values are then normalized by the exposure time.
+
+HDRACCUMULATE cutoff
+	Allocates and clears memory for an HDR accumulator that can be used to generate HDR imnages from a series of different exposures. The cuttoff value should be less than the saturation value for the detector. The size of the accumulator is determined by the image size parameters when the accumulate command is first given. Be sure the exposure value for the image is set (e.g., imported from and raw file or set using the EXPOSURE command).
+
+HDRACDELETE
+	Frees the memory associated with the HDR accumulator.
+
+HDRACGET
+	Calculates an HDR image based on the data in the HDR accumulator and moves that to the current image. The previous contents of the image data buffer are destroyed.
 
 IF condition
 	If condition evaluates to a non-zero value, the commands following the IF are executed. However, if the condition is zero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
@@ -299,6 +336,9 @@ INTFILL direction_flag selection_flag do_average
 
 INTVARIABLE variable_name
 	Specifies that variable_name is to be used as an integer variable.
+
+IM2SEQUENCE filename frames
+    Save the current image as a sequence of images with the specified number of frames. This type of data file can be used by the SEQ2HDR command.
 
 KILLBOX [value]
 	Much like FILLBOX, this command works on the region of the image that has been specified with the RECT command or mouse. The contents of this region are set to 'value'. Default for 'value' is 0.
@@ -496,6 +536,12 @@ SBIG command_string [parameters]
 
 SUBTMPIMAGE name
 	Subtracts the contents of the named temporary image from the data in the current buffer.
+
+SEQ2HDR filename cutoff
+    Convert a sequence of images with different exposures to an HDR image. The file contains all images and must have information on exposures stored in the EXTRA data (see the EXTRA command). This type of file can be created by GigE cameras in oma2cam or can be created using the CREATEFILE/CONCATENATEFILE/COLSEFILE commands. Note that all exposure information must be entered in the extra space before CREATEFILE is used to open the file. Image values larger thatn the cutoff value will not be included and this should be close to the detector saturation value.
+
+SEQ2IMAGE filename
+    Open all frames of a sequence of images to a single image whose height is NFRAMES*FRAMEHEIGHT.
 
 TSMOOTH
 	Smooth radius based on x_dim = Temp[0], y_dim = Temp[1]. This is a function that enables (Rectangular) smoothing of an image, with variable filter size. It works basically like SMOOTH 13 13, say, but it takes the x_dim and y_dim locally based on the values in the  Temporary buffers T[0] and T[1]. It has been used to variably smooth an image based on the local length scale which was modelled.

@@ -11,10 +11,15 @@ Image   iBuffer(200,200);     // the image buffer
 oma2UIData UIData;            // Put all the UI globals here
 Image  iTempImages[NUM_TEMP_IMAGES];  // temporary in-memmory images
 Image   accumulator;          // the accumulator image
+Image   hdrAccumulator;     // the HDR accumulator
+Image   hdrCounter;         // the HDR counter
+DATAWORD hdrCutoff;         // the HDR saturation value
+int      hdrFrames=0;       // HDR frame counter
+
 int numberNamedTempImages = 0;
 Variable namedTempImages[NUM_TEMP_IMAGES-NUMBERED_TEMP_IMAGES];
 
-int argc = 0;               // these three fro dcraw
+int argc = 0;               // these three for dcraw
 char *argv[200];
 char dcraw_arg[CHPERLN];
 
@@ -40,6 +45,7 @@ Image::Image()              // create an empty Image with default values
     specs[ROWS]=specs[COLS]=0;
 
     specs[Y0] = specs[X0] = specs[IS_COLOR] = specs[HAVE_MAX] = 0;
+    specs[NFRAMES] = 0; // the first frame is frame 0 
     specs[DX] = specs[DY] = 1;
     error = 0;
     specs[HAS_RULER]=0;
@@ -193,14 +199,12 @@ Image::Image(char* filename, int kindOfName)
                 comment = new char[commentSize];
                 read(fd,comment,commentSize);
             }
-            if(extraSize){
+            if(extraSize ){ // make room, but we won't read until later
                 extra = new float[extraSize];
                 read(fd,extra,extraSize*sizeof(float));
             }
-            // finally the data
+            // next the data
             data = new DATAWORD[specs[ROWS]*specs[COLS]];
-            openFileRows = specs[ROWS];
-            openFileCols = specs[COLS];
             if(data == 0){
                 specs[ROWS]=specs[COLS]=0;
                 error = MEM_ERR;
@@ -208,6 +212,8 @@ Image::Image(char* filename, int kindOfName)
                 windowNameMemory = 0;
                 return;
             }
+            openFileRows = specs[ROWS];
+            openFileCols = specs[COLS];
         } else {
             newFormat = 0;
             // old data save format
@@ -236,7 +242,10 @@ Image::Image(char* filename, int kindOfName)
         if (nr != sizeof(DATAWORD)*specs[ROWS]*specs[COLS]) {
             error = FILE_ERR;
         }
-        if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN) close(fd);
+
+        if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN){
+            close(fd);
+        }
         if (error) windowNameMemory = 0;
         return;
     }
@@ -667,9 +676,11 @@ void Image::saveFile(char* name, int kindOfName){
     }
     // now the data
     write(fd,data,sizeof(DATAWORD)*specs[ROWS]*specs[COLS ]);
+    
 
-    if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN)
+    if(kindOfName != IS_OPEN && kindOfName != LEAVE_OPEN){
         close(fd);
+    }
     error = NO_ERR;
     
 }
@@ -800,6 +811,33 @@ DATAWORD* Image::getvalues(){       // this allocates space for values that the 
     return thevalues;
 }
 
+float* Image::getextra(){       // returns a copy of the extra data array
+    float* theExtra = new DATAWORD[extraSize];
+    for(int i=0; i<extraSize; i++){
+        theExtra[i] = extra[i];
+    }
+    return theExtra;
+}
+
+void Image::setExtra(float* ext,int size){
+    if (extra){
+        delete[] extra;
+        extra = NULL;
+    }
+    if (size <=0) {
+        extraSize = 0;
+        return;
+    }
+    extra = new float[size];
+    for(int i=0; i<size; i++) extra[i] = ext[i];
+    extraSize = size;
+}
+
+int Image::getExtraSize(){      // returns the size of the extra data array
+    return extraSize;
+}
+
+
 char* Image::getunit_text(){       // this allocates space for unit text that the user must free
     char* thetext = new char[NRULERCHAR];
     for(int i=0; i<NRULERCHAR; i++){
@@ -863,6 +901,12 @@ void Image::setspecs(int* newspecs){
     }
 }
 
+void Image::setvalues(float* newvalues){
+    for(int i=0; i<NVALUES; i++){
+        values[i] = newvalues[i];
+    }
+}
+
 void Image::setRuler(float rulerScale, char* new_unit_text){
     specs[HAS_RULER] = 1;
     values[RULER_SCALE] = rulerScale;
@@ -890,7 +934,7 @@ void Image::copyABD(Image im){    // copy All But Data from one image to another
     comment = im.getComment();
     extraSize = im.extraSize;
     if (extraSize) {
-        extra = new float(extraSize);
+        extra = new float[extraSize];
         for (i=0; i<extraSize; i++) {
             extra[i] = im.extra[i];
         }
