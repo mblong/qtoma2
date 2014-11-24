@@ -127,4 +127,5 @@ unix:!macx:{
 # Notes:
 # Need to check out from the command line before QtCreator will recognize a subversion repository
 # Include username too.
+# Also check the username and password in Qt preferences.
 #
