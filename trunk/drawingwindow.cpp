@@ -25,8 +25,6 @@ DrawingWindow::~DrawingWindow()
     //if(colData) delete colData;
 }
 
-//DrawingWindow::~DrawingWindow()
-
 void DrawingWindow::setTheRow(int windowRow)
 {
     theRow = windowRow;
