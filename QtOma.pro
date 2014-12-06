@@ -36,7 +36,8 @@ SOURCES += main.cpp\
         status.cpp \
         drawingwindow.cpp \
     qtimagesupport.cpp \
-    oma2commands.cpp
+    oma2commands.cpp \
+    variableswindow.cpp
 
 
 unix:!macx: {
@@ -61,14 +62,16 @@ HEADERS  += qtoma2.h\
         status.h \
     qtimagesupport.h \
     oma2commands.h \
-    Hardware/cameraSelector.h
+    Hardware/cameraSelector.h \
+    variableswindow.h
 
 
 FORMS    += qtoma2.ui \
     datawindow.ui \
     preferences.ui \
     status.ui \
-    drawingwindow.ui
+    drawingwindow.ui \
+    variableswindow.ui
 
 #macx: LIBS += -L/opt/local/lib/ -ljpeg
 #macx: INCLUDEPATH += /opt/local/lib

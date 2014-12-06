@@ -10,10 +10,15 @@ extern ImageBitmap iBitmap;
 ComDef   commands[] =    {
     {{"               "},	null},			
     {{"+              "},	plus_c},
+    {{"+RGB           "},	addRGB_c},
     {{"-              "},	minus_c,},
+    {{"-RGB           "},	subRGB_c,},
     {{"*              "},	multiply_c},
+    {{"*RGB           "},	mulRGB_c},
     {{"/              "},	divide_c,},
+    {{"/RGB           "},	divRGB_c,},
     {{"^              "},	power_c,},
+    {{"^RGB           "},	powRGB_c,},
     {{"ADDFILE        "},	addfile_c},
     {{"ADDTMPIMAGE    "},	addtmp_c},
     {{"ABELINV        "},   abelinv_g},
@@ -58,6 +63,7 @@ ComDef   commands[] =    {
     {{"DX             "},	dx_c},
     {{"DY             "},	dy_c},
     {{"DOC2RGB        "},	doc2rgb_c},
+    {{"DISP2RGB       "},	disp2rgb_c},
     
     {{"ERASE          "},	erase},
     {{"ENDIF          "},	endifcmnd},
@@ -89,6 +95,8 @@ ComDef   commands[] =    {
     {{"GREY2RGB       "},	grey2rgb_c},
     {{"GSMOOTH        "},	gsmooth_c},
     {{"GETNEXT        "},	getNext_c},
+    {{"GETMATCH       "},	getmatch_c},
+    {{"GNOISE         "},	gnoise_c},
     
     {{"HELP           "},	help},
     {{"HDRACCUMULATE  "},	hdrAccumulate_c},
@@ -123,9 +131,14 @@ ComDef   commands[] =    {
     {{"MIRROR         "},	mirror_c},
     {{"MULFILE        "},	mulfile_c},
     {{"MULTMPIMAGE    "},	multmp_c},
+    {{"MASK>          "},	maskGreater_c},
+    {{"MASK<          "},	maskLess_c},
+    {{"MATCH          "},	match_c},
+    
         
     {{"NEWWINDOW      "},	newWindow_c},
     {{"NEXTFILE       "},	nextFile_c},
+    {{"NOISE          "},	noise_c},
         
     {{"OPENFILE       "},	openfile_c},
         
@@ -164,14 +177,19 @@ ComDef   commands[] =    {
     {{"SHELL          "},	sysCommand_c},
     {{"SEQ2HDR        "},	seq2hdr_c},
     {{"SEQ2IMAGE      "},	seq2Image_c},
+    {{"SNR            "},	snr_c},
+    {{"SHOTNOISE      "},	shotnoise_c},
     
     {{"TSMOOTH        "},	tsmooth_c},
     
     {{"UPREFIX        "},	uprefix_c},
     
     {{"VARIABLES      "},	variab},
+    {{"VARCLEAR       "},	varClear},
     
     {{"WRITEBADPIX    "},	writebad_c},
+    {{"WARP           "},	warp_c},
+    {{"WARPARAM       "},	warpar_c},
     
     {{"X0             "},	x0_c},
     
@@ -320,7 +338,7 @@ Variable user_variables[MAX_VAR] = {{{"command_return_1"},0,0.0,0,{""}},
     {{"command_return_9"},0,0.0,0,{""}},
     {{"command_return_10"},0,0.0,0,{""}}
 };
-int num_variables = 10;
+int num_variables = NUM_COMMAND_RETURN_VARIABLES;
 
 // an array of expression elements
 // this global array is used to evaluate the RHS of an assignment statement
@@ -891,8 +909,6 @@ int fill_in_command(char* dest,char* source,int val)
 	return 0;
 }
 
-int treat_as_float = 0;		// for arithmetic on RHS of assignment
-// need to decide when to do float to integer conversion and when not to
 
 // the command had an = in it, so do an assignment
 // define variable on LHS if it isn't already defined
@@ -949,19 +965,21 @@ int do_assignment(char* cmnd)
 		printf("Assignment error -2\n");
 		return -2;
 	}
+    
 	if(ex_result.op_char == 's'){
 		strcpy(&user_variables[var_index].estring[0],&ex_result.estring[0]);
 		user_variables[var_index].is_float = -1;
 	} else {
-		if(treat_as_float)
-			user_variables[var_index].ivalue = ex_result.fvalue;
-		else
-			user_variables[var_index].ivalue = ex_result.ivalue;
+		if(ex_result.op_char == 'f'){
+            user_variables[var_index].is_float = 1; // this was a simple assignment to a float, so force float as variable type
+        }
 		user_variables[var_index].fvalue = ex_result.fvalue;
+        user_variables[var_index].ivalue = ex_result.ivalue;
 	}
-	
+    
 	//printf("%d values; %c\n",rhs_vals,exp_el[0].op_char);
 	vprint(var_index);
+    update_UI();
 	return 0;
 }
 
@@ -1007,7 +1025,14 @@ int is_variable_char(char ch)
 
 // the argument here is the RHS of an assignment statement
 // expression elements are picked off and placed in the global exp_el array
-// 
+//
+/*  op_char values are as follows:
+    v   value (a number)
+    f   a single floating point assignment that can change an int to a float
+    s   a string
+    * / - + ^ ) ( > <   operators
+ 
+ */
 Expression_Element evaluate_string(char* ex_string)
 {	
 	int is_variable_char(char);
@@ -1024,7 +1049,7 @@ Expression_Element evaluate_string(char* ex_string)
      */
 	i= 0;
 	rhs_vals = 0;
-	treat_as_float = 0;
+	int treat_as_float = 0;
     // get the expression elements from the string
 	while(ex_string[i] != EOL && ex_string[i] != ';'){ // While not the end of the command
 		// if this is a string
@@ -1093,6 +1118,7 @@ Expression_Element evaluate_string(char* ex_string)
 	// have now filled in the exp_el array with all the expression elements
     // evaluate the expression elements
     if(rhs_vals == 1 && (exp_el[0].op_char == 'v' || exp_el[0].op_char == 's')){ // simple assignment
+        if(treat_as_float == 1)exp_el[0].op_char = 'f';
 		ex_result =  exp_el[0];
 		//vprint(var_index);
 		return(ex_result);
@@ -1250,13 +1276,70 @@ Expression_Element evaluate(int start, int end)
 int vprint(int index)
 {
 	if(user_variables[index].is_float > 0){
-		printf("%s: %g\n", user_variables[index].vname,user_variables[index].fvalue);
+		printf("%s: %f\n", user_variables[index].vname,user_variables[index].fvalue);
 	}else if(user_variables[index].is_float == 0){
 		printf("%s: %d\n", user_variables[index].vname,user_variables[index].ivalue);
 	}else{
 		printf("%s: %s\n", user_variables[index].vname,&user_variables[index].estring[0]);
     }
 	return 0;
+}
+
+std::string getVariablesString(std::string varString)
+{
+    char str[256];
+    int i;
+    for(i=0; i<num_variables; i++){
+        if(user_variables[i].is_float > 0){
+            sprintf(str,"%s:\t%f\n", user_variables[i].vname,user_variables[i].fvalue);
+        }else if(user_variables[i].is_float == 0){
+            sprintf(str,"%s:\t%d\n", user_variables[i].vname,user_variables[i].ivalue);
+        }else{
+            sprintf(str,"%s:\t%s\n", user_variables[i].vname,&user_variables[i].estring[0]);
+        }
+        varString += str;
+    }
+    return varString;
+}
+
+std::string getTempImagesString(std::string varString)
+{
+    char str[256];
+    int i,ncolors,n,haveOne=0;
+    extern Image  iTempImages[];
+    extern int numberNamedTempImages;
+    extern Variable namedTempImages[];
+    
+    for (n=0; n<NUMBERED_TEMP_IMAGES; n++) {
+        if(!iTempImages[n].isEmpty()){
+            if (!haveOne) {
+                varString += "\nDefined Temp Images\n";
+                haveOne=1;
+            }
+            if(iTempImages[n].isColor())
+                ncolors=3;
+            else
+                ncolors=1;
+            sprintf(str,"%d:\t%d x %d x %d\n",n,
+                   iTempImages[n].width(),iTempImages[n].height(),ncolors);
+            varString += str;
+        }
+    }
+    for (i = 0; i<numberNamedTempImages; i++) {
+        if (!haveOne) {
+            varString += "\nDefined Temp Images\n";
+            haveOne=1;
+        }
+        n = i+NUMBERED_TEMP_IMAGES;
+        if(iTempImages[n].isColor())
+            ncolors=3;
+        else
+            ncolors=1;
+        sprintf(str,"%s:\t%d x %d x %d\n",namedTempImages[i].vname,
+               iTempImages[n].width(),iTempImages[n].height(),ncolors);
+        varString += str;
+    }
+    return varString;
 }
 
 
@@ -2396,7 +2479,16 @@ int variab(int n, char* args)	// print values of defined variables
 	for(i=0; i<num_variables; i++){
 		vprint(i);
 	}
-	return 0;
+	return NO_ERR;
+    
+}
+
+int varClear(int n, char* args)	// clear user-defined variables variables
+{
+    num_variables=NUM_COMMAND_RETURN_VARIABLES ;
+    printf("All user-defined variables have been deleted.\n");
+    update_UI();
+    return NO_ERR;
     
 }
 
@@ -2420,8 +2512,8 @@ int vfloat(int n, char* args)	// set flag to use floating pt value of a variable
 	user_variables[arg_index].is_float=1;
 	
 	vprint(arg_index);
-    
-	return 0;
+    update_UI();
+	return NO_ERR;
 }
 
 // ********** 
@@ -2444,7 +2536,8 @@ int vint(int n, char* args)	// set flag to use integer value of a variable
 	user_variables[arg_index].is_float=0;
 	
 	vprint(arg_index);
-	return 0;
+    update_UI();
+	return NO_ERR;
     
 }
 // ********** 
@@ -2466,7 +2559,7 @@ int stopOnError(int n, char* args)
 		stop_on_error = 1;
         printf("Macros will stop on error condition.\n");
     }
-	return 0;
+	return NO_ERR;
     
 }
 /*

@@ -14,6 +14,7 @@
 #include "drawingwindow.h"
 #include "status.h"
 #include "preferences.h"
+#include "variableswindow.h"
 
 #define CLOSE_CLEANUP_DONE -10
 #define WINDOW_HEIGHT 376
@@ -95,6 +96,7 @@ public:
     void addDataWindowMinMax();
     void eraseWindow(int n);
     void showPreferences();
+    void showVariables();
     void fillInLabels();
     void fillDataLabel1(int x, int y, DATAWORD z);
     void fillDataLabel2(int x, int y, DATAWORD z);
@@ -125,6 +127,7 @@ private slots:
     //void fileOpen();
     void on_actionOpen_triggered();
     void on_actionPreferences_triggered();
+    void on_actionShow_Variables_Window_triggered();
     void on_actionPlot_Rows_triggered();
     void on_actionPlot_Columns_triggered();
     void on_actionClose_triggered();
@@ -144,6 +147,7 @@ private:
     WindowArray windowArray[MAX_WINDOW_COUNT];
     Status *status;
     Preferences* prefs;
+    VariablesWindow* variablesWindow;
     QRect mainScreenSize;
     rectangle window_placement;
     int wraps;

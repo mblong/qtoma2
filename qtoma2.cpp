@@ -39,6 +39,7 @@ QtOma2::QtOma2(QWidget *parent) :
     windowRow = 0;
     numWindows = 0;
     currentDataWindow = -1;
+    variablesWindow = 0;
     // this is one way to add menu items
     // probably a better way is to go to the action editor
     //      right click on the action name
@@ -170,8 +171,18 @@ void QtOma2::showPreferences(){
     prefs->show();
 }
 
+void QtOma2::showVariables(){
+    variablesWindow = new VariablesWindow(this);
+    variablesWindow->setGeometry(COMMAND_WIDTH+STATUS_OFFSET*2 + STATUS_WIDTH,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,STATUS_WIDTH,WINDOW_HEIGHT);
+    variablesWindow->show();
+    variablesWindow->fillInVariables();
+}
+
 void QtOma2::updateStatus(){
     status->fillInLabels();
+    if(variablesWindow){
+        variablesWindow->fillInVariables();
+    }
 }
 
 void QtOma2::newData(char* name){
@@ -824,6 +835,11 @@ void QtOma2::closeEvent(QCloseEvent *event)
 void QtOma2::on_actionPreferences_triggered()
 {
     showPreferences();
+}
+
+void QtOma2::on_actionShow_Variables_Window_triggered()
+{
+    showVariables();
 }
 
 void QtOma2::fillInLabels(){

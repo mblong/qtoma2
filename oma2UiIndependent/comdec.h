@@ -16,6 +16,8 @@
 #include "ImageBitmap.h"
 #include "dofft.h"
 
+#include <string>
+
 #ifdef MacOSX_UI
 #import "CommandView.h"
 #endif
@@ -71,6 +73,8 @@ Expression_Element evaluate(int start, int end);
 int vprint(int index);
 void clear_buffer_to_end(char*);
 int stopmacro();
+std::string getVariablesString(std::string varString);
+std::string getTempImagesString(std::string varString);
 
 // function prototypes for commands in comdec.cpp
 int display(int, char*);
@@ -90,6 +94,7 @@ int rmacro(int, char*);
 int variab(int, char*);
 int vfloat(int, char*);
 int vint(int, char*);
+int varClear(int, char*);
 int getsettings(int,char*);
 int savsettings(int,char*);
 int defmac(int,char*);
