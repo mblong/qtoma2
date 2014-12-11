@@ -22,8 +22,6 @@ void VariablesWindow::fillInVariables(){
     variables = getVariablesString(variables);
     variables = getTempImagesString(variables);
 
-    //[variablesWindowController updateVariableList:variables.c_str()];
-
     ui->variableList->setText(variables.c_str());
 }
 
