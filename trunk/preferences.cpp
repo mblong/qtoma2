@@ -26,6 +26,10 @@ Preferences::Preferences(QWidget *parent) :
     ui->highlightBox->setChecked(UIData.highlightSaturated);
     highlight = UIData.highlightSaturated;
     thePalette = UIData.thepalette;
+    highlightColor = QColor(UIData.highlightSaturatedRed,UIData.highlightSaturatedGreen,UIData.highlightSaturatedBlue,255);
+    QString qss = QString("background-color: %1").arg(highlightColor.name());
+    ui->highlightColorButton->setStyleSheet(qss);
+
     updatePalette();
 }
 
@@ -73,6 +77,9 @@ void Preferences::on_buttonBox_accepted()
 
     UIData.highlightSaturated = highlight;
 
+    UIData.highlightSaturatedRed = highlightColor.red();
+    UIData.highlightSaturatedGreen = highlightColor.green();
+    UIData.highlightSaturatedBlue = highlightColor.blue();
 }
 
 void Preferences::on_pal0_clicked()
@@ -126,5 +133,14 @@ void Preferences::on_pal7_clicked()
 void Preferences::on_highlightBox_clicked(bool checked)
 {
     highlight = checked;
+}
 
+void Preferences::on_highlightColorButton_clicked()
+{
+    const QColor color = QColorDialog::getColor(highlightColor, this, "Select Highlight Color", 0);
+    if (color.isValid()) {
+        highlightColor = color;
+        QString qss = QString("background-color: %1").arg(color.name());
+        ui->highlightColorButton->setStyleSheet(qss);
+    }
 }

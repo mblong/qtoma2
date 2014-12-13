@@ -599,6 +599,19 @@
     <string>Highlight Saturated Areas</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="highlightColorButton">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>450</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Color</string>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="qtoma2.qrc"/>
