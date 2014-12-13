@@ -23,18 +23,21 @@ Preferences::Preferences(QWidget *parent) :
     char num[16];
     sprintf(num,"%3d",(int)(100*(1-UIData.alphaValue)));
     ui->windowTransparency->setText(QString(num));
+    ui->highlightBox->setChecked(UIData.highlightSaturated);
+    highlight = UIData.highlightSaturated;
+    thePalette = UIData.thepalette;
     updatePalette();
 }
 
 void Preferences::updatePalette(){
-    ui->pal0->setDown(UIData.thepalette==0);
-    ui->pal1->setDown(UIData.thepalette==1);
-    ui->pal2->setDown(UIData.thepalette==2);
-    ui->pal3->setDown(UIData.thepalette==3);
-    ui->pal4->setDown(UIData.thepalette==4);
-    ui->pal5->setDown(UIData.thepalette==5);
-    ui->pal6->setDown(UIData.thepalette==6);
-    ui->pal7->setDown(UIData.thepalette==7);
+    ui->pal0->setDown(thePalette==0);
+    ui->pal1->setDown(thePalette==1);
+    ui->pal2->setDown(thePalette==2);
+    ui->pal3->setDown(thePalette==3);
+    ui->pal4->setDown(thePalette==4);
+    ui->pal5->setDown(thePalette==5);
+    ui->pal6->setDown(thePalette==6);
+    ui->pal7->setDown(thePalette==7);
 
 }
 
@@ -66,52 +69,62 @@ void Preferences::on_buttonBox_accepted()
     if(UIData.alphaValue>1.)UIData.alphaValue=1.;
     if(UIData.alphaValue<0.)UIData.alphaValue=0.;
 
+    UIData.thepalette = thePalette;
+
+    UIData.highlightSaturated = highlight;
+
 }
 
 void Preferences::on_pal0_clicked()
 {
-    UIData.thepalette = 0;
+    thePalette = 0;
     updatePalette();
 }
 
 void Preferences::on_pal1_clicked()
 {
-    UIData.thepalette = 1;
+    thePalette = 1;
     updatePalette();
 }
 
 void Preferences::on_pal2_clicked()
 {
-    UIData.thepalette = 2;
+    thePalette = 2;
     updatePalette();
 }
 
 void Preferences::on_pal3_clicked()
 {
-    UIData.thepalette = 3;
+    thePalette = 3;
     updatePalette();
 }
 
 void Preferences::on_pal4_clicked()
 {
-    UIData.thepalette = 4;
+    thePalette = 4;
     updatePalette();
 }
 
 void Preferences::on_pal5_clicked()
 {
-    UIData.thepalette = 5;
+    thePalette = 5;
     updatePalette();
 }
 
 void Preferences::on_pal6_clicked()
 {
-    UIData.thepalette = 6;
+    thePalette = 6;
     updatePalette();
 }
 
 void Preferences::on_pal7_clicked()
 {
-    UIData.thepalette = 7;
+    thePalette = 7;
     updatePalette();
+}
+
+void Preferences::on_highlightBox_clicked(bool checked)
+{
+    highlight = checked;
+
 }
