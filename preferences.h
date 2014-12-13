@@ -35,8 +35,12 @@ private slots:
 
     void on_pal7_clicked();
 
+    void on_highlightBox_clicked(bool checked);
+
 private:
     Ui::Preferences *ui;
+    int thePalette;
+    int highlight;
 };
 
 #endif // PREFERENCES_H
