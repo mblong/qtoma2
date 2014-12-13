@@ -2,6 +2,7 @@
 #define PREFERENCES_H
 
 #include <QDialog>
+#include <QColorDialog>
 
 namespace Ui {
 class Preferences;
@@ -37,10 +38,13 @@ private slots:
 
     void on_highlightBox_clicked(bool checked);
 
+    void on_highlightColorButton_clicked();
+
 private:
     Ui::Preferences *ui;
     int thePalette;
     int highlight;
+    QColor highlightColor;
 };
 
 #endif // PREFERENCES_H
