@@ -37,14 +37,14 @@ SOURCES += main.cpp\
         drawingwindow.cpp \
     qtimagesupport.cpp \
     oma2commands.cpp \
-    variableswindow.cpp \
-    ../../Desktop/qtoma2/trunk/Hardware/gphotoCommands.cpp \
-    ../../Desktop/qtoma2/trunk/Hardware/gphotoFunctions.c
+    variableswindow.cpp
 
 
 unix:!macx: {
 SOURCES += Hardware/andor.cpp \
-    Hardware/serial.c
+    Hardware/serial.c \
+    Hardware/gphotoFunctions.c \
+    Hardware/gphotoCommands.cpp
 }
 
 HEADERS  += qtoma2.h\
@@ -66,7 +66,7 @@ HEADERS  += qtoma2.h\
     oma2commands.h \
     Hardware/cameraSelector.h \
     variableswindow.h \
-    ../../Desktop/qtoma2/trunk/Hardware/gphotoFunctions.h
+    Hardware/gphotoFunctions.h
 
 
 FORMS    += qtoma2.ui \
