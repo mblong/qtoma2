@@ -1,5 +1,5 @@
-#include "VariablesWindow.h"
-#include "ui_VariablesWindow.h"
+#include "variableswindow.h"
+#include "ui_variableswindow.h"
 #include "oma2UiIndependent/comdec.h"
 #include "qtoma2.h"
 
