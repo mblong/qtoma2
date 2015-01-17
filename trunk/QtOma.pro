@@ -37,7 +37,9 @@ SOURCES += main.cpp\
         drawingwindow.cpp \
     qtimagesupport.cpp \
     oma2commands.cpp \
-    variableswindow.cpp
+    variableswindow.cpp \
+    ../../Desktop/qtoma2/trunk/Hardware/gphotoCommands.cpp \
+    ../../Desktop/qtoma2/trunk/Hardware/gphotoFunctions.c
 
 
 unix:!macx: {
@@ -63,7 +65,8 @@ HEADERS  += qtoma2.h\
     qtimagesupport.h \
     oma2commands.h \
     Hardware/cameraSelector.h \
-    variableswindow.h
+    variableswindow.h \
+    ../../Desktop/qtoma2/trunk/Hardware/gphotoFunctions.h
 
 
 FORMS    += qtoma2.ui \
@@ -79,7 +82,7 @@ FORMS    += qtoma2.ui \
 #macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
 
 
-unix:!macx: LIBS += -landor
+unix:!macx: LIBS += -landor -lgphoto2
 
 #win32:  LIBS += -ljpeg -lws2_32
 win32:  LIBS += -lws2_32

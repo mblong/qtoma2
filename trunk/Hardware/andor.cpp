@@ -402,7 +402,7 @@ int andor(int n, char* args)
 		
         if(imageData != 0) free(imageData);
 
-        iBuffer.getmaxx();
+        iBuffer.getmaxx(PRINT_RESULT);
 		
         free(specs);
 		return 0;
