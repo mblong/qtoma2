@@ -104,7 +104,8 @@ win32 {
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
 
     for(FILE,EXTRA_FILES){
-        QMAKE_POST_LINK += $$quote(copy $${FILE} $${DFILE}$$escape_expand(\\n\\t))
+        #message($$quote(copy \"$${FILE}\" \"$${DFILE}\"$$escape_expand(\\n\\t)))
+        QMAKE_POST_LINK += $$quote(copy \"$${FILE}\" \"$${DFILE}\\\"$$escape_expand(\\n\\t))
     }
 }
 
