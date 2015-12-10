@@ -6,6 +6,9 @@
 #include <QDropEvent>
 #include <QUrl>
 #include <QMimeData>
+
+#include <QDebug>
+
 //#include "./oma2UiIndependent/oma2.h"
 //#include "./oma2UiIndependent/UI.h"
 
