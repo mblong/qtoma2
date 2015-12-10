@@ -233,9 +233,22 @@ void Status::dragEnterEvent(QDragEnterEvent *ev)
 
 void Status::dropEvent(QDropEvent *event){
         QList<QUrl> urls = event->mimeData()->urls();
+
+        QStringList availableMimeTypes = event->mimeData()->formats();
+        qDebug() << "available MIME types:" << event->mimeData()->formats() << "\n";
+
+        foreach(QString mimeType, availableMimeTypes)
+        {
+            qDebug() << "data for MIME type" << mimeType << " :";
+            qDebug() << event->mimeData()->data(mimeType) << "\n";
+        }
+
+
+
+
         foreach(QUrl url, urls)
         {
-            QString theFile = url.path();
+            QString theFile = url.toLocalFile();
             QByteArray ba = theFile.toLocal8Bit();
             char name[CHPERLN],ext[PREFIX_CHPERLN];
             strlcpy(name,ba.data(),CHPERLN);
