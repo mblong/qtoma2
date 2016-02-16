@@ -13,9 +13,11 @@
 
 //#define GIGE_
 //#define SBIG
+#ifdef Qt_UI_Linux
 #define GPHOTO
-#define ANDOR_
 
+#define ANDOR_
+#endif
 // end of camera selection section
 
 // select other hardware here
