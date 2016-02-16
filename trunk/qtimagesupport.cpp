@@ -50,7 +50,7 @@ int readTiff(char* filename,Image* im){
     return FILE_ERR;
 }
 
-// this is just the same as the routine above for rading tiff fils for now
+// this is just the same as the routine above for reading tiff files for now
 
 int readJpeg(char* filename,Image* im)
 {

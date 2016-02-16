@@ -101,6 +101,7 @@ int pprintf(const char* format, ...);
 
 #include <QApplication>
 #include "qtoma2.h"
+#include "Hardware/cameraSelector.h"
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);
