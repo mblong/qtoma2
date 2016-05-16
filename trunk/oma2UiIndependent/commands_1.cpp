@@ -2663,9 +2663,9 @@ int clearbad_c(int n, char* args)
  y = f(x) is single valued
  */
 
-float* xptr[10] = {0*10};		// have a maximum of 10 functions
-float* yptr[10] = {0*10};
-int funsize[10] = {0*10};		// the number of elements in each function
+float* xptr[10] = {NULL};		// have a maximum of 10 functions
+float* yptr[10] = {NULL};
+int funsize[10] = {0};		// the number of elements in each function
 
 int getfun_c(int n,char* args)
 {

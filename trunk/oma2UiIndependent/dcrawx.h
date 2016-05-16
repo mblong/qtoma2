@@ -2,7 +2,7 @@
 #pragma clang diagnostic ignored "-Wconversion"
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
 #pragma clang diagnostic ignored "-Wwrite-strings"
-
+#pragma clang diagnostic ignored "-Wc++11-narrowing"
 
 #define VERSION "8.89"
 
