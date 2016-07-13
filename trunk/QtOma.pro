@@ -38,7 +38,8 @@ SOURCES += main.cpp\
         drawingwindow.cpp \
     qtimagesupport.cpp \
     oma2commands.cpp \
-    variableswindow.cpp
+    variableswindow.cpp \
+    Hardware/gige.cpp
 
 
 unix:!macx: {
@@ -71,7 +72,9 @@ HEADERS  += qtoma2.h\
     oma2commands.h \
     Hardware/cameraSelector.h \
     variableswindow.h \
-    Hardware/gphotoFunctions.h
+    Hardware/gphotoFunctions.h \
+    Hardware/ImageLib.h \
+    Hardware/PvApi.h
 
 
 FORMS    += qtoma2.ui \

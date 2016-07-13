@@ -20,6 +20,11 @@
 #endif
 // end of camera selection section
 
+
+#ifdef Qt_UI_Win
+#define GIGE_
+
+#endif
 // select other hardware here
 
 //#define LJU3
