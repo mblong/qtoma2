@@ -11,7 +11,9 @@ extern Image  iTempImages[];
 extern Image   accumulator;   // the accumulator
 extern Image   hdrAccumulator;   // the HDR accumulator
 extern Image   hdrCounter;       // the HDR counter
-extern DATAWORD hdrCutoff;       // the HDR saturation value
+extern DATAWORD hdrCutoffMax;       // the HDR saturation value
+extern DATAWORD hdrCutoffMin;       // the HDR min value for inclusion in the image
+extern float   hdrMaxScale;        // this is the biggest scale factor -- use to determine largest value in an hdr image
 extern int      hdrFrames;     // HDR frame counter
 extern int numberNamedTempImages;
 extern Variable namedTempImages[];
@@ -251,6 +253,160 @@ int getfile_c(int n,char* args){
 
 /* ********** */
 
+/* 
+
+GETBINARYFILE <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
+ Read in a binary file with the specified parameters. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4.
+ */
+
+int getbin_c(int n,char* args)
+{
+    extern char txt[];		     // the file name will be stored here temporarily
+    int fd,nbyte,r,c;
+    long nr,i;
+    unsigned short *usptr;
+    short *sptr;
+    unsigned char* ptr2;
+    unsigned char tc;
+    float *fptr;
+    int *iptr;
+    
+    int bin_rows, bin_cols, bin_header, binary_file_bytes_per_data_point, swap_bytes_flag, unsigned_flag=0;
+    int binary_file_is_float = 0;
+    
+    int narg = sscanf(args,"%s %d %d %d %d %d %d",txt,
+                      &bin_rows, &bin_cols, &bin_header, &binary_file_bytes_per_data_point,
+                      &swap_bytes_flag, &unsigned_flag);
+    if( narg < 6){
+        beep();
+        printf("Usage: GETBIN <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]\n");
+        return CMND_ERR;
+    }
+    if(binary_file_bytes_per_data_point == -sizeof(float)) {
+        binary_file_bytes_per_data_point = sizeof(float);
+        binary_file_is_float = 1;
+    }
+    fullname(txt,GET_DATA);		// add prefix and suffix
+    
+    if((fd = open(txt,READMODE)) == -1) {
+        beep();
+        printf("File %s Not Found.\n",txt);
+        return FILE_ERR;
+    }
+    if(bin_header > 0) {
+        ptr2 = new unsigned char[bin_header];
+        if(ptr2 == 0) {
+            close(fd);
+            return MEM_ERR;
+        }
+        
+        read(fd,ptr2,bin_header);	// skip over the header
+        delete[] ptr2;
+    }
+    Image newImage(bin_rows,bin_cols);
+    if(newImage.err()){
+        beep();
+        printf("Could not allocate %d x %d image\n",bin_rows,bin_cols);
+        close(fd);
+        return newImage.err();
+    }
+    
+    nbyte = bin_rows * bin_cols * binary_file_bytes_per_data_point;
+    
+    if( binary_file_bytes_per_data_point == 1) {
+        // allocate memory -- assume unsigned
+        ptr2 = new unsigned char[nbyte];
+        if(ptr2 == 0) {
+            close(fd);
+            return MEM_ERR;
+        }
+        // Read in the actual data
+        nr = read(fd,ptr2, nbyte);
+        printf("%d Bytes read.\n",nr);
+        close(fd);
+        
+        for (r=0,i=0; r<bin_rows; r++) {
+            for (c=0; c<bin_cols; c++) {
+                newImage.setpix(r, c, *(ptr2+i++));
+            }
+        }
+        delete[] ptr2;
+    } else if( binary_file_bytes_per_data_point == sizeof(short)) {
+        // allocate memory
+        sptr = (short*)malloc(nbyte);
+        if(sptr == 0) {
+            close(fd);
+            return MEM_ERR;
+        }
+        // Read in the actual data
+        nr = read(fd,sptr, nbyte);
+        printf("%d Bytes read.\n",nr);
+        close(fd);
+        
+        if(swap_bytes_flag){
+            // fiddle the byte order
+            ptr2 = (unsigned char *)sptr;		// a copy of the data pointer
+            for(i=0; i< nr; i+=2){
+                tc = *(ptr2);
+                *(ptr2) = *(ptr2+1);
+                *(++ptr2) = tc;
+                ptr2++;
+            }
+        }
+        usptr = (unsigned short*) sptr;		// point to the same data
+        for (r=0,i=0; r<bin_rows; r++) {
+            for (c=0; c<bin_cols; c++) {
+                if(unsigned_flag)
+                    newImage.setpix(r, c, *(usptr+i++));
+                else
+                    newImage.setpix(r, c, *(sptr+i++));
+            }
+        }
+        free(sptr);
+    } else if( binary_file_bytes_per_data_point == sizeof(float) && binary_file_is_float) {
+        // allocate memory
+        fptr = (float*)malloc(nbyte);
+        if(fptr == 0) {
+            close(fd);
+            return MEM_ERR;
+        }
+        // Read in the actual data 
+        nr = read(fd,fptr, nbyte);
+        printf("%d Bytes read.\n",nr);
+        close(fd);
+        for (r=0,i=0; r<bin_rows; r++) {
+            for (c=0; c<bin_cols; c++) {
+                newImage.setpix(r, c, *(fptr+i++));
+            }
+        }
+        free(fptr);
+    }  else if( binary_file_bytes_per_data_point == sizeof(int)){
+        // allocate memory
+        iptr = (int*)malloc(nbyte);
+        if(iptr == 0) {
+            close(fd);
+            return MEM_ERR;
+        }
+        // Read in the actual data 
+        nr = read(fd,iptr, nbyte);
+        printf("%d Bytes read.\n",nr);
+        close(fd);
+        for (r=0,i=0; r<bin_rows; r++) {
+            for (c=0; c<bin_cols; c++) {
+                newImage.setpix(r, c, *(iptr+i++));
+            }
+        }
+        free(iptr);
+    }
+    iBuffer.free();     // release the old data
+    iBuffer = newImage;   // this is the new data
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+
+/* ********** */
+
 int addfile_c(int n,char* args){
     Image new_im(args,SHORT_NAME);
     if(new_im.err()){
@@ -441,9 +597,9 @@ int frame_c(int n, char* args)
                 im.setpix(i,j,value);
 			}else {
                 if(fraction)
-                    im.setpix(i,j,iBuffer.getpix(j+x0,i+y0));
+                    im.setpix(i,j,iBuffer.getpix(i+y0,j+x0));
                 else
-                    im.setpix(i,j,iBuffer.getpix((int)j+x0,(int)i+y0));
+                    im.setpix(i,j,iBuffer.getpix((int)i+y0,(int)j+x0));
 			}
 		}
 	}
@@ -689,6 +845,32 @@ int rgb2grey_c(int n,char* args){
     return NO_ERR;
 }
 
+/* ********** */
+
+/*
+ RGB2COLOR colorNumber
+ Get the red, green, or blue channel of the current color image for colorNumber = 1, 2, or 3.
+ */
+
+int rgb2color_c(int n,char* args){
+    if(n < 1 || n > 3){
+        beep();
+        printf("Color numbers must be 1=red, 2=green, or 3=blue.\n");
+        return CMND_ERR;
+    }
+    iBuffer.rgb2color(n-1);
+    if(iBuffer.err()){
+        int err = iBuffer.err();
+        beep();
+        printf("Error: %d.\n",err);
+        iBuffer.errclear();
+        return err;
+    }
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+
 
 /* ********** */
 
@@ -829,7 +1011,7 @@ int smooth_c(int n,char* args){
 int gsmooth_c(int n, char* args)
 //  Gaussian Smoothing of the Data
 // GSMOOT NX [NY]
-// sigma_x = (NX-1)/3.5
+// 1/e2 weight at  = (NX-1)/2 pixels from center
 {
 	
 	int dx,dy,dxs,dys,i,j,m,nt,nc;
@@ -864,11 +1046,11 @@ int gsmooth_c(int n, char* args)
 	norm = 0;
 	dx = (dx-1)/2;
 	dxs = -dx;
-	sigx = dx/1.75;
+	sigx = dx/2;
     
 	dy = (dy-1)/2;
 	dys = -dy;
-	sigy = dy/1.75;
+	sigy = dy/2;
 	printf("Sigx=%5.2f, Sigy=%5.2f, ",sigx,sigy);
 	printf("pixels=%d x %d\n",dx*2+1,dy*2+1);
 	
@@ -1978,7 +2160,12 @@ int fecho_c (int n,char* args)
 {
 	if (*args != 0) {
 		if( fptr_local != NULL) {
-			fprintf(fptr_local, "%s\n",args);
+            if(strncmp(&args[strlen(args)-3],"...",3) == 0){
+                args[strlen(args)-3]=0;
+                fprintf(fptr_local, "%s",args);
+            }else {
+                fprintf(fptr_local, "%s\n",args);
+            }
 		} else {
 			beep();
 			printf("Error: No file open. File pointer is NULL\n");
@@ -1986,6 +2173,23 @@ int fecho_c (int n,char* args)
 		}
 	}
 	return NO_ERR;
+}
+
+int saveJpg_c(int n, char* args){
+#ifdef MacOSX_UI
+    beep();
+    printf("Not implemented in oma2.\n");
+    return CMND_ERR;
+#endif
+#ifndef MacOSX_UI
+    char txt[CHPERLN];
+    int saveJpeg(char*);
+    sscanf(args,"%s",txt);
+    fullname(txt,SAVE_DATA_NO_SUFFIX);  // you should add the jpg suffix yourself
+    printf("Writing JPG to file: %s\n",txt);
+    return saveJpeg(txt);
+#endif
+    
 }
 
 //***************************************************
@@ -2071,8 +2275,14 @@ int satiff_c(int n, char* args)
 	if (buf)
 		_TIFFfree(buf);
     free(specs);
+    return NO_ERR;
 #endif
-	return NO_ERR;
+#ifndef MacOSX_UI
+    beep();
+    printf("Not implemented in QtOMA.\n");
+    return CMND_ERR;
+#endif
+    
 }
 
 //***************************************************
@@ -2172,8 +2382,14 @@ int satiffscaled_c(int n, char* args)
 	if (buf)
 		_TIFFfree(buf);
     free(specs);
+    return NO_ERR;
 #endif
-	return NO_ERR;
+#ifndef MacOSX_UI
+    beep();
+    printf("Not implemented in QtOMA.\n");
+    return CMND_ERR;
+#endif
+    
 }
 
 
@@ -2414,37 +2630,37 @@ int findbad_c(int n, char* args){
         for(i=0; i< specs[ROWS]; i++){
             for(j = 0; j< specs[COLS]; j++) {
                 int usefulNeighbors = 0;
-                if( abs(iBuffer.getpix(i,j) - target) >= n ){ // we have a hot one
+                if( fabs(iBuffer.getpix(i,j) - target) >= n ){ // we have a hot one
                     hot_pix[num_hot] = i*specs[COLS] + j;
-                    if (abs(iBuffer.getpix(i-1,j-1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i-1,j-1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 1;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i-1,j) - target) < n) {
+                    if (fabs(iBuffer.getpix(i-1,j) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 2;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i-1,j+1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i-1,j+1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 3;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i,j-1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i,j-1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 4;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i,j+1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i,j+1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 5;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i+1,j-1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i+1,j-1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 6;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i+1,j) - target) < n) {
+                    if (fabs(iBuffer.getpix(i+1,j) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 7;
                         usefulNeighbors++;
                     }
-                    if (abs(iBuffer.getpix(i+1,j+1) - target) < n) {
+                    if (fabs(iBuffer.getpix(i+1,j+1) - target) < n) {
                         neighbors[num_hot][usefulNeighbors] = 8;
                         usefulNeighbors++;
                     }
@@ -2663,9 +2879,9 @@ int clearbad_c(int n, char* args)
  y = f(x) is single valued
  */
 
-float* xptr[10] = {NULL};		// have a maximum of 10 functions
-float* yptr[10] = {NULL};
-int funsize[10] = {0};		// the number of elements in each function
+float* xptr[10] = {0*10};		// have a maximum of 10 functions
+float* yptr[10] = {0*10};
+int funsize[10] = {0*10};		// the number of elements in each function
 
 int getfun_c(int n,char* args)
 {
@@ -2937,16 +3153,23 @@ int acget_c(int n,char* args){
 /* --------------------------- */
 
 /*
-HDRACCUMULATE cutoff
- Allocates and clears memory for an image accumulator buffer that can be used to sum
- individual images. The size of the accumulator is determined by the image size parameters
- when the accumulate command is first given.
+HDRACCUMULATE cutoffMax [cutoffMin]
+ Allocates and clears memory for an HDR accumulator that can be used to generate HDR
+ images from a series of different exposures. The cuttoffMax value should be less than
+ the saturation value for the detector. Values less than cutoffMin are not included; the default 
+ for cutoffMin is 0. The size of the accumulator is determined
+ by the image size parameters when the accumulate command is first given. Be sure
+ the exposure value for the image is set (e.g., imported from a raw file or set using
+ the EXPOSURE command).
  */
 
 int hdrAccumulate_c(int n,char* args)
 {
-    hdrCutoff = n;
+    hdrCutoffMax = n;
+    hdrCutoffMin = 0;
+    sscanf(args,"%f %f",&hdrCutoffMax,&hdrCutoffMin);
     hdrFrames = 0;
+    hdrMaxScale = 1.;
     hdrAccumulator.free();
     hdrCounter.free();
     int* specs = iBuffer.getspecs();
@@ -3011,11 +3234,14 @@ int hdrAcadd_c(int n,char* args)
     }
     float normalize = values[EXPOSURE]/firstExposure;
     printf("%f\n",normalize);
+    if (1./normalize > hdrMaxScale) {
+        hdrMaxScale = 1./normalize;
+    }
     hdrFrames++;
     for( int row=0; row < specs[ROWS]; row++){
         for( int col=0; col < specs[COLS]; col++){
             DATAWORD val = iBuffer.getpix(row,col);
-            if (val < hdrCutoff) {
+            if (val < hdrCutoffMax && val >= hdrCutoffMin) {
                 hdrAccumulator.setpix(row, col, hdrAccumulator.getpix(row,col)+val/normalize);
                 hdrCounter.setpix(row, col, hdrCounter.getpix(row,col)+1);
             }
@@ -3045,11 +3271,28 @@ int hdrAcget_c(int n,char* args){
     
     for( int row=0; row < specs[ROWS]; row++){
         for( int col=0; col < specs[COLS]; col++){
-            iBuffer.setpix(row, col, hdrAccumulator.getpix(row,col)/hdrCounter.getpix(row,col));
-            
+            if(hdrCounter.getpix(row,col) > 0)  // check in case there are no images contributing at this pixel
+                iBuffer.setpix(row, col, hdrAccumulator.getpix(row,col)/hdrCounter.getpix(row,col));
+            else
+                // if counter is zero, assume we're saturated
+                iBuffer.setpix(row, col,hdrCutoffMax*hdrMaxScale);
         }
     }
     free(specs);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return iBuffer.err();
+}
+
+int hdrNumget_c(int n,char* args){
+    if (hdrCounter.isEmpty()) {
+        beep();
+        printf("HDR Accumulator has not been initialized.\n");
+        return CMND_ERR;
+    }
+    iBuffer.free();
+    iBuffer << hdrCounter;
+    
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return iBuffer.err();
@@ -3065,9 +3308,10 @@ int exposure_c(int n,char* args){
     } else {
         printf("Exposure: %f\n",values[EXPOSURE]);
     }
-    free(values);
+    
     user_variables[0].fvalue = values[EXPOSURE];
     user_variables[0].is_float = 1;
+    free(values);
     update_UI();
     return NO_ERR;
 }
@@ -3626,6 +3870,74 @@ int doc2rgb_c(int n, char* args){
     specs[COLS] = newcol;
     iBuffer.setspecs(specs);
     free(specs);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+/* ********** */
+
+/*
+ DOC2COLOR c1 c2 c3 c4 c5
+ Treat the image in the current image buffer as a raw document
+ (e.g., output from the dcraw routine with options -d or -D selected)
+ and convert it to an R, G, or B image. This is assumed to have a 2 x 2 color matrix
+ of R G B values in a Bayer pattern.
+ c1 - c4 have values 0, 1 or 2, corresponding to red, green, and blue. For example if Bayer Matrix is
+ G B
+ R G
+ c1 - c4 should be 1 2 0 1
+ c5 is 0, 1, or 2 for conversion to red, green, or blue
+ Pixels associated with non-selected colors have a value of 0. Doing a BLOCK 2 2 command after this command will remove the zeros. 
+Blocking 2 by 2 on the green channel will sum the two green pixels.
+ 
+ Appropriate values depend on the specific camera. (See the output from the GETRGB command.)
+ */
+
+int doc2color_c(int n, char* args){
+    
+    int bayer[2][2] = {{ 0 }};
+    int color;
+    
+    int narg = sscanf(args,"%d %d %d %d %d",&bayer[0][0],&bayer[0][1],&bayer[1][0],&bayer[1][1],&color);
+    if(narg != 5){
+        beep();
+        printf("5 arguments needed. E.g., 1 2 0 1 1 for GBRG pattern, zero all but G\n");
+        return CMND_ERR;
+    }
+    
+    int row,col;
+    
+    Image newim(iBuffer.height(),iBuffer.width());    // allocates space for new image
+    newim.copyABD(iBuffer);     // same size
+    
+    for (row=0; row < iBuffer.height(); row++) {
+        for (col=0; col < iBuffer.width(); col++){
+            switch (bayer[row&1][col&1]){
+                case 0:		// red
+                    if(color == 0)
+                        newim.setpix(row,col,iBuffer.getpix(row,col));
+                    else
+                        newim.setpix(row,col,0);
+                    break;
+                case 1:		// green
+                    if(color == 1)
+                        newim.setpix(row,col,iBuffer.getpix(row,col));
+                    else
+                        newim.setpix(row,col,0);
+                    break;
+                case 2:		// blue
+                    if(color == 2)
+                        newim.setpix(row,col,iBuffer.getpix(row,col));
+                    else
+                        newim.setpix(row,col,0);
+                    break;
+            }
+        }
+        //if(header[NCHAN]&1) datp++;	// there may be an odd number of columns
+    }
+    
+    iBuffer.free();     // release the old data
+    iBuffer = newim;   // this is the new data
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return NO_ERR;

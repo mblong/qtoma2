@@ -7,5 +7,5 @@
 #include    "oma2UiIndependent/image.h"
 #include    <QImage>
 
-
+int saveJpeg(char*);
 #endif // QTIMAGESUPPORT_H
