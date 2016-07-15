@@ -1,4 +1,6 @@
 #include "qtimagesupport.h"
+#include "oma2UiIndependent/ImageBitmap.h"
+#include <QtGui>
 
 int readTiff(char* filename,Image* im){
     QString name = QString(filename);
@@ -51,7 +53,6 @@ int readTiff(char* filename,Image* im){
 }
 
 // this is just the same as the routine above for reading tiff files for now
-
 int readJpeg(char* filename,Image* im)
 {
     QString name = QString(filename);
@@ -102,4 +103,15 @@ int readJpeg(char* filename,Image* im)
 
     *im = Image(50,50);
     return FILE_ERR;
+}
+
+int saveJpeg(char* filename){
+    extern ImageBitmap iBitmap;
+    QImage currentWindowImage = QImage(iBitmap.getpixdata(), iBitmap.getwidth(), iBitmap.getheight(),
+        iBitmap.getwidth()*3, QImage::Format_RGB888);
+    QImageWriter myImageWriter;
+    myImageWriter.setFileName(QString(filename));
+    myImageWriter.setQuality(80);
+    myImageWriter.setFormat("jpg");
+    return myImageWriter.write(currentWindowImage);
 }

@@ -53,6 +53,7 @@ int delay_c(int,char*);
 int dx_c(int n,char* args);
 int dy_c(int n,char* args);
 int doc2rgb_c(int n, char* args);
+int doc2color_c(int n, char* args);
 int divRGB_c(int,char*);
 int disp2rgb_c(int,char*);
 
@@ -80,11 +81,13 @@ int gsmooth_c(int, char*);
 int gtemp_c(int, char*);
 int getmatch_c(int, char*);
 int gnoise_c(int, char*);
+int getbin_c(int,char*);
 
 int hdrAccumulate_c(int,char*);
 int hdrAcadd_c(int,char*);
 int hdrAcdelete_c(int,char*);
 int hdrAcget_c(int,char*);
+int hdrNumget_c(int,char*);
 
 
 int invert_c(int,char*);
@@ -129,6 +132,7 @@ int rgb2grey_c(int,char*);
 int rgb2red_c(int,char*);
 int rgb2green_c(int,char*);
 int rgb2blue_c(int,char*);
+int rgb2color_c(int,char*);
 int rotate_c(int,char*);
 int readbad_c(int,char*);
 int ramp_c(int,char*);
@@ -147,6 +151,7 @@ int subfile_c(int,char*);
 int subtmp_c(int, char*);
 int savefile_c(int,char*);
 int satiff_c(int,char*);
+int saveJpg_c(int,char*);
 int satiffscaled_c(int,char*);
 int sysCommand_c(int,char*);
 int seq2hdr_c(int,char*);

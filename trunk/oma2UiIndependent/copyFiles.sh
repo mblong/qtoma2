@@ -1,4 +1,4 @@
-FOLDER=/Users/mblong/oma2/branches/oma2_threaded/oma2
+FOLDER=/Users/mblong/oma2/oma2
 
 DEST=/Users/mblong/qtoma2/trunk/oma2UiIndependent
 #

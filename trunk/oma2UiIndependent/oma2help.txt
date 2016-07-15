@@ -195,6 +195,13 @@ DOC2RGB c1 c2 c3 c4
 	c1 - c4 should be 1 2 0 1
 	Appropriate values depend on the specific camera. (See the output from the GET command when reading raw files.)
 
+DOC2COLOR c1 c2 c3 c4 c5
+	Treat the image in the current image buffer as a raw document (e.g., output from the dcraw routine with options -d or -D selected) and convert it to an R, G, or B image. This is assumed to have a 2 x 2 color matrix of R G B values in a Bayer pattern. c1 - c4 have values 0, 1 or 2, corresponding to red, green, and blue. For example if Bayer Matrix is
+	G B
+	R G
+	c1 - c4 should be 1 2 0 1
+	c5 is 0, 1, or 2 for conversion to red, green, or blue. Pixels associated with non-selected colors have a value of 0. Doing a BLOCK 2 2 command after this command will remove the zeros. Blocking 2 by 2 on the green channel will sum the two green pixels.
+
 DISP2RGB
  Convert the display image to rgb. Use this to turn a false color intensity map into an RGB image or to modify a color image so the values follow the display settings. Returned values are integers between 0 - 255.
 
@@ -243,7 +250,7 @@ FCLOSE
 	Closes the currently open text file (there can be only one). The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
 
 FECHO string
-	Exactly as echo but instead of printing to the command window, it writes to the file opened with FOPEN. The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
+	Writes the string to the file opened with FOPEN. A newLine is added after the string unless the string ends in ..., in which case no newLine is added. The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
 
 FOPEN <filename>
 	Open a text file with the name <filename> for I/O. The use of FOPEN, FCLOSE, and FECHO allows derived values to be written to a file from within a macro.
@@ -282,6 +289,9 @@ GETFUNCTION n filename
 	x values are ordered smallest to largest
 	y = f(x) is single valued
 
+GETBINARYFILE <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
+	Read in a binary file with the specified parameters. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4.
+
 GMACRO <filename>
 	Loads the contents of the specified file into the current macro buffer.
 
@@ -295,7 +305,7 @@ GRADIENT
 	Find the magnitude of the gradient of the data in the current image buffer. Use two pixels on either side of current pixel for gradient.
 
 GSMOOTH dx [dy]
-	Gaussian Smoothing of the data. dx and dy are the smoothing size parameters. If dy is omitted, it is taken as dx. dx and dy must be odd. sigma_x = (dx-1)/3.5
+	Gaussian Smoothing of the data. dx and dy are the smoothing size parameters. If dy is omitted, it is taken as dx. dx and dy must be odd. 1/e2 weighting at (dx-1)/2 and (dy-1)/2
 
 GTEMPIMAGE name
 	Get temporary image that has been previously saved using STEMP.
@@ -316,6 +326,7 @@ GIGE command
 	EXTernal (set external triggering)
 	INTernal (set internal triggering)
 	DELay <triggerDelay> (set the trigger delay [microseconds])
+	SFMemory <numFrames> (save the specified number of frames to one big image in memory. Uses specified frame RATE. Saves time stamp seconds to extra.)
 	SFRames <filename> <numFrames> (save the specified number of frames using the specified filename. Uses FREERUN mode. Also saves a text file showing frame times.)
 	STAtus (print camera settings)
 	FIXbad <flag> (set flag to 1 to clear bad pixels before display or save --> must use FINDBAD first)
@@ -331,14 +342,17 @@ HELP [command name or fragment]
 HDRACADD
 	Adds the current image data buffer to the HDR accumulator buffer. Values greater than the cutoff are excluded and values are then normalized by the exposure time.
 
-HDRACCUMULATE cutoff
-	Allocates and clears memory for an HDR accumulator that can be used to generate HDR imnages from a series of different exposures. The cuttoff value should be less than the saturation value for the detector. The size of the accumulator is determined by the image size parameters when the accumulate command is first given. Be sure the exposure value for the image is set (e.g., imported from a raw file or set using the EXPOSURE command).
+HDRACCUMULATE cutoffMax cutoffMin
+Allocates and clears memory for an HDR accumulator that can be used to generate HDR images from a series of different exposures. The cuttoff value should be less than the saturation value for the detector. Values less than cutoffMin are not included; the default for cutoffMin is 0. The size of the accumulator is determined by the image size parameters when the accumulate command is first given. Be sure the exposure value for the image is set (e.g., imported from a raw file or set using the EXPOSURE command).
 
 HDRACDELETE
 	Frees the memory associated with the HDR accumulator.
 
 HDRACGET
 	Calculates an HDR image based on the data in the HDR accumulator and moves that to the current image. The previous contents of the image data buffer are destroyed.
+
+HDRNUMGET
+	Returns an image based on the data in the HDR counter, which has the number of images that contribute to the HDR image at each pixel. This "counter" image becomes the current image. The previous contents of the image data buffer are destroyed.
 
 IF condition
 	If condition evaluates to a non-zero value, the commands following the IF are executed. However, if the condition is zero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
@@ -474,7 +488,10 @@ RGB2GREEN
 RGB2BLUE
 	Get the blue channel of the current color image.
 
-RMACRO [n m] 
+RGB2COLOR colorNumber
+	Get the red, green, or blue channel of the current color image for colorNumber = 1, 2, or 3.
+
+RMACRO [n m]
 	Starts executing commands in the macro buffer with %d being replaced first by value n. Subsequently, n is incremented by the amount specified in the INCMACRO command (default is 1). If the new numeric value is equal to m, the macro will be executed again. Menu items can be selected and the appropriate commands executed during macros. Commands typed during the execution of a macro will be echoed to the terminal but not performed. To stop a macro during execution type "cmd ." (hold down the apple key and type ".")
 
 ROW n
@@ -520,8 +537,8 @@ SATIFFSCALED min max <filename>
 SERCLOSE
 	Closes the serial port opened with the last "SERIAL device_name" command. This can be used if you need to talk to more than one serial device -- open device 1, send commands, close the serial port, open device 2, send commands, and so forth. Available in oma2cam.
 
-SERIAL device_name (or character_string)
-	Provides a simple way of sending text strings to a serial device. For example, a KeySpan USB to serial converter can be used to control a variety stepping motor controllers, spectrographs, etc. The device name should be something like "/dev/tty.KeySpan1" Note that upper/lower case matters on these specifications. Look in the "/dev" directory to find the name of your specific hardware. After opening the device with the first SERIAL command, subsequent SERIAL commands will send across the specified character_string, followed by a <CR>. This uses standard POSIX calls.  Available in oma2cam.
+SERIAL device_name (or character_string) [baudRate Timeout]
+	Provides a simple way of sending text strings to a serial device. For example, a KeySpan USB to serial converter can be used to control a variety stepping motor controllers, spectrographs, arduinos etc. The device name should be something like "/dev/tty.KeySpan1" Note that upper/lower case matters on these specifications. Look in the "/dev" directory to find the name of your specific hardware. When opening a device, the baud rate and timeout value (in thenths of seconds) can be specified. Defaults are baud = 9600 and timeout = 0. After opening the device with the first SERIAL command, subsequent SERIAL commands will send across the specified character_string, followed by a <CR>. This uses standard POSIX calls.  Available in oma2cam.
 
 SIZE rows cols 
 	Set the number of rows and columns of the current image and zero the data.
