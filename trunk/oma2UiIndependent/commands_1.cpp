@@ -5015,3 +5015,44 @@ int shotnoise_c(int n,char* args)
 
 /*----------------------------------------------------------------*/
 
+int demosaic_c(int n,char* args){
+    int redx = 0,redy = 0, method = 0;
+    sscanf(args,"%d %d %d",&redx,&redy,&method);
+    if((redx == 0 || redx == 1) && (redy == 0 || redy == 1)){
+        printf("First red pixel is at %d %d\n",redx,redy);
+    } else {
+        redx = redy = 0;
+        beep();
+        printf("redX and redY must be 0 or 1... \nUsing default values.\nFirst red pixel is at %d %d\n",redx,redy);
+    }
+    switch (method) {
+        case MALVAR:
+            printf("Using Malvar algorithm.\n");
+            break;
+            
+        default:
+            printf("Using bilinear algorithm.\n");
+            break;
+    }
+    
+
+    int* bufferspecs = iBuffer.getspecs();
+    Image newIm(bufferspecs[ROWS]*3,bufferspecs[COLS]);
+    
+    if(newIm.err()){
+        return newIm.err();
+    }
+    newIm.copyABD(iBuffer);
+    bufferspecs[ROWS] *=3;
+    bufferspecs[IS_COLOR] = 1;
+    newIm.setspecs(bufferspecs);
+    newIm.demosaic(iBuffer, redx, redy, method);
+        
+    free(bufferspecs);  // release buffer copy
+    iBuffer.free();     // release the old data
+    iBuffer = newIm;   // this is the new data
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    
+    return NO_ERR;
+}

@@ -20,4 +20,8 @@ cp $FOLDER/oma2/image_support.h $DEST/
 cp $FOLDER/oma2/image_support.mm $DEST/image_support.cpp
 cp $FOLDER/oma2/oma2.h $DEST/
 cp $FOLDER/oma2/oma2help.txt $DEST/
+cp $FOLDER/oma2/dmbilinear.h $DEST/
+cp $FOLDER/oma2/dmbilinear.mm $DEST/dmbilinear.cpp
+cp $FOLDER/oma2/dmmalvar.h $DEST/
+cp $FOLDER/oma2/dmmalvar.mm $DEST/dmmalvar.cpp
 
