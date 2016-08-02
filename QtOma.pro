@@ -39,7 +39,9 @@ SOURCES += main.cpp\
     qtimagesupport.cpp \
     oma2commands.cpp \
     variableswindow.cpp \
-    Hardware/gige.cpp
+    Hardware/gige.cpp \
+    oma2UiIndependent/dmmalvar.cpp \
+    oma2UiIndependent/dmbilinear.cpp
 
 
 unix:!macx: {
@@ -74,7 +76,9 @@ HEADERS  += qtoma2.h\
     variableswindow.h \
     Hardware/gphotoFunctions.h \
     Hardware/ImageLib.h \
-    Hardware/PvApi.h
+    Hardware/PvApi.h \
+    oma2UiIndependent/dmbilinear.h \
+    oma2UiIndependent/dmmalvar.h
 
 
 FORMS    += qtoma2.ui \
@@ -144,3 +148,5 @@ unix:!macx:{
 # Include username too.
 # Also check the username and password in Qt preferences.
 #
+
+OBJECTIVE_SOURCES +=
