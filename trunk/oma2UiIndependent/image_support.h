@@ -8,6 +8,8 @@
 #include    "image.h"
 #include    "dofft.h"
 
+enum {HOBJ_NO_DEMOSAIC=59457,HOBJ_DOC2RGB,HOBJ_BILINEAR,HOBJ_MALVAR};   // start at a funny number
+
 //#define PMODE 0666 // RW  for writing files that we can open
 
 void setUpUIData();
@@ -33,6 +35,9 @@ typedef struct  {
 } HDRLoaderResult;
 int readHDR(char* filename,Image*);
 int loadHDR(const char*, HDRLoaderResult*);
+int readHobj(char* filename,Image*);
+int readBinary(char* filename,Image*,int,int,int,int,int,int);
+
 
 
 #endif

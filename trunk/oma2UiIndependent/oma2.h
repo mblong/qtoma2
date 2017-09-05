@@ -9,7 +9,6 @@
 #include <math.h>
 #include <unistd.h>
 
-
 /******************** Definitions ********************/
 
 #define IS_BIG_ENDIAN 0
@@ -110,7 +109,7 @@ enum  {SHORT_NAME,LONG_NAME,HAS_SUFFIX,LEAVE_OPEN,IS_OPEN};
 
 /* Prefix and Suffix Types */
 enum  {SAVE_DATA,GET_DATA,MACROS_DATA,GRAPHICS_DATA,SETTINGS_DATA,TIFF_DATA,TIF_DATA,CSV_DATA,FTS_DATA,
-       RAW_DATA,PDF_DATA,SAVE_DATA_NO_SUFFIX,
+       RAW_DATA,PDF_DATA,SAVE_DATA_NO_SUFFIX,GET_DATA_NO_SUFFIX,
        LOAD_SAVE_PREFIX,LOAD_GET_PREFIX,LOAD_SAVE_SUFFIX,LOAD_GET_SUFFIX,
        LOAD_MACRO_PREFIX,LOAD_SETTINGS_PREFIX,LOAD_MACRO_SUFFIX,LOAD_SETTINGS_SUFFIX};
 
@@ -223,6 +222,10 @@ typedef struct {
     int highlightSaturatedRed;
     int highlightSaturatedGreen;
     int highlightSaturatedBlue;
+    
+    int decodeHobjFlag;     // setting for automatic decoding Halcon .hobj files
+    int demosaicHobjFlag;    // setting for whether or not the demosaic after decoding
+ 
     
     /*
 	settings[4] = detector;

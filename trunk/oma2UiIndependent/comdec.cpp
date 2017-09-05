@@ -28,10 +28,14 @@ ComDef   commands[] =    {
     {{"ACDELETE       "},   acdelete_c},
     {{"ACADD          "},   acadd_c},
     {{"ACGET          "},   acget_c},
+    {{"ABSOLUTE       "},   absolute_c},
 
     {{"BLOCK          "},	block_g},
     {{"BIT8           "},	bit8_c},
     {{"BIT16          "},	bit16_c},
+    {{"BINARGUMENTS   "},	binarguments_c},
+    {{"BINEXTENSION   "},	binextension_c},
+    
     {{"CALCULATE      "},	calc_cmd_c},
     {{"CALCALL        "},	calcall_c},
     {{"CLIP           "},	clip_c},
@@ -66,6 +70,7 @@ ComDef   commands[] =    {
     {{"DOC2COLOR      "},	doc2color_c},
     {{"DISP2RGB       "},	disp2rgb_c},
     {{"DEMOSAIC       "},	demosaic_c},
+    {{"DECODEHOBJ     "},	decodeHobj_c},
     
     {{"ERASE          "},	erase},
     {{"ENDIF          "},	endifcmnd},
@@ -107,6 +112,7 @@ ComDef   commands[] =    {
     {{"HDRACDELETE    "},	hdrAcdelete_c},
     {{"HDRACGET       "},	hdrAcget_c},
     {{"HDRNUMGET      "},	hdrNumget_c},
+    {{"HOBJSETTINGS   "},	hobjSettings_c},
     
     {{"IF             "},	ifcmnd},
     {{"IFNOT          "},	ifnotcmnd},
@@ -142,6 +148,7 @@ ComDef   commands[] =    {
         
     {{"NEWWINDOW      "},	newWindow_c},
     {{"NEXTFILE       "},	nextFile_c},
+    {{"NEXTPREFIX     "},	nextPrefix_c},
     {{"NOISE          "},	noise_c},
         
     {{"OPENFILE       "},	openfile_c},
@@ -151,6 +158,9 @@ ComDef   commands[] =    {
     {{"POSITIVE       "},	positive_c},
     {{"PAUSE          "},	imp_pause},
     {{"POWER          "},	power_c},
+    {{"PIXVALUE       "},	pixValue_c},
+    
+    
     {{"RMACRO         "},	rmacro},
     {{"RECTANGLE      "},	rectan_c},
     {{"RGB2GREY       "},	rgb2grey_c},
@@ -352,6 +362,7 @@ int num_variables = NUM_COMMAND_RETURN_VARIABLES;
 Expression_Element exp_el[CHPERLN];
 
 
+struct timespec omaStartTime;
 
 
 
@@ -372,6 +383,12 @@ int comdec(char* cmnd)
     int     (*fnc)(int,char*);
     
     stopMacroNow = 0;
+    static int first = 1;
+    if(first){
+        first=0;
+        clock_gettime( CLOCK_REALTIME, &omaStartTime);
+        
+    }
     
     switch (command_return) {
         case GET_MACRO_LINE:
@@ -417,7 +434,8 @@ int comdec(char* cmnd)
             /* Now have the command, echo it to terminal */
             
             exe_line_number[which_ex_buffer]++;					/* next line unless modified by loop */
-            printf(" E-%d-%d: %s\n",which_ex_buffer+1,exe_line_number[which_ex_buffer],cmnd);
+            if(!macflag) printf(" E-%d-%d: %s\n",which_ex_buffer+1,exe_line_number[which_ex_buffer],cmnd);
+            // In a macro, don't have an execute command as the last line or there will be unwanted printing when using the macro command
             
             /* Now adjust pointers */
             
@@ -626,6 +644,8 @@ int fill_in_command(char* dest,char* source,int val)
 	//float ave_in_rect(),rms_in_rect();
     char txt[1024] = {0};
     
+    
+    
 	extern char saveprefixbuf[], getprefixbuf[];
 	extern char lastname[];
 	
@@ -689,21 +709,21 @@ int fill_in_command(char* dest,char* source,int val)
                     break;
                 case 'p':
                     txt[0] = 0;
-                    sprintf(dest+j,"%s",fullname(txt, SAVE_DATA));
+                    sprintf(dest+j,"%s",fullname(txt, SAVE_DATA_NO_SUFFIX));
                     while(*(dest+j)) 
                         j++;
                     break;
                 case 'q':
                     txt[0] = 0;
-                    sprintf(dest+j,"%s",fullname(txt, GET_DATA));
+                    sprintf(dest+j,"%s",fullname(txt, GET_DATA_NO_SUFFIX));
                     while(*(dest+j)) 
                         j++;
                     break;
-/*				case 'f':
+				case 'f':
                     sprintf(dest+j,"%s",lastname);
                     while(*(dest+j)) 
                         j++;
-                    break;*/
+                    break;
                 case 'b':
                     sprintf(dest+j,DATAFMT,values[MAX]);
                     while(*(dest+j)) 
@@ -730,16 +750,16 @@ int fill_in_command(char* dest,char* source,int val)
                     while(*(dest+j)) 
                         j++;
                     break;
-/*                case 'a':
-                    sprintf(dest+j,"%g",ave_in_rect());
+                case 'a':
+                    sprintf(dest+j,"%g",aveInRect());
                     while(*(dest+j)) 
                         j++;
                     break;
                 case 'r':
-                    sprintf(dest+j,"%g",rms_in_rect());
+                    sprintf(dest+j,"%g",rmsInRect());
                     while(*(dest+j)) 
                         j++;
-                    break;*/
+                    break;
                 case 'w':
                     sprintf(dest+j,"%d",specs[COLS]);
                     while(*(dest+j)) 
@@ -761,26 +781,23 @@ int fill_in_command(char* dest,char* source,int val)
                         j++;
                     break;
                     
-/*                case 'c':
-                    oma_time = TickCount();
-                    nclocks = oma_time - start_oma_time;
-                    //oma_time /= CLOCKS_PER_SEC;
-                    sprintf(dest+j,"%f",nclocks/60.);
+                case 'c':
+                    struct timespec omaTime;
+                    clock_gettime( CLOCK_REALTIME, &omaTime);
+                    double omaSec;
+                    omaSec= (omaTime.tv_sec - omaStartTime.tv_sec) + ( omaTime.tv_nsec - omaStartTime.tv_nsec )/1.0e9;
+                    sprintf(dest+j,"%f",omaSec);
+                    while(*(dest+j))
+                        j++;
+                    break;
+
+                case 't':
+                    time_t theTime;
+                    theTime=time(NULL);
+                    sprintf(dest+j,"%s",ctime(&theTime));
                     while(*(dest+j)) 
                         j++;
-                    break;*/
-                    
-/*                case 't':
-                    GetTime(&datetime);
-                    sprintf(dest+j,"%2d/%2d/%2d %2d:%2d:%2d",datetime.month,
-                            datetime.day,
-                            datetime.year%100,
-                            datetime.hour,
-                            datetime.minute,
-                            datetime.second);
-                    while(*(dest+j)) 
-                        j++;
-                    break;*/
+                    break;
                     
                 default:
                     
@@ -1346,6 +1363,56 @@ std::string getTempImagesString(std::string varString)
         varString += str;
     }
     return varString;
+}
+
+float aveInRect()
+/*  Takes current rectangle and returns the average
+ Used to fill in %a value */
+{
+    int i,j,icount;
+    double sum=0.;
+    point substart,subend;
+    extern oma2UIData UIData;
+    substart = UIData.iRect.ul;
+    subend = UIData.iRect.lr;
+
+    
+    icount = 0;
+    for (i = substart.v; i<=subend.v; i++){
+        for (j = substart.h; j<=subend.h; j++){
+            sum += iBuffer.getpix(i,j);
+            icount++;
+        }
+    }
+    return sum/icount;
+}
+
+float rmsInRect()
+/*  Takes current rectangle and returns the rms
+ Used to fill in %r value */
+{
+    int nt,nc,icount;
+    double ave,rms;
+    DATAWORD datval;
+    point substart,subend;
+    extern oma2UIData UIData;
+    
+    substart = UIData.iRect.ul;
+    subend = UIData.iRect.lr;
+    ave = rms = 0.0;
+    icount = 0;
+    
+    for(nt=substart.v; nt<=subend.v; nt++) {
+        for(nc=substart.h; nc<=subend.h; nc++) {
+            datval = iBuffer.getpix(nt,nc);
+            ave += datval;					/* average */
+            rms += datval*datval;			/* rms */
+            icount++;						/* number of points */
+        }
+    }
+    ave /= icount;
+    rms = rms/icount - ave*ave;
+    return sqrt(rms);
 }
 
 

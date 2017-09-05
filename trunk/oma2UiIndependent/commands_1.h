@@ -23,9 +23,12 @@ int acdelete_c(int,char*);
 int acget_c(int,char*);
 int acadd_c(int,char*);
 int addRGB_c(int,char*);
+int absolute_c(int,char*);
 
 int bit8_c(int,char*);
 int bit16_c(int,char*);
+int binarguments_c(int,char*);
+int binextension_c(int,char*);
 
 int colorflag_c(int,char*);
 int compositefile_c(int,char*);
@@ -57,6 +60,7 @@ int doc2color_c(int n, char* args);
 int divRGB_c(int,char*);
 int disp2rgb_c(int,char*);
 int demosaic_c(int,char*);
+int decodeHobj_c(int,char*);
 
 int echo_c(int,char*);
 int extra_c(int,char*);
@@ -89,6 +93,7 @@ int hdrAcadd_c(int,char*);
 int hdrAcdelete_c(int,char*);
 int hdrAcget_c(int,char*);
 int hdrNumget_c(int,char*);
+int hobjSettings_c(int,char*);
 
 
 int invert_c(int,char*);
@@ -116,6 +121,7 @@ int match_c(int, char*);
 
 int newWindow_c(int,char*);
 int nextFile_c(int,char*);
+int nextPrefix_c(int,char*);
 int noise_c(int, char*);
 
 int openfile_c(int,char*);
@@ -126,6 +132,7 @@ int plus_c(int,char*);
 int power_c(int,char*);
 int positive_c(int, char*);
 int powRGB_c(int,char*);
+int pixValue_c(int,char*);
 
 int rectan_c(int,char*);
 int resize_c(int,char*);
@@ -173,6 +180,7 @@ int x0_c(int n,char* args);
 int y0_c(int n,char* args);
 
 // Others
+
 int temp_image_index (char* name,int define);
 int loadmatch(char* name);
 int loadwarp(char* name);
@@ -186,6 +194,6 @@ int calc(point,point);
 float tabfun(int,float);
 
 float ranfGauss();
-
+void decodeHobj(Image*,int,int);
 
 //#endif
