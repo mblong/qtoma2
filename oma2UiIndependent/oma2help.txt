@@ -28,6 +28,9 @@
 ^RGB x y z
 	Raise the red, green, and blue data in the current image data buffer to the power x, y, and z.
 
+ABSOLUTE
+	Take the absolute value of the data in the current image data buffer.
+
 ADDFILE <filename>
 	Adds the contents of an OMA file of a given name to the data in the current image data buffer.
 
@@ -69,6 +72,12 @@ BIT8 [min] [max]
 
 BIT16 [min] [max]
 	Converts the file in the OMA image buffer to have a dynamic range of 0 to 65535. That is, 16 unsigned bits per pixel. This conversion is automatically done before saving the image buffer as a TIFF image with the SATIFFSCALED command. If the optional min and max are specified, they are used for the scaling rather than the min and max of the current image buffer.
+
+BINARGUMENTS rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
+	Specify parameters for reading in binary files. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4. The extension for binary files is specified using the BINEXTENSION command. Once these are specified, binary files can be read in using the GET command, or by dropping them onto the status window.
+
+BINEXTENSION fileExtension
+	Specify the extension for binary files. Together with the BINARGUMENTS command, this allows binary files to be read in with GET or dropped onto the status window.
 
 CALCULATE
 	Print calculations on the rectangle specified with the RECTANGLE command or with the rectangle tools. The average, rms, # of points, and the x and y "center of mass" are printed. The mean, rms, centroid_X and centroid_Y are passed to the command_return_variables.
@@ -211,6 +220,9 @@ DOUTPUT channel state
 DEMOSAIC redX redY [algorithm]
 	Assume the current image is a raw Bayer intensity profile and perform demosaicing to produce an RGB image of the same size with three color channels. redX and redY are the x and y coordinates of the first red pixel and must be either 0 or 1 (default is 0, 0). The optional algorithm value specifies what demosaicing algorithm to apply. 0 -> bilinear (default). 1 -> Malvar.
 
+DECODEHOBJ
+	Assume the current image has the proprietary .hobj format (from Halcon), and has not been decoded. This attempts to decode the image. See the command HOBJSETTINGS for how this decoding can be done automatically.
+
 ERASE [n]
 	If no argument is given, all image windows currently on the screen are closed. If a value n is specified, only window n is erased.
 
@@ -271,7 +283,7 @@ GET <filename>
 	Loads the data from the specified file into the current image data buffer. The "Get Data Files" prefix is used. The "Get Data Files" suffix is used unless the specified filename has a suffix of .jpg, .tiff, .tif, or .nef; in those cases no suffix is added and the appropriate decoding routines are called according to the file type.
 
 GETFILENAMES NameFile
-	Open NameFile (currently uses macro prefix and suffix) which contains the names of files. The NEXTFILE command is used to open the next file. NameFile is left open until all files have been accessed.
+	Open NameFile (currently uses macro prefix and suffix), which contains the names of files or directory paths. For files, the NEXTFILE command is used to open the next file. For directory paths, the NEXTPREFIX command is used to set the "Get File" prefix to the specified path. NameFile is left open until all files have been accessed.
 
 GETMATCH parameterfile
 Load the file matching parameters contained in the text file "parameterfile". The format of the file is as follows:
@@ -293,7 +305,7 @@ GETFUNCTION n filename
 	y = f(x) is single valued
 
 GETBINARYFILE <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
-	Read in a binary file with the specified parameters. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4.
+	Read in a binary file with the specified parameters. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4. Specified parameters do not change those set with the BINARGUMENTS command.
 
 GMACRO <filename>
 	Loads the contents of the specified file into the current macro buffer.
@@ -320,7 +332,9 @@ GIGE command
 	Available in oma2cam. Commands are as follows:
 	ACQuire (gets frames in MULTIFRAME mode)
 	EXPosure <exposureTime> (in microseconds)
-	GAIn <gain> (0 or 33)
+	GAIn <gain> (0 - 33)
+	RED <Red channel gain percent -> 100% = no gain applied>
+	BLUe <Blue channel gain percent -> 100% = no gain applied>
 	NUMber <numberOfFrames> (to be acquired by the ACQUIRE command; default is 1)
 	RATe <frameRate>
 	LABON (label frames)
@@ -356,6 +370,9 @@ HDRACGET
 
 HDRNUMGET
 	Returns an image based on the data in the HDR counter, which has the number of images that contribute to the HDR image at each pixel. This "counter" image becomes the current image. The previous contents of the image data buffer are destroyed.
+
+HOBJSETTINGS <decodeFlag> <demosaicSetting>
+	With no arguments, this command gives information on how .hobj files will be read in. If arguments are given, the decodeFlag and demosaicSetting are specified. A nonzero decodeFlag will cause automatic decoding of .hobj files when they are read in. The demosaicSetting has the following values/meanings: 0 = no demosaicing done (appropriate for monochrome images); 1 = treat as a color image and demosaic using DOC2RGB 0 1 1 2; 2 = treat as a color image and demosaic using the bilinear algorithm with the red pixel at 0,0; 3 = treat as a color image and demosaic using the Malvar algorithm with the red pixel at 0,0.
 
 IF condition
 	If condition evaluates to a non-zero value, the commands following the IF are executed. However, if the condition is zero, the commands between IF and ENDIF are not executed. The condition can be any arithmetic statement and can include logical operators < (less than), > (greater than), others to come....
@@ -461,6 +478,9 @@ NEWWINDOW flag
 NEXTFILE [prefix]
 	Open the next file specified in the FileNames file that was opened with the GetFileNames command. If a prefix is specified, that is added to the name before trying to open the file. command_return_1 is the the filename without any prefix and without the extension (last 4 characters).
 
+NEXTPREFIX
+	Set the "Get File" prefix to be the next string specified in the FileNames file that was opened with the GetFileNames command.
+
 NOISE average rms [seed]
 	Creates a noise image with the specified average and rms. See also GNOISE.
 
@@ -469,6 +489,9 @@ OPENFILE <filename>
 
 PIXSIZE [WindowScaleFactor]
 	Specifies a scale factor used to determine the size of a window displayed. PIXSIZE 1 associates one screen point with one data point. If WindowScaleFactor is negative, a scale factor of -1/WindowScaleFactor is used. If no argument is given, the current WindowScaleFactor is printed.
+
+PIXVALUE row column
+	Prints the value of the pixel at the specified row and column. The upper left of an image is at 0,0. If the image is color, prints RGB values. command_return_1 is the value for BW images; command_return_1 - command_return_3 are RGB for color images.
 
 POSITVE
 	Sets all negative values in the image buffer to 0.  Positive values are unaffected.

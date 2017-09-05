@@ -10,6 +10,11 @@
 #ifndef oma2_Image_h
 #define oma2_Image_h
 
+typedef struct{
+    char ext[6];
+    int decoder;
+} FileDecoderExtensions;
+
 
 
 /******************** Constants for Classes ********************/
@@ -20,7 +25,7 @@
 
 // locations within the specs array
 enum {ROWS,COLS,X0,Y0,DX,DY,LMAX,LMIN,IS_COLOR,HAVE_MAX,HAS_RULER,
-        LRMAX,LRMIN,LGMAX,LGMIN,LBMAX,LBMIN,NFRAMES};
+    LRMAX,LRMIN,LGMAX,LGMIN,LBMAX,LBMIN,NFRAMES};
 
 // locations within the values array
 enum {MIN,MAX,RMAX,RMIN,GMAX,GMIN,BMAX,BMIN,RULER_SCALE,EXPOSURE,APERTURE,ISO};
@@ -33,6 +38,10 @@ enum {NO_PRINT,PRINT_RESULT};
 
 // demosaic algorithms
 enum {BILINEAR,MALVAR};
+
+// special file reader types
+enum {DCRAW,JPEG,TIFREAD,HDR,HOBJ,OMA};
+
 
 /******************** Class Definitions ********************/
 
@@ -51,7 +60,7 @@ protected:
     DATAWORD*   data;           ///< Pointer to image data (DATAWORD=float currently)
 public:
     Image();            ///< default constructor with no arguments
-    //~Image();           ///< destructor
+    ~Image();           ///< destructor
     Image(int,int);     ///< constructor -- specify rows and columns, other values are defaults
     Image(char*,int);   ///< constructor -- new Image from filename.
                         ///< Second argument says what to do with filling in name
@@ -84,6 +93,7 @@ public:
     void errclear();            ///< clear the image error code
     void free();                ///< release the data associated with an Image
     void zero();                ///< set the data associated with an Image to 0
+    void abs();                 ///< take the absolute value of an image
     void getmaxx(char);         ///< fill in the min and max for the current Image; argument is print flag
     void clip(DATAWORD);        ///< set values > specifiedValue to specifiedValue
     void floor(DATAWORD);       ///< set values < specifiedValue to specifiedValue
@@ -133,6 +143,7 @@ public:
     friend int readJpeg(char* filename, Image*);
     friend int readTiff(char* filename, Image*);
     friend int readHDR(char* filename, Image*);
+    friend int readHobj(char* filename, Image*);
     friend void oma_write_ppm_tiff (int thecolor, Image* im);
 #ifdef GIGE_
     friend int gige(int n, char* args);
