@@ -113,7 +113,7 @@ public:
     void openDataFile();
     void saveDataFile();
 
-
+    int fillInDataFromPixmap(QSqlDatabase db);    // for saving pixmap to sql database
 
 
 protected:
@@ -136,6 +136,8 @@ private slots:
     void moveCursorToEnd();
     void on_actionExit_triggered();
     void on_actionSave_Data_File_triggered();
+
+
 
 private:
     Ui::QtOma2 *ui;

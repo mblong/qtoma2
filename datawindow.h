@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QKeyEvent>
+#include <QtSql>
 
 #include <QCloseEvent>
 
@@ -45,6 +46,10 @@ public:
 
     void labelMinMax();
     void label(char* string);
+
+    friend class QtOma2;
+
+
 
 protected:
     void mousePressEvent(QMouseEvent*);

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     variableswindow.cpp \
     Hardware/gige.cpp \
     oma2UiIndependent/dmmalvar.cpp \
-    oma2UiIndependent/dmbilinear.cpp
+    oma2UiIndependent/dmbilinear.cpp \
+    sqlRoutines.cpp
 
 
 unix:!macx: {
