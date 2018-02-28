@@ -29,6 +29,7 @@ ComDef   commands[] =    {
     {{"ACADD          "},   acadd_c},
     {{"ACGET          "},   acget_c},
     {{"ABSOLUTE       "},   absolute_c},
+    {{"ACMEVELOCITY   "},   acmevelocity_c},
 
     {{"BLOCK          "},	block_g},
     {{"BIT8           "},	bit8_c},
@@ -51,6 +52,7 @@ ComDef   commands[] =    {
     {{"CYL2           "},	cyl2_g},
     {{"CMINMX         "},	setcminmax_c},
     {{"CLEARBADPIX    "},	clearbad_c},
+    {{"CCLEARBADPIX   "},   cclearbad_c},
     {{"CREATEFILE     "},	createfile_c},
     {{"CONCATFILE     "},	concatfile_c},
     {{"CLOSEFILE      "},	closefile_c},
@@ -195,7 +197,15 @@ ComDef   commands[] =    {
     {{"SEQ2IMAGE      "},	seq2Image_c},
     {{"SNR            "},	snr_c},
     {{"SHOTNOISE      "},	shotnoise_c},
-    
+    {{"SAY            "},	say_c},
+
+#ifdef Qt_UI
+    {{"SQLADD         "},    sqlAdd_q},
+    {{"SQLOPEN        "},    sqlOpen_q},
+    {{"SQLCLOSE       "},    sqlClose_q},
+    {{"SQLNEW         "},    sqlNew_q},
+#endif
+
     {{"TSMOOTH        "},	tsmooth_c},
     
     {{"UPREFIX        "},	uprefix_c},
@@ -242,6 +252,7 @@ ComDef   hardwareCommands[] =    {
 
 #ifdef LJU3
     {{"DOUTPUT        "},   dout},
+    {{"DINPUT         "},	din},
 #endif
 
 #ifdef GIGE_

@@ -24,6 +24,7 @@ int acget_c(int,char*);
 int acadd_c(int,char*);
 int addRGB_c(int,char*);
 int absolute_c(int,char*);
+int acmevelocity_c(int,char*);
 
 int bit8_c(int,char*);
 int bit16_c(int,char*);
@@ -41,6 +42,8 @@ int clipfraction_c(int,char*);
 int clipbottom_c(int,char*);
 int clipfbottom_c(int,char*);
 int clearbad_c(int,char*);
+int cclearbad_c(int,char*);
+void colorClearBad(Image* image);
 int createfile_c(int n,char* args);
 int concatfile_c(int n,char* args);
 int closefile_c(int n,char* args);
@@ -167,6 +170,15 @@ int seq2Image_c(int,char*);
 int subRGB_c(int,char*);
 int snr_c(int,char*);
 int shotnoise_c(int,char*);
+int say_c(int,char*);
+
+#ifdef Qt_UI
+int sqlAdd_q(int,char*);
+int sqlNew_q(int,char*);
+int sqlOpen_q(int,char*);
+int sqlClose_q(int,char*);
+#endif
+
 
 int tsmooth_c(int,char*);
 

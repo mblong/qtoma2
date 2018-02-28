@@ -941,3 +941,37 @@ void QtOma2::saveDataFile()
             printf("Could not save file.\nOMA2>");
      }
 }
+
+int QtOma2::fillInDataFromPixmap( QSqlDatabase db){
+
+    int windowNumber = activeWindow();
+
+    if(windowNumber<0){
+        //can't do this
+        beep();
+        return -1;
+    }
+    if(windowArray[windowNumber].type != DATA){
+        //can't do this
+        beep();
+        return -1;
+    }
+
+    QSqlQuery query = QSqlQuery( db );
+
+    QByteArray inByteArray;
+    QBuffer inBuffer( &inByteArray );
+    inBuffer.open( QIODevice::WriteOnly );
+    windowArray[windowNumber].dataWindow->pixmap.save( &inBuffer, "JPG" ); // write inPixmap into inByteArray in JPG format
+
+    // Insert image bytes into the database
+    // Note: make sure to wrap the :placeholder in parenthesis
+    query.prepare( "INSERT INTO imgTable (imagedata) VALUES (:imageData)" );
+    query.bindValue( ":imageData", inByteArray );
+    if( !query.exec() ){
+        qDebug() << "Error inserting image into table:\n" << query.lastError();
+        return -1;
+    }
+
+    return NO_ERR;
+}

@@ -58,7 +58,7 @@ void eraseWindow(int n){
 
 
 BOOL dropped_file(char* extension, char* name){
-
+/*
     //printf("File ext is: %s\n",extension);
     printf("File name is: %s\n",name);
     for(int i=0; i<strlen(extension); i++)
@@ -84,6 +84,47 @@ BOOL dropped_file(char* extension, char* name){
         wPointer->addCString((char*)"OMA2>");
         return YES;
     }
+    */
+    extern int windowNameMemory;
+    extern char windowName[];
+    extern char binaryExtension[];
+    char upperCaseBinExt[256];
+    extern FileDecoderExtensions fileDecoderExtensions[];
+
+    //printf("File ext is: %s\n",extension);
+    printf("File name is: %s\n",name);
+    int i;
+    for(i=0; i<strlen(extension); i++){
+        extension[i] = toupper(extension[i]);
+        upperCaseBinExt[i] = toupper(binaryExtension[i]);
+    }
+    upperCaseBinExt[i]=0;
+
+    for(i=0; fileDecoderExtensions[i].ext[0]; i++ ){
+        int extLength = (int)strlen(fileDecoderExtensions[i].ext) - 1 ;
+        if(strncmp(extension,&fileDecoderExtensions[i].ext[1],extLength) == 0){
+            Image new_im(name,LONG_NAME);
+            if(new_im.err()){
+                beep();
+                printf("Could not load %s\n",name);
+                //[appController appendText: @"OMA2>"];
+                wPointer->addCString((char*)"OMA2>");
+                return NO;
+            }
+            iBuffer.free();     // release the old data
+            iBuffer = new_im;   // this is the new data
+            iBuffer.getmaxx(PRINT_RESULT);
+            update_UI();
+
+            display(0,(char*)"");
+            //[appController appendText: @"OMA2>"];
+            //[[appController theWindow] makeKeyAndOrderFront:NULL];
+            //[[NSApplication sharedApplication] activateIgnoringOtherApps : YES];    // make oma active
+            wPointer->addCString((char*)"OMA2>");
+            return YES;
+        }
+    }
+
     if(strcmp(extension, "MAC")==0 || strcmp(extension, "O2M")==0){
         extern char	macbuf[];
         int fd,nread,i;
