@@ -113,7 +113,7 @@ public:
     void openDataFile();
     void saveDataFile();
 
-    int fillInDataFromPixmap(QSqlDatabase db);    // for saving pixmap to sql database
+    int fillInDataFromPixmap(QSqlDatabase db, char* tableName);    // for saving pixmap to sql database
 
 
 protected:

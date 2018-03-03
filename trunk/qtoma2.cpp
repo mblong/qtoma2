@@ -19,7 +19,7 @@ QtOma2::QtOma2(QWidget *parent) :
     setUpUIData();
 
     connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)),
-        this, SLOT(onApplicationFocusChanged(QWidget*,QWidget*)));
+            this, SLOT(onApplicationFocusChanged(QWidget*,QWidget*)));
 
     QString appPath =  qApp->applicationDirPath();
     QByteArray ba = appPath.toLocal8Bit();
@@ -72,7 +72,7 @@ void QtOma2::on_omaCommands_textChanged()
         lastReturn = thetext.size();
         int returnValue = comdec((char*) oma2Command);
         if(returnValue < GET_MACRO_LINE) addCString((char*)"OMA2>");
-     }
+    }
 }
 
 void QtOma2::addCString(char* string)
@@ -191,7 +191,7 @@ void QtOma2::newData(char* name){
     if(!UIData.newwindowflag && (currentDataWindow >= 0)){
         updateData(); // dont put a new window, just use the current data window
         return;
-     }
+    }
     // figure out where to place image
     // this is for possibly scaling down images that won't fit on screen
     int windowHeight = iBitmap.getheight()*windowScaleFactor;
@@ -454,7 +454,7 @@ void QtOma2::newColPlot(){
     int k=0;
     for(int i = 0; i< bytesPerCol/bytesPerPix;i++){
         for(int j=0; j < bytesPerPix;j++)
-        *(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
+            *(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
     }
 
     // tell the data window what it needs to know
@@ -622,7 +622,7 @@ void QtOma2::newLinePlot(QPoint start, QPoint end){
         y = start.y() + dy*i;
         for(int j=0; j < bytesPerPix;j++)
             *(lineData+k++) = *(bytes + (x + y*cols)*bytesPerPix + j);
-            //*(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
+        //*(colData+k++) = *(bytes + (theCol + i*cols)*bytesPerPix + j);
     }
 
     // tell the data window what it needs to know
@@ -643,7 +643,7 @@ void QtOma2::newLinePlot(QPoint start, QPoint end){
     numWindows++;
     window_placement.x += windowWidth+WINDOW_SPACE;            // increment for next one
 
- }
+}
 
 void QtOma2::addDataWindowLabel(char* string){
     int n = activeWindow();
@@ -668,14 +668,14 @@ void QtOma2::addDataWindowMinMax(){
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){
-          if(windowArray[i].type == DATA){
-              windowArray[i].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
-              windowArray[i].dataWindow-> close();
-          } else{
-              windowArray[i].drawingWindow->setRowData(0);  // free the memory
-              windowArray[i].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
-              windowArray[i].drawingWindow->close();
-           }
+            if(windowArray[i].type == DATA){
+                windowArray[i].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
+                windowArray[i].dataWindow-> close();
+            } else{
+                windowArray[i].drawingWindow->setRowData(0);  // free the memory
+                windowArray[i].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
+                windowArray[i].drawingWindow->close();
+            }
         }
         window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
         window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
@@ -879,7 +879,7 @@ void QtOma2::on_actionOma2_Help_triggered()
 // these next two things ensure that when clicking on the commands window when it doesn't have focus, the cursor will be at the end
 void QtOma2::onApplicationFocusChanged(QWidget *old, QWidget *now){
     if( now == ui->omaCommands){
-       QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));   // this gives enough time so that the event that places the cursor is done
+        QTimer::singleShot(50, this, SLOT(moveCursorToEnd()));   // this gives enough time so that the event that places the cursor is done
     }
 }
 
@@ -929,9 +929,9 @@ void QtOma2::saveDataFile()
     extern Image iBuffer;
     extern oma2UIData UIData;
     QString fn = QFileDialog::getSaveFileName(NULL, tr("Save Data File"),
-                                      QString(UIData.saveprefixbuf)+QString("oma2Data"),
+                                              QString(UIData.saveprefixbuf)+QString("oma2Data"),
 
-                                tr("Data Files (*.o2d);;All Files (*)"));
+                                              tr("Data Files (*.o2d);;All Files (*)"));
     if (!fn.isEmpty()){
         QByteArray ba = fn.toLocal8Bit();
         printf("File is: %s\nOMA2>",ba.data());
@@ -939,10 +939,13 @@ void QtOma2::saveDataFile()
         iBuffer.saveFile(ba.data(),LONG_NAME);
         if(iBuffer.err())
             printf("Could not save file.\nOMA2>");
-     }
+    }
 }
 
-int QtOma2::fillInDataFromPixmap( QSqlDatabase db){
+int QtOma2::fillInDataFromPixmap( QSqlDatabase db, char* tableName){
+
+    //extern int isMySql;
+    //extern char* tableName;
 
     int windowNumber = activeWindow();
 
@@ -966,8 +969,12 @@ int QtOma2::fillInDataFromPixmap( QSqlDatabase db){
 
     // Insert image bytes into the database
     // Note: make sure to wrap the :placeholder in parenthesis
-    query.prepare( "INSERT INTO imgTable (imagedata) VALUES (:imageData)" );
+
+    qDebug() << QString(tableName)<<" is table name\n";
+    query.prepare( "INSERT INTO "+QString(tableName)+" (imagedata) VALUES (:imageData)" );
     query.bindValue( ":imageData", inByteArray );
+
+
     if( !query.exec() ){
         qDebug() << "Error inserting image into table:\n" << query.lastError();
         return -1;
