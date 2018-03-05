@@ -148,8 +148,8 @@ ComDef   commands[] =    {
     {{"MATCH          "},	match_c},
 
 #ifdef Qt_UI
-    {{"MYSQSERVER     "},	mySqServer_q},
-    {{"MYSQTABLE      "},	mySqTable_q},
+    {{"MYSQSERVER     "},    mySqServer_q},
+    {{"MYSQTABLE      "},    mySqTable_q},
 #endif
         
     {{"NEWWINDOW      "},	newWindow_c},

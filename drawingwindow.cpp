@@ -15,6 +15,7 @@ DrawingWindow::DrawingWindow(QWidget *parent) :
     myDataWindow = 0;
     rowData = 0;
     colData = 0;
+    this->setAttribute(Qt::WA_DeleteOnClose, true);
 }
 
 DrawingWindow::~DrawingWindow()

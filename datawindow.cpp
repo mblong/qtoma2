@@ -21,12 +21,16 @@ DataWindow::DataWindow(QWidget *parent) :
     hasColPlot = 0;
     minMaxString[0] = 0;
     labelString[0] = 0;
+    intensity = NULL;
+    this->setAttribute(Qt::WA_DeleteOnClose, true);
 }
 
 DataWindow::~DataWindow()
 {
+    // this never seems to be called
     delete ui;
-    delete intensity;
+    delete[] intensity;
+
 }
 
 void DataWindow::showData(char* name){
@@ -59,8 +63,11 @@ void DataWindow::showData(char* name){
     dataRows = iBitmap.getheight();
     thePalette = iBitmap.getpalette();
     if (iBitmap.getpalette() == -1) intensitySize *= 3;
+    if(intensity != NULL) delete[] intensity;   // when using the same window
     intensity = new unsigned char[intensitySize];
     memcpy(intensity,iBitmap.getintensitydata(),intensitySize);
+
+    iBitmap.freeMaps();
 
    ui->label->setPixmap(pixmap);
    ui->label->show();
@@ -450,6 +457,7 @@ DrawingWindow* DataWindow::getHasColPlot(){
 void DataWindow::setThereIsDrawing(int type){
     thereIsDrawing = type;
 }
+
 
 void DataWindow::closeEvent (QCloseEvent *event)
 {
