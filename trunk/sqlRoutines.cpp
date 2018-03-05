@@ -96,9 +96,11 @@ int mySqServer_q(int n,char* args)
     db.setDatabaseName( QString(databaseName) );
     db.setUserName( QString(user) );
     db.setPassword( QString(password)  );
+    db.setConnectOptions("MYSQL_OPT_CONNECT_TIMEOUT=10");
 
     if( !db.open() ){
         printf("Problem to connect to database %s at server %s\n",databaseName,server);
+        qDebug() << "Error opening:\n" << db.lastError();
         return CMND_ERR;
     }
     isMySql = 1;

@@ -40,6 +40,7 @@ QtOma2::QtOma2(QWidget *parent) :
     numWindows = 0;
     currentDataWindow = -1;
     variablesWindow = 0;
+    showVariables();
     // this is one way to add menu items
     // probably a better way is to go to the action editor
     //      right click on the action name
@@ -671,6 +672,7 @@ void QtOma2::eraseWindow(int n){
             if(windowArray[i].type == DATA){
                 windowArray[i].dataWindow->setRowLine(CLOSE_CLEANUP_DONE);
                 windowArray[i].dataWindow-> close();
+                //delete windowArray[i].dataWindow;
             } else{
                 windowArray[i].drawingWindow->setRowData(0);  // free the memory
                 windowArray[i].drawingWindow->setTheRow(CLOSE_CLEANUP_DONE);
@@ -970,10 +972,11 @@ int QtOma2::fillInDataFromPixmap( QSqlDatabase db, char* tableName){
     // Insert image bytes into the database
     // Note: make sure to wrap the :placeholder in parenthesis
 
-    qDebug() << QString(tableName)<<" is table name\n";
+    //qDebug() << QString(tableName)<<" is table name\n";
     query.prepare( "INSERT INTO "+QString(tableName)+" (imagedata) VALUES (:imageData)" );
     query.bindValue( ":imageData", inByteArray );
 
+    inBuffer.close();
 
     if( !query.exec() ){
         qDebug() << "Error inserting image into table:\n" << query.lastError();
