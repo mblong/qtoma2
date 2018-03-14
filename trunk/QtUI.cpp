@@ -36,8 +36,9 @@ void update_UI(){
         current_pal = UIData.thepalette;
     }
     wPointer->updateStatus();
-    free(specs);
-    free(values);
+
+    delete[] specs;
+    delete[] values;
 }
 
 void displayData(char* name){

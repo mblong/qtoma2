@@ -168,9 +168,9 @@ void DataWindow::mouseReleaseEvent(QMouseEvent *event)
             } else {
                 printf("\n");
             }
-            free( buffervalues);
-            free( bufferspecs);
-            free( unit_text);
+            delete[]  buffervalues;
+            delete[]  bufferspecs;
+            delete[]  unit_text;
             break;
         }
         case LINEPLOT:
