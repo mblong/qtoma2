@@ -184,6 +184,9 @@ void QtOma2::updateStatus(){
     if(variablesWindow){
         variablesWindow->fillInVariables();
     }
+    QCoreApplication::sendPostedEvents(Q_NULLPTR,QEvent::DeferredDelete); // try to force garbage collection???
+    QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents;
+    QCoreApplication::processEvents(flags);
 }
 
 void QtOma2::newData(char* name){
@@ -977,6 +980,7 @@ int QtOma2::fillInDataFromPixmap( QSqlDatabase db, char* tableName){
     query.bindValue( ":imageData", inByteArray );
 
     inBuffer.close();
+    inByteArray.clear();
 
     if( !query.exec() ){
         qDebug() << "Error inserting image into table:\n" << query.lastError();
