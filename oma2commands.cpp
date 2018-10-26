@@ -12,7 +12,7 @@ oma2Commands::oma2Commands(QWidget *parent) :
     //font.setFixedPitch(true);
     font.setPointSize(FONT_SIZE);
 
-    QTextEdit* editor = new QTextEdit();
+    //QTextEdit* editor = new QTextEdit();
     this->setFont(font);
 
     const int tabStop = 4;  // 4 characters
@@ -26,14 +26,11 @@ void oma2Commands::keyPressEvent(QKeyEvent *event){
             case Qt::Key_Up:
                 wPointer->previousHistory();
                 event->accept();
-                return;
-                break;
+                return; 
             case Qt::Key_Down:
                 wPointer->nextHistory();
                 event->accept();
                 return;
-                break;
-
     }
 
      QPlainTextEdit::keyPressEvent(event);
