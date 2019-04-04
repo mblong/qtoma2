@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
-macx:QMAKE_MAC_SDK = macosx10.12
+#macx:QMAKE_MAC_SDK = macosx10.12
 macx:QMAKE_CXXFLAGS += -DQt_UI\
     -Wno-c++11-narrowing
 win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive\

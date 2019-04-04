@@ -5340,6 +5340,7 @@ int acmevelocity_c(int n, char* filename){
     // get necessary values
 
     if(getVariableError((char*)"mfc2Range", &mfc2Range)) return ARG_ERR;
+    if(getVariableError((char*)"mfc3Range", &mfc3Range)) return ARG_ERR;
     if(getVariableError((char*)"exposure", &exposure)) return ARG_ERR;
     if(getVariableError((char*)"fuelCorrection", &fuelCorrection)) return ARG_ERR;
     int index = get_variable_index((char*)"name", 0);
