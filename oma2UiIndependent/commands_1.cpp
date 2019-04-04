@@ -24,7 +24,7 @@ extern Variable namedTempImages[];
 int plus_c(int n,char* args){
     DATAWORD val;
     if( sscanf(args,"%f",&val) != 1)
-		val = n;
+        val = n;
     (iBuffer+val);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -46,7 +46,7 @@ int null_c(int n,char* args){
 int minus_c(int n,char* args){
     DATAWORD val;
     if( sscanf(args,"%f",&val) != 1)
-		val = n;
+        val = n;
     (iBuffer-val);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -59,7 +59,7 @@ int minus_c(int n,char* args){
 int divide_c(int n,char* args){
     DATAWORD val;
     if( sscanf(args,"%f",&val) != 1)
-		val = n;
+        val = n;
     (iBuffer/val);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -73,7 +73,7 @@ int divide_c(int n,char* args){
 int multiply_c(int n,char* args){
     DATAWORD val;
     if( sscanf(args,"%f",&val) != 1)
-		val = n;
+        val = n;
     (iBuffer*val);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -87,12 +87,12 @@ int multiply_c(int n,char* args){
 int mulRGB_c(int n,char* args){
     
     float x,y,z;
-	
-	if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
-		beep();
-		printf("3 Arguments needed\n");
-		return CMND_ERR;
-	}
+    
+    if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
+        beep();
+        printf("3 Arguments needed\n");
+        return CMND_ERR;
+    }
     iBuffer.rgbMult(x,y,z);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -105,12 +105,12 @@ int mulRGB_c(int n,char* args){
 int divRGB_c(int n,char* args){
     
     float x,y,z;
-	
-	if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
-		beep();
-		printf("3 Arguments needed\n");
-		return CMND_ERR;
-	}
+    
+    if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
+        beep();
+        printf("3 Arguments needed\n");
+        return CMND_ERR;
+    }
     iBuffer.rgbDiv(x,y,z);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -123,12 +123,12 @@ int divRGB_c(int n,char* args){
 int subRGB_c(int n,char* args){
     
     float x,y,z;
-	
-	if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
-		beep();
-		printf("3 Arguments needed\n");
-		return CMND_ERR;
-	}
+    
+    if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
+        beep();
+        printf("3 Arguments needed\n");
+        return CMND_ERR;
+    }
     iBuffer.rgbSub(x,y,z);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -141,12 +141,12 @@ int subRGB_c(int n,char* args){
 int addRGB_c(int n,char* args){
     
     float x,y,z;
-	
-	if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
-		beep();
-		printf("3 Arguments needed\n");
-		return CMND_ERR;
-	}
+    
+    if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
+        beep();
+        printf("3 Arguments needed\n");
+        return CMND_ERR;
+    }
     iBuffer.rgbAdd(x,y,z);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -160,12 +160,12 @@ int addRGB_c(int n,char* args){
 int powRGB_c(int n,char* args){
     
     float x,y,z;
-	
-	if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
-		beep();
-		printf("3 Arguments needed\n");
-		return CMND_ERR;
-	}
+    
+    if( sscanf(args,"%f %f %f",&x,&y,&z) != 3){
+        beep();
+        printf("3 Arguments needed\n");
+        return CMND_ERR;
+    }
     iBuffer.rgbPow(x,y,z);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -178,7 +178,7 @@ int power_c(int n,char* args)				// raise the data to a power
 {
     DATAWORD val;
     if( sscanf(args,"%f",&val) != 1)
-		val = n;
+        val = n;
     iBuffer.power(val);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -189,41 +189,60 @@ int power_c(int n,char* args)				// raise the data to a power
 
 int savefile_c(int n,char* args)
 {
-	if(*args == 0){	// no file name was specified
-		return FILE_ERR;
-	} else { // otherwise, add the prefix and suffix and use the name specified
-		iBuffer.saveFile(args,SHORT_NAME);
-		return iBuffer.err();
-	}
+    if(*args == 0){	// no file name was specified
+        return FILE_ERR;
+    } else { // otherwise, add the prefix and suffix and use the name specified
+        iBuffer.saveFile(args,SHORT_NAME);
+        return iBuffer.err();
+    }
 }
 
 /* ********** */
 
 int fwdatm_c(int n,char* args)
 {
-	int	i,nt,nc;
-	FILE *fp;
-	
-	n = 0;
-	fp = fopen(fullname(args,SAVE_DATA),"w");
-	if( fp != NULL) {
-		i=0;
+    int	i,nt,nc;
+    FILE *fp;
+    char fname[CHPERLN],delimiter=0;
+    
+    n = sscanf(args,"%s %c",fname,&delimiter);
+    if(n==0){
+        beep();
+        printf("Need a file name.\n");
+        return CMND_ERR;
+    }
+    if(delimiter == ','){
+        fp = fopen(fullname(fname,CSV_DATA),"w");
+    } else {
+        fp = fopen(fullname(fname,SAVE_DATA),"w");
+    }
+    if( fp != NULL) {
+        i=0;
         int* specs = iBuffer.getspecs();
-		for(nt=0; nt<specs[ROWS]; nt++){
-			for(nc=0; nc<specs[COLS]; nc++){
-				fprintf(fp,"%g\t",iBuffer.getpix(nt,nc));
-			}
-			fprintf(fp,"\n");
-		}
-    	fclose(fp);
-	}
-	else {
-        
-		beep();
+        for(nt=0; nt<specs[ROWS]; nt++){
+            for(nc=0; nc<specs[COLS]; nc++){
+                if(n==2){
+                    if(nc == specs[COLS]-1)
+                        fprintf(fp,"%g\n",iBuffer.getpix(nt,nc));
+                    else
+                        fprintf(fp,"%g%c",iBuffer.getpix(nt,nc),delimiter);
+                } else {
+                    if(nc == specs[COLS]-1)
+                        fprintf(fp,"%g\n",iBuffer.getpix(nt,nc));
+                    else
+                        fprintf(fp,"%g\t",iBuffer.getpix(nt,nc));
+                }
+            }
+        }
+        fclose(fp);
+        delete[] specs;
+    }
+    else {
+        beep();
         printf("Could not open file: %s\n",args);
-		return FILE_ERR;
-	}
-	return NO_ERR;
+        return FILE_ERR;
+    }
+    return NO_ERR;
 }
 /* ********** */
 
@@ -278,7 +297,7 @@ int getfile_c(int n,char* args){
 /* ********** */
 
 /*
-GETBINARYFILE <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
+ GETBINARYFILE <filename> rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
  Read in a binary file with the specified parameters. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4. Specified parameters do not change those set with the BINARGUMENTS command.
  */
 
@@ -315,7 +334,7 @@ int getbin_c(int n,char* args)
 
 /*
  BINARGUMENTS rows columns headerBytes bytesPerDataPoint swapBytesFlag [unsignedFlag]
-  Specify parameters for reading in binary files. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4. The extension for binary files is specified using the BINEXTENSION command. Once these are specified, binary files can be read in using the GET command, or by dropping them onto the status window.
+ Specify parameters for reading in binary files. If bytesPerDataPoint is -sizeof(float), the binary data are treated as float. Other reasonable values would be 1, 2, or 4. The extension for binary files is specified using the BINEXTENSION command. Once these are specified, binary files can be read in using the GET command, or by dropping them onto the status window.
  */
 
 int binarguments_c(int n,char* args)
@@ -477,13 +496,26 @@ int compositefile_c(int n,char* args){
 /* ********** */
 
 int croprectangle_c(int n,char* args){
-    iBuffer.crop(UIData.iRect);
-    if(iBuffer.err()){
-        // crop already prints out error messages (an exception -- normally error messages are done in the command)
-        int err = iBuffer.err();
+    rect crop_rect = UIData.iRect;
+    iBuffer.crop(crop_rect);
+    int err = iBuffer.err();
+    if(err == SIZE_ERR){
+        beep();
+        printf("Rectangle size error.\n");
+        iBuffer.errclear();
+        return err;
+    }else if (err){
         iBuffer.errclear();
         return err;
     }
+    
+    int x0 = crop_rect.ul.h;
+    int y0 = crop_rect.ul.v;
+    int sizx = crop_rect.lr.h - crop_rect.ul.h +1;
+    int sizy = crop_rect.lr.v - crop_rect.ul.v +1;
+    printf("%d x %d Image.\n",sizx,sizy);
+    printf("Current image starts at: %d\t%d\n",x0,y0);
+    
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return NO_ERR;
@@ -502,28 +534,28 @@ int croprectangle_c(int n,char* args){
 
 int frame_c(int n, char* args)
 {
-	int sizx,sizy,j,i,fraction=0;
-	float x0,y0;
+    int sizx,sizy,j,i,fraction=0;
+    float x0,y0;
     
-	DATAWORD value = 0;
-	i = sscanf(args,"%d %d %f %f %f",&sizx,&sizy,&value,&x0,&y0);
-	if( i < 2) {
-		beep();
-		printf("Arguments are: NewWidth NewHeight [Value] [X0] [Y0]\n");
-		return(CMND_ERR);
-	}
+    DATAWORD value = 0;
+    i = sscanf(args,"%d %d %f %f %f",&sizx,&sizy,&value,&x0,&y0);
+    if( i < 2) {
+        beep();
+        printf("Arguments are: NewWidth NewHeight [Value] [X0] [Y0]\n");
+        return(CMND_ERR);
+    }
     
     int* specs = iBuffer.getspecs();
-	
-	switch(i) {
+    
+    switch(i) {
         case 2:
         case 3:
             x0 = -(sizx - (float)specs[COLS])/2.;
         case 4:
             y0 = -(sizy - (float)specs[ROWS])/2.;
-	}
-	
-	Image im;
+    }
+    
+    Image im;
     // error check?
     im.copyABD(iBuffer);
     int oldWidth = specs[COLS];
@@ -532,37 +564,37 @@ int frame_c(int n, char* args)
     specs[COLS] = sizx;
     im.setspecs(specs); // this will allocate the memory
     
-	i = x0;
-	j = y0;
-	if( x0-i != 0.0 || y0-j != 0.0)fraction=1;
+    i = x0;
+    j = y0;
+    if( x0-i != 0.0 || y0-j != 0.0)fraction=1;
     
-	printf("%d x %d Image.\n",sizx,sizy);
-	if(fraction)
-		printf("Interpolation from current image starts at: %.2f\t%.2f\n",x0,y0);
-	else
-		printf("Current image starts at: %.0f\t%.0f\n",x0,y0);
-	printf("Frame Value: %d\n",value);
-	
-	
-	for(i=0; i<sizy; i++){
-		for(j=0; j<sizx; j++) {
-			if(i+y0<0 || i+y0 >=oldHeight ||
-			   j+x0<0 || j+x0 >=oldWidth) {
+    printf("%d x %d Image.\n",sizx,sizy);
+    if(fraction)
+        printf("Interpolation from current image starts at: %.2f\t%.2f\n",x0,y0);
+    else
+        printf("Current image starts at: %.0f\t%.0f\n",x0,y0);
+    printf("Frame Value: %d\n",value);
+    
+    
+    for(i=0; i<sizy; i++){
+        for(j=0; j<sizx; j++) {
+            if(i+y0<0 || i+y0 >=oldHeight ||
+               j+x0<0 || j+x0 >=oldWidth) {
                 im.setpix(i,j,value);
-			}else {
+            }else {
                 if(fraction)
                     im.setpix(i,j,iBuffer.getpix(i+y0,j+x0));
                 else
                     im.setpix(i,j,iBuffer.getpix((int)i+y0,(int)j+x0));
-			}
-		}
-	}
+            }
+        }
+    }
     free(specs);  // release specs copy
     iBuffer.free();     // release the old data
     iBuffer = im;   // this is the new data
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
-	return 0;
+    return 0;
     
 }
 
@@ -597,7 +629,7 @@ int rectan_c(int n, char* args)
     point start,end;
     rect new_rect;
     extern Variable user_variables[];
-    // For this need 4 arguments 
+    // For this need 4 arguments
     narg = sscanf(args,"%d %d %d %d",&new_rect.ul.h,&new_rect.ul.v,&new_rect.lr.h,&new_rect.lr.v);
     
     if(*args == 0){
@@ -619,7 +651,7 @@ int rectan_c(int n, char* args)
     
     if(narg != 4) {
         beep();
-        printf("Need 4 Arguments.\n"); 
+        printf("Need 4 Arguments.\n");
         return -1;
     }
     UIData.iRect = new_rect;
@@ -635,7 +667,7 @@ int rectan_c(int n, char* args)
         UIData.iRect.lr.v = start.v;
         UIData.iRect.ul.v = end.v;
     }
-
+    
     printf("Current Rectangle is %d %d %d %d.\n",
            UIData.iRect.ul.h,UIData.iRect.ul.v,UIData.iRect.lr.h,UIData.iRect.lr.v);
     
@@ -763,7 +795,7 @@ int rgb2green_c(int n,char* args){
 /* ********** */
 
 int rgb2blue_c(int n,char* args){
-    iBuffer.rgb2color(2);    
+    iBuffer.rgb2color(2);
     if(iBuffer.err()){
         int err = iBuffer.err();
         beep();
@@ -834,16 +866,16 @@ int colorflag_c(int n, char* args){
     
     if (*args) {
         sscanf(args, "%d",&flag);
-        if (flag) 
+        if (flag)
             specs[IS_COLOR]= 1;
         else
             specs[IS_COLOR]= 0;
         iBuffer.setspecs(specs);
-    } 
+    }
     printf("Image Color Flag is %d\n", specs[IS_COLOR]);
     free(specs);
     update_UI();
-    return NO_ERR;    
+    return NO_ERR;
 }
 
 /* ********** */
@@ -906,8 +938,8 @@ int smooth_c(int n,char* args){
     float sum;
     int* bufferspecs;
     
-    // get args  
-    int narg = sscanf(args,"%d %d",&dx,&dy); 
+    // get args
+    int narg = sscanf(args,"%d %d",&dx,&dy);
     if(narg == 0){
         dx = dy = 2;    // default 2x2 smooth
     } else if (narg==1){
@@ -941,7 +973,7 @@ int smooth_c(int n,char* args){
             count = 0;
             for(i=dxs; i<dx; i++) {
                 for(j=dys; j<dy; j++) {
-                    if( (nt+j) < bufferspecs[ROWS] && 
+                    if( (nt+j) < bufferspecs[ROWS] &&
                        (nc+i) < bufferspecs[COLS] &&
                        (nt+j) >= 0 && (nc+i) >= 0) {
                         count++;
@@ -967,16 +999,16 @@ int gsmooth_c(int n, char* args)
 // GSMOOT NX [NY]
 // 1/e2 weight at  = (NX-1)/2 pixels from center
 {
-	
-	int dx,dy,dxs,dys,i,j,m,nt,nc;
-	float sigx,sigy,*mask,norm,sum;
-	
-	mask = 0;
     
-	if(n <= 0) n = 3;
-	
-	dx = dy = n;	// the smoothing amounts
-
+    int dx,dy,dxs,dys,i,j,m,nt,nc;
+    float sigx,sigy,*mask,norm,sum;
+    
+    mask = 0;
+    
+    if(n <= 0) n = 3;
+    
+    dx = dy = n;	// the smoothing amounts
+    
     // get args
     int narg = sscanf(args,"%d %d",&dx,&dy);
     if(narg == 0){
@@ -986,32 +1018,32 @@ int gsmooth_c(int n, char* args)
     }
     
     if (dx/2 == dx/2.0) {
-		beep();
-		printf("The X size of the region must be odd.\n");
-		
-		return CMND_ERR;
-	}
-	if (dy/2 == dy/2.0) {
-		printf("The Y size of the region must be odd.\n");
-		beep();
-		return CMND_ERR;
-	}
+        beep();
+        printf("The X size of the region must be odd.\n");
+        
+        return CMND_ERR;
+    }
+    if (dy/2 == dy/2.0) {
+        printf("The Y size of the region must be odd.\n");
+        beep();
+        return CMND_ERR;
+    }
     
-	norm = 0;
-	dx = (dx-1)/2;
-	dxs = -dx;
-	sigx = dx/2;
+    norm = 0;
+    dx = (dx-1)/2;
+    dxs = -dx;
+    sigx = dx/2;
     
-	dy = (dy-1)/2;
-	dys = -dy;
-	sigy = dy/2;
-	printf("Sigx=%5.2f, Sigy=%5.2f, ",sigx,sigy);
-	printf("pixels=%d x %d\n",dx*2+1,dy*2+1);
-	
-	if ( sigy == 0 ) sigy = 1;
-	if ( sigx == 0 ) sigx = 1;
-	
-	if(dx == 0 && dy == 0) return NO_ERR;	// The 1 x 1 smoothing case
+    dy = (dy-1)/2;
+    dys = -dy;
+    sigy = dy/2;
+    printf("Sigx=%5.2f, Sigy=%5.2f, ",sigx,sigy);
+    printf("pixels=%d x %d\n",dx*2+1,dy*2+1);
+    
+    if ( sigy == 0 ) sigy = 1;
+    if ( sigx == 0 ) sigx = 1;
+    
+    if(dx == 0 && dy == 0) return NO_ERR;	// The 1 x 1 smoothing case
     
     int* specs = iBuffer.getspecs();
     Image smoothed(specs[ROWS],specs[COLS]);
@@ -1021,33 +1053,33 @@ int gsmooth_c(int n, char* args)
     }
     smoothed.copyABD(iBuffer);
     
-	/* Set loop limit so only have to do "<", not "<=" */
-	dx=dx+1;
-	dy=dy+1;
+    /* Set loop limit so only have to do "<", not "<=" */
+    dx=dx+1;
+    dy=dy+1;
     
-	mask = (float*) malloc((dx-dxs) * (dy-dys) * sizeof(float));
-	norm = 0;
-	for(i=dxs; i<dx; i++) {
-		for(j=dys; j<dy; j++) {
-			m=(j - dys)*(dx - dxs) + (i - dxs);
-			mask[m]=exp(-(i*i/(sigx*sigx)+j*j/(sigy*sigy))/2);
-			norm += mask[m];
-		}
-	}
-	
-	for(nt=0; nt<specs[ROWS]; nt++) {
-		for(nc=0; nc<specs[COLS];nc++){
-			sum = 0;
-			for(i=dxs; i<dx; i++) {
-				for(j=dys; j<dy; j++) {
-					m = (j - dys)*(dx - dxs) + (i - dxs);
-					sum += iBuffer.getpix(nt+j,nc+i)*mask[m];
-				}
-			}
-			smoothed.setpix(nt,nc,sum/norm);
-		}
-	}
-	if(mask!=0) {free(mask); mask = 0;}
+    mask = (float*) malloc((dx-dxs) * (dy-dys) * sizeof(float));
+    norm = 0;
+    for(i=dxs; i<dx; i++) {
+        for(j=dys; j<dy; j++) {
+            m=(j - dys)*(dx - dxs) + (i - dxs);
+            mask[m]=exp(-(i*i/(sigx*sigx)+j*j/(sigy*sigy))/2);
+            norm += mask[m];
+        }
+    }
+    
+    for(nt=0; nt<specs[ROWS]; nt++) {
+        for(nc=0; nc<specs[COLS];nc++){
+            sum = 0;
+            for(i=dxs; i<dx; i++) {
+                for(j=dys; j<dy; j++) {
+                    m = (j - dys)*(dx - dxs) + (i - dxs);
+                    sum += iBuffer.getpix(nt+j,nc+i)*mask[m];
+                }
+            }
+            smoothed.setpix(nt,nc,sum/norm);
+        }
+    }
+    if(mask!=0) {free(mask); mask = 0;}
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
@@ -1061,17 +1093,17 @@ int gsmooth_c(int n, char* args)
 //***************************************************************//
 int tsmooth_c(int n, char* args)
 {
-	Image Im_Result;
-	Image Im_dimX;
-	Image Im_dimY;
-	
-	int nc, nt;
-	int i,j,count;
-	float sum;
-	int dx, dy, dxs, dys;
+    Image Im_Result;
+    Image Im_dimX;
+    Image Im_dimY;
+    
+    int nc, nt;
+    int i,j,count;
+    float sum;
+    int dx, dy, dxs, dys;
     char arg[2]="0";
-	
-	// Allocate space for the result Image
+    
+    // Allocate space for the result Image
     
     int* specs = iBuffer.getspecs();
     Image smoothed(specs[ROWS],specs[COLS]);
@@ -1082,52 +1114,52 @@ int tsmooth_c(int n, char* args)
     smoothed.copyABD(iBuffer);
     
     if (temp_image_index(arg, 0) != 0) {
-		beep();
-		printf("Temp[0] is not defined.\n");
+        beep();
+        printf("Temp[0] is not defined.\n");
         return CMND_ERR;
     }
     arg[0] = '1';
     if (temp_image_index(arg, 0) != 1) {
-		beep();
-		printf("Temp[1] is not defined.\n");
+        beep();
+        printf("Temp[1] is not defined.\n");
         return CMND_ERR;
     }
     
-	// Check everything for appropraite sizes
-	if ((iBuffer != iTempImages[0])||(iBuffer != iTempImages[1])) {
-		beep();
-		printf("Please make sure that the Temporary buffers T[0] and T[1] are the same size as the image.\n");
-		return CMND_ERR;
-	}
-	
-	// Loop through Original image and do appropriate smoothing
-	for(nt=0; nt<specs[ROWS]; nt++) {
-		for(nc=0; nc<specs[COLS];nc++){
-			// set counters to zero for new pixel
-			sum = 0;
-			count = 0;
-			
-			// Work out local smoothing size by reading from Temp buffers
-			dx = floor(iTempImages[0].getpix(nt,nc));
-			dy = floor(iTempImages[1].getpix(nt,nc));
-			dxs = -dx/2;
-			dys = -dy/2;
-			if( dx & 0x1)   dx = dx/2+1;
-			else		dx /= 2;
-			if( dy & 0x1)	dy = dy/2+1;
-			else		dy /= 2;
-			
-			// Calculate local average (unweighted rectangular smoothing)
-			for(i=dxs; i<dx; i++) {
-				for(j=dys; j<dy; j++) {
-					count++;
-					sum += iBuffer.getpix(nt+j,nc+i);
-				}
-			}
-			smoothed.setpix(nt,nc, (DATAWORD) sum/count);
-		}
-	}
-	// Free up memory and GO
+    // Check everything for appropraite sizes
+    if ((iBuffer != iTempImages[0])||(iBuffer != iTempImages[1])) {
+        beep();
+        printf("Please make sure that the Temporary buffers T[0] and T[1] are the same size as the image.\n");
+        return CMND_ERR;
+    }
+    
+    // Loop through Original image and do appropriate smoothing
+    for(nt=0; nt<specs[ROWS]; nt++) {
+        for(nc=0; nc<specs[COLS];nc++){
+            // set counters to zero for new pixel
+            sum = 0;
+            count = 0;
+            
+            // Work out local smoothing size by reading from Temp buffers
+            dx = floor(iTempImages[0].getpix(nt,nc));
+            dy = floor(iTempImages[1].getpix(nt,nc));
+            dxs = -dx/2;
+            dys = -dy/2;
+            if( dx & 0x1)   dx = dx/2+1;
+            else		dx /= 2;
+            if( dy & 0x1)	dy = dy/2+1;
+            else		dy /= 2;
+            
+            // Calculate local average (unweighted rectangular smoothing)
+            for(i=dxs; i<dx; i++) {
+                for(j=dys; j<dy; j++) {
+                    count++;
+                    sum += iBuffer.getpix(nt+j,nc+i);
+                }
+            }
+            smoothed.setpix(nt,nc, (DATAWORD) sum/count);
+        }
+    }
+    // Free up memory and GO
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
@@ -1149,21 +1181,21 @@ int diffy_c(int n,char* args )				/* differentiate the data in the y direction  
     }
     newIm.copyABD(iBuffer);
     
-	for(nc=0;nc < bufferspecs[COLS]; nc++){
-		newIm.setpix(0, nc,iBuffer.getpix(0,nc) - iBuffer.getpix(1,nc));
-	}
+    for(nc=0;nc < bufferspecs[COLS]; nc++){
+        newIm.setpix(0, nc,iBuffer.getpix(0,nc) - iBuffer.getpix(1,nc));
+    }
     
-	
-	for(nt=1; nt<bufferspecs[ROWS]-1;nt++) {
-		for(nc=0;nc < bufferspecs[COLS]; nc++){
+    
+    for(nt=1; nt<bufferspecs[ROWS]-1;nt++) {
+        for(nc=0;nc < bufferspecs[COLS]; nc++){
             newIm.setpix(nt, nc,(iBuffer.getpix(nt-1,nc) - iBuffer.getpix(nt+1,nc))/2.);
-		}
-	}
-	
-	for(nc=0;nc < bufferspecs[COLS]; nc++){
-		//*(datp2++) = iBuffer.getpix(bufferspecs[ROWS]-2,nc) - idat(bufferspecs[ROWS]-1,nc);
+        }
+    }
+    
+    for(nc=0;nc < bufferspecs[COLS]; nc++){
+        //*(datp2++) = iBuffer.getpix(bufferspecs[ROWS]-2,nc) - idat(bufferspecs[ROWS]-1,nc);
         newIm.setpix(bufferspecs[ROWS]-1, nc,iBuffer.getpix(bufferspecs[ROWS]-2,nc) - iBuffer.getpix(bufferspecs[ROWS]-1,nc));
-	}
+    }
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
@@ -1185,14 +1217,14 @@ int diffx_c(int n,char* args)				/* differentiate the data in the x direction  -
     }
     newIm.copyABD(iBuffer);
     
-	for(nt=0; nt<bufferspecs[ROWS];nt++) {
-		newIm.setpix(nt, 0,iBuffer.getpix(nt,1) - iBuffer.getpix(nt,0));
-		for(nc=1;nc < bufferspecs[COLS]-1; nc++){
-			newIm.setpix(nt, nc,(iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.);
-		}
-		//*(datp2++) = idat(nt, bufferspecs[COLS]-1) - idat(nt, bufferspecs[COLS]-2);
+    for(nt=0; nt<bufferspecs[ROWS];nt++) {
+        newIm.setpix(nt, 0,iBuffer.getpix(nt,1) - iBuffer.getpix(nt,0));
+        for(nc=1;nc < bufferspecs[COLS]-1; nc++){
+            newIm.setpix(nt, nc,(iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.);
+        }
+        //*(datp2++) = idat(nt, bufferspecs[COLS]-1) - idat(nt, bufferspecs[COLS]-2);
         newIm.setpix(nt, bufferspecs[COLS]-1,iBuffer.getpix(nt, bufferspecs[COLS]-1) - iBuffer.getpix(nt, bufferspecs[COLS]-2));
-	}
+    }
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
@@ -1204,8 +1236,8 @@ int diffx_c(int n,char* args)				/* differentiate the data in the x direction  -
 /* ********** */
 
 int gradient_c(int n,char* args)				/* get the 2D (x & y) gradient magnitude */
-                                /* GRAD command -- uses points on either side of the
-                                    current point for gradient */
+/* GRAD command -- uses points on either side of the
+ current point for gradient */
 {
     int* specs = iBuffer.getspecs();
     Image newIm(specs[ROWS],specs[COLS]);
@@ -1216,27 +1248,27 @@ int gradient_c(int n,char* args)				/* get the 2D (x & y) gradient magnitude */
         return newIm.err();
     }
     newIm.copyABD(iBuffer);
-	
-	for(nc=0;nc < specs[COLS]; nc++){
-		//*(datp2++) = 0;
-        newIm.setpix(0,nc,0);
-	}
     
-	for(nt=1; nt<specs[ROWS]-1;nt++) {
-		//*(datp2++) = 0;
+    for(nc=0;nc < specs[COLS]; nc++){
+        //*(datp2++) = 0;
+        newIm.setpix(0,nc,0);
+    }
+    
+    for(nt=1; nt<specs[ROWS]-1;nt++) {
+        //*(datp2++) = 0;
         newIm.setpix(nt,0,0);
-		for(nc=1;nc < specs[COLS]-1; nc++){
-			dx = (iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.0;
-			dy = (iBuffer.getpix(nt+1,nc) - iBuffer.getpix(nt-1,nc))/2.0;
-			newIm.setpix(nt,nc,sqrt(dx*dx +dy*dy));
-		}
-		//*(datp2++) = 0;
+        for(nc=1;nc < specs[COLS]-1; nc++){
+            dx = (iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.0;
+            dy = (iBuffer.getpix(nt+1,nc) - iBuffer.getpix(nt-1,nc))/2.0;
+            newIm.setpix(nt,nc,sqrt(dx*dx +dy*dy));
+        }
+        //*(datp2++) = 0;
         newIm.setpix(nt,0,0);
-	}
-	for(nc=0;nc < specs[COLS]; nc++){
-		//*(datp2++) = 0;
+    }
+    for(nc=0;nc < specs[COLS]; nc++){
+        //*(datp2++) = 0;
         newIm.setpix(specs[ROWS]-1,nc,0);
-	}
+    }
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
@@ -1264,12 +1296,12 @@ int size_c(int n,char* args){
             update_UI();
             return NO_ERR;
         }
-    } 
+    }
     int* specs = iBuffer.getspecs();
     printf("Current Image is %d by %d\n",specs[COLS],specs[ROWS]);
     free(specs);
     return NO_ERR;
- 
+    
 }
 
 /* ********** */
@@ -1323,10 +1355,10 @@ int columns_c(int n,char* args){
 
 int setcminmax_c(int n,char* args)		/* get color min and max */
 {
-	DATAWORD mn = 1, mx;
+    DATAWORD mn = 1, mx;
     
     if(*args){
-        int narg = sscanf(args,"%f %f",&mn,&mx); 
+        int narg = sscanf(args,"%f %f",&mn,&mx);
         if (narg == 2){
             UIData.cmin = mn;
             UIData.cmax = mx;
@@ -1360,7 +1392,7 @@ int killBox_c(int n, char* args)
     
     sscanf(args,"%f",&filval);
     
-	substart = UIData.iRect.ul;
+    substart = UIData.iRect.ul;
     subend = UIData.iRect.lr;
     
     if (subend.h > bufferspecs[COLS]-1 ||
@@ -1373,16 +1405,16 @@ int killBox_c(int n, char* args)
         return SIZE_ERR;
     }
     
-	for(i=substart.v; i<= subend.v; i++) {
-		for(j=substart.h; j<= subend.h; j++) {
-			iBuffer.setpix(i, j, filval);
-		}
-	}
+    for(i=substart.v; i<= subend.v; i++) {
+        for(j=substart.h; j<= subend.h; j++) {
+            iBuffer.setpix(i, j, filval);
+        }
+    }
     free(bufferspecs);
     
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
+    update_UI();
+    return NO_ERR;
 }
 
 /* ********** */
@@ -1391,8 +1423,8 @@ int positive_c(int n, char* args)
 {
     iBuffer.floor(0.);
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
+    update_UI();
+    return NO_ERR;
 }
 
 /* ********** */
@@ -1413,9 +1445,9 @@ int clip_c(int n, char* args)
     
     iBuffer.clip(clipval);
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
-
+    update_UI();
+    return NO_ERR;
+    
 }
 
 /* ********** */
@@ -1427,8 +1459,8 @@ int clipbottom_c(int n, char* args)
     
     iBuffer.floor(clipval);
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
+    update_UI();
+    return NO_ERR;
     
 }
 
@@ -1444,8 +1476,8 @@ int clipfraction_c(int n, char* args)
     
     free(values);
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
+    update_UI();
+    return NO_ERR;
     
 }
 
@@ -1461,9 +1493,52 @@ int clipfbottom_c(int n, char* args)
     
     free(values);
     iBuffer.getmaxx(PRINT_RESULT);
-	update_UI();
-	return NO_ERR;
+    update_UI();
+    return NO_ERR;
     
+}
+/* ********** */
+
+/* BOUNDBOX targetValue [setRectFlag]
+    Returns the bounds of a rectangle that encloses any part of the image that has a value >= targetValue. If setRectFlag is nonzero, the current rectangle will be set by the results. command_return 1-4 are set to the bounds.
+ */
+
+int boundbox_c(int n, char* args)
+{
+    point substart={iBuffer.width(),iBuffer.height()},subend={0,0};
+    DATAWORD clipval = n;
+    int setRect=0;
+    extern Variable user_variables[];
+    
+    sscanf(args,"%f %d",&clipval,&setRect);
+    
+    
+    for(int r=0; r<iBuffer.height();r++) {
+        for(int c=0; c<iBuffer.width(); c++) {
+            if( iBuffer.getpix(r,c) >= clipval){
+                if(c < substart.h ) substart.h = c;
+                if(c > subend.h ) subend.h = c;
+                if(r < substart.v ) substart.v = r;
+                if(r > subend.v ) subend.v = r;
+            };
+        }
+    }
+
+    printf("Bounding rectangle is %d %d %d %d\n",substart.h,substart.v,subend.h,subend.v);
+    user_variables[0].ivalue = substart.h;
+    user_variables[0].is_float = 0;
+    user_variables[1].ivalue = substart.v;
+    user_variables[1].is_float = 0;
+    user_variables[2].ivalue = subend.h;
+    user_variables[2].is_float = 0;
+    user_variables[3].ivalue = subend.v;
+    user_variables[3].is_float = 0;
+
+    if (setRect){
+        UIData.iRect.ul=substart;
+        UIData.iRect.lr=subend;
+    }
+    return NO_ERR;
 }
 
 /* ********** */
@@ -1472,12 +1547,12 @@ int calc_cmd_c(int n, char* args)
 {
     point substart,subend;
     int* bufferspecs = iBuffer.getspecs();
-	
-	substart = UIData.iRect.ul;
+    
+    substart = UIData.iRect.ul;
     subend = UIData.iRect.lr;
     
     if (subend.h > bufferspecs[COLS]-1 ||
-        subend.v > bufferspecs[ROWS]-1 ||
+        subend.v > iBuffer.height()-1 ||
         substart.h < 0 ||
         substart.v < 0){
         free(bufferspecs);
@@ -1485,89 +1560,130 @@ int calc_cmd_c(int n, char* args)
         printf("Rectangle not contained in current image.\n");
         return SIZE_ERR;
     }
-	
-	calc(substart,subend);
+    
+    calc(substart,subend);
     free(bufferspecs);
     
-	return NO_ERR;
+    return NO_ERR;
 }
 
 /* ********** */
 
 int calcall_c(int n, char* args)
 {
-	point substart,subend;
+    point substart,subend;
     int* bufferspecs = iBuffer.getspecs();
-	
-	substart.h = substart.v = 0;
-	subend.h = bufferspecs[COLS]-1;
-	subend.v = bufferspecs[ROWS]-1;
-	
-	calc(substart,subend);
+    
+    substart.h = substart.v = 0;
+    subend.h = bufferspecs[COLS]-1;
+    subend.v = bufferspecs[ROWS]-1;
+    
+    calc(substart,subend);
     free(bufferspecs);
-	return 0;
+    return 0;
 }
 
 int calc(point start,point end){
- 
+    
     double xcom,ycom,ave,rms;		// centroid coordinates,average, and rms
-	int icount,nt,nc;
-	DATAWORD datval;
+    int icount,nt,nc;
+    DATAWORD datval;
     DATAWORD* buffervalues = iBuffer.getvalues();
     int* bufferspecs = iBuffer.getspecs();
     char* unit_text = iBuffer.getunit_text();
     extern Variable user_variables[];
-
-    icount = 0;
-	xcom = ycom = ave = rms = 0.0;
-	
-	//printf("%d %d %d %d \n", start->v,start->h,end->v,end->h);
-	for(nt=start.v; nt<=end.v; nt++) {
-		for(nc=start.h; nc<=end.h; nc++) {
-			datval = iBuffer.getpix(nt,nc);		
-			ave += datval;					// average 
-			xcom += nc * (datval-buffervalues[MIN]);			// x center of mass -- subtract min
-			ycom += nt * (datval-buffervalues[MIN]);			// y center of mass -- subtract min 
-			rms += datval*datval;			// rms 
-			icount++;						// number of points 
-		}
-	}
-	xcom /= icount;
-	ycom /= icount;
-	ave = ave/(float)icount;
-	xcom /= (ave-buffervalues[MIN]);
-	ycom /= (ave-buffervalues[MIN]);
-	
-	rms = rms/icount - ave*ave;	
-	rms = sqrt(rms);
-    if( bufferspecs[HAS_RULER] ) {
-		xcom /= buffervalues[RULER_SCALE];
-		ycom /= buffervalues[RULER_SCALE];
-	}
-	
-	pprintf("Ave:\t%g\t rms:\t%g\t # Pts:\t%d\t x:\t%g\t y:\t%g",ave,rms,icount,xcom,ycom);
-	
-	if( bufferspecs[HAS_RULER]!= 0  && unit_text[0]!=0 ){
-		pprintf("\t%s \n",unit_text);
-	} else {
-		pprintf(" \n");
+    
+    for(int c=0; c<= bufferspecs[IS_COLOR]*2; c++){
+        icount = 0;
+        xcom = ycom = ave = rms = 0.0;
+        
+        //printf("%d %d %d %d \n", start->v,start->h,end->v,end->h);
+        for(nt=start.v; nt<=end.v; nt++) {
+            for(nc=start.h; nc<=end.h; nc++) {
+                datval = iBuffer.getpix(nt+c*iBuffer.height(),nc);
+                ave += datval;					// average
+                xcom += nc * (datval-buffervalues[MIN]);			// x center of mass -- subtract min
+                ycom += nt * (datval-buffervalues[MIN]);			// y center of mass -- subtract min
+                rms += datval*datval;			// rms
+                icount++;						// number of points
+            }
+        }
+        xcom /= icount;
+        ycom /= icount;
+        ave = ave/(float)icount;
+        xcom /= (ave-buffervalues[MIN]);
+        ycom /= (ave-buffervalues[MIN]);
+        
+        rms = rms/icount - ave*ave;
+        rms = sqrt(rms);
+        if( bufferspecs[HAS_RULER] ) {
+            xcom /= buffervalues[RULER_SCALE];
+            ycom /= buffervalues[RULER_SCALE];
+        }
+        if(bufferspecs[IS_COLOR]){
+            switch (c) {
+                case 0:
+                    printf("R ");
+                    break;
+                case 1:
+                    printf("G ");
+                    break;
+                case 2:
+                    printf("B ");
+                    break;
+                default:
+                    break;
+            }
+        }
+        pprintf("Ave:\t%g\t rms:\t%g\t # Pts:\t%d\t x:\t%g\t y:\t%g",ave,rms,icount,xcom,ycom);
+        
+        if( bufferspecs[HAS_RULER]!= 0  && unit_text[0]!=0 ){
+            pprintf("\t%s \n",unit_text);
+        } else {
+            pprintf(" \n");
+        }
+        switch (c) {
+            case 0:
+                // return values available as variables monochrome or red
+                user_variables[0].fvalue = ave;
+                user_variables[0].is_float = 1;
+                user_variables[1].fvalue = rms;
+                user_variables[1].is_float = 1;
+                user_variables[2].fvalue = xcom;
+                user_variables[2].is_float = 1;
+                user_variables[3].fvalue = ycom;
+                user_variables[3].is_float = 1;
+                break;
+            case 1:
+                // return values available as variables green
+                user_variables[4].fvalue = ave;
+                user_variables[4].is_float = 1;
+                user_variables[5].fvalue = rms;
+                user_variables[5].is_float = 1;
+                user_variables[6].fvalue = xcom;
+                user_variables[6].is_float = 1;
+                user_variables[7].fvalue = ycom;
+                user_variables[7].is_float = 1;
+                break;
+            case 2:
+                // return values available as variables blue
+                user_variables[8].fvalue = ave;
+                user_variables[8].is_float = 1;
+                user_variables[9].fvalue = rms;
+                user_variables[9].is_float = 1;
+                break;
+                
+            default:
+                break;
+        }
+        
     }
-
     free( buffervalues);
     free( bufferspecs);
     free( unit_text);
-    // return values available as variables
-	user_variables[0].fvalue = ave;
-	user_variables[0].is_float = 1;
-	user_variables[1].fvalue = rms;
-	user_variables[1].is_float = 1;
-	user_variables[2].fvalue = xcom;
-	user_variables[2].is_float = 1;
-	user_variables[3].fvalue = ycom;
-	user_variables[3].is_float = 1;
     update_UI();
     return 0;
-
+    
 }
 
 /* ********** */
@@ -1613,13 +1729,13 @@ int temp_image_index (char* name,int define)
             numberNamedTempImages++;
             return NUMBERED_TEMP_IMAGES+numberNamedTempImages-1;
         }
-		beep();
-		printf("Temporary image %s not defined.\n",name);
-		return(-1);
+        beep();
+        printf("Temporary image %s not defined.\n",name);
+        return(-1);
     }
     beep();
     printf("%s is not a valid image name.\n",name);
-	return -1;
+    return -1;
 }
 
 
@@ -1645,7 +1761,7 @@ int gtemp_c(int n, char* args)
 {
     n = temp_image_index(args,0);
     if(n >=0){
-
+        
         if( iTempImages[n].isEmpty()){
             beep();
             printf("Temporary image is not defined.\n");
@@ -1661,10 +1777,10 @@ int gtemp_c(int n, char* args)
 
 /* ********** */
 /*
-FTEMPIMAGE tempImage
-    Free memory associated with temporary image tempImage.
-    tempImage must be in the range 0-9, or correspond to a named image.
-*/
+ FTEMPIMAGE tempImage
+ Free memory associated with temporary image tempImage.
+ tempImage must be in the range 0-9, or correspond to a named image.
+ */
 int ftemp_c(int n, char* args)
 {
     n = temp_image_index(args,0);
@@ -1712,7 +1828,7 @@ int ltemp_c(int n, char* args)
                iTempImages[n].width(),iTempImages[n].height(),ncolors);
     }
     
-	return 0;
+    return 0;
 }
 /* ********** */
 
@@ -1813,78 +1929,78 @@ int comtmp_c(int n, char* args)
 
 int sinGrid_c(int n, char* args)				/* draw grid from sin function */
 {
-	int nc,nt;
+    int nc,nt;
     float radius,dist,x,y;
     
     if( sscanf(args,"%f",&radius) != 1)
-		radius = n;
+        radius = n;
     if (radius < 10.) {
         radius = 10.;
     }
     int* theSpecs = iBuffer.getspecs();
     
-	printf("radius = %f\n",radius);
-	//if (radius <= 0 || radius > header[NCHAN] || radius > header[NTRAK]) radius = 20.0;
-	
-	for(nt=0; nt<theSpecs[ROWS];nt++) {
-		for(nc=0;nc < theSpecs[COLS]; nc++){
-			x = radius - fmod(nc,radius*2);
-			y = radius - fmod(nt,radius*2);
-			dist = sqrt(y*y + x*x);
+    printf("radius = %f\n",radius);
+    //if (radius <= 0 || radius > header[NCHAN] || radius > header[NTRAK]) radius = 20.0;
+    
+    for(nt=0; nt<theSpecs[ROWS];nt++) {
+        for(nc=0;nc < theSpecs[COLS]; nc++){
+            x = radius - fmod(nc,radius*2);
+            y = radius - fmod(nt,radius*2);
+            dist = sqrt(y*y + x*x);
             iBuffer.setpix(nt, nc, cos(dist/(.67*radius)*PI/2));
-		}
-	}
+        }
+    }
     free(theSpecs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
-
+    
     return NO_ERR;
 }
 
 /* ********** */
 
 int dcrawarg_c(int n, char* args){
-	
-	int next = 0, i;
+    
+    int next = 0, i;
     static int first = 1;
-	extern char txt[];
+    extern char txt[];
     extern int argc;
     extern char *argv[];
     extern char dcraw_arg[];
-
-	
-	if(*args == 0){
-		i = argc;
-		argc = 1;
-		dcrawGlue(txt,-1,NULL);
-		argc = i;
-		printf("\nCurrent settings are: ");
-		for(i=0; i<argc; i++){
-			printf("%s ",argv[i]);
-		}
-		printf("\n");
-		return NO_ERR;
-	}
-	
-	argc = 0;
-	strcpy(dcraw_arg, args);
-	argv[argc++] = &dcraw_arg[next];
-	for(i=0; i<strlen(args); i++){
-		if(args[i] == ' '){
-			dcraw_arg[i] = 0;
-			next = i+1;
-			argv[argc++] = &dcraw_arg[next];
-		}
-	}
-
-	if(!first){
-		printf("%d arguments:\n",argc);
-		printf("DCRAW arguments are: %s\n",args);
-		
-	}
-
-	
-	return NO_ERR;
+    
+    
+    if(*args == 0){
+        i = argc;
+        argc = 1;
+        dcrawGlue(txt,-1,NULL);
+        argc = i;
+        printf("\nCurrent settings are: ");
+        for(i=0; i<argc; i++){
+            printf("%s ",argv[i]);
+        }
+        printf("\n");
+        return NO_ERR;
+    }
+    
+    argc = 0;
+    strcpy(dcraw_arg, args);
+    argv[argc++] = &dcraw_arg[next];
+    for(i=0; i<strlen(args); i++){
+        if(args[i] == ' '){
+            dcraw_arg[i] = 0;
+            next = i+1;
+            argv[argc++] = &dcraw_arg[next];
+        }
+    }
+    
+    if(!first){
+        printf("%d arguments:\n",argc);
+        printf("DCRAW arguments are: %s\n",args);
+        
+    }
+    
+    
+    return NO_ERR;
 }
 
 /* ********** */
@@ -1914,14 +2030,14 @@ int getFileNames_c(int n,char* args)			// open a file containing file names
     if( nameFilePtr != NULL) fclose(nameFilePtr);
     
     nameFilePtr = fopen(fullname(args,GET_FILENAMES),"r");
-	if( nameFilePtr != NULL) {
-		return NO_ERR;
-	}
-	else {
-		beep();
-		printf("Could not open %s\n",args);
-		return FILE_ERR;
-	}
+    if( nameFilePtr != NULL) {
+        return NO_ERR;
+    }
+    else {
+        beep();
+        printf("Could not open %s\n",args);
+        return FILE_ERR;
+    }
 }
 /* ********** */
 
@@ -1938,22 +2054,22 @@ int nextFile_c(int n,char* args){
     extern FILE* nameFilePtr;
     
     if( nameFilePtr == NULL){
-		beep();
-		printf("No Names file is open. Use the GetFileNames command first.\n");
-		return FILE_ERR;
+        beep();
+        printf("No Names file is open. Use the GetFileNames command first.\n");
+        return FILE_ERR;
     }
     if(fscanf(nameFilePtr, "%s",txt) == EOF){
         beep();
-		printf("All files have been read.\n");
+        printf("All files have been read.\n");
         fclose(nameFilePtr);
         nameFilePtr = NULL;
-		return FILE_ERR;
+        return FILE_ERR;
     }
     
     // return the file name without the extension as the first  return value
     
     user_variables[0].fvalue = user_variables[0].ivalue = 0;
-	user_variables[0].is_float = -1;
+    user_variables[0].is_float = -1;
     int length = (int)strlen(txt);
     while(txt[length] != '.' && length > 0) length--;
     strncpy( user_variables[0].estring,txt,length);
@@ -2022,24 +2138,24 @@ int stringmacro_c(int n,char* args)
 {
     extern char macstring[];
     
-	if (*args == 0) {
-		printf("%s\n",macstring);
-	} else {
+    if (*args == 0) {
+        printf("%s\n",macstring);
+    } else {
         strncpy(macstring,args,COMLEN);
-	}
-	return 0;
+    }
+    return 0;
 }
 
 /* ********** */
 
 int delay_c(int n,char* args)
 {
-	// n is in ticks (1/60 seconds)
-	
-	clock_t start;
-	start = clock();
-	while ( (clock()- start)*60/CLOCKS_PER_SEC < n);
-	return 0;
+    // n is in ticks (1/60 seconds)
+    
+    clock_t start;
+    start = clock();
+    while ( (clock()- start)*60/CLOCKS_PER_SEC < n);
+    return 0;
 }
 
 /* ********** */
@@ -2049,70 +2165,70 @@ int delay_c(int n,char* args)
  */
 int sysCommand_c(int n,char* args)
 {
-	FILE*	sf;
-	char     txt[256];
-	unsigned long i,j;
-	//system(&cmnd[index]);
-	sf = popen(args,"r");
-	i = fread(txt,1,255,sf);
-	while( i> 0){
-		for(j=0; j< i; j++){
-			printf("%c",txt[j]);
-		}
-		i = fread(txt,1,255,sf);
-	}
-	
-	pclose(sf);
-	return(0);
-	
+    FILE*	sf;
+    char     txt[256];
+    unsigned long i,j;
+    //system(&cmnd[index]);
+    sf = popen(args,"r");
+    i = fread(txt,1,255,sf);
+    while( i> 0){
+        for(j=0; j< i; j++){
+            printf("%c",txt[j]);
+        }
+        i = fread(txt,1,255,sf);
+    }
+    
+    pclose(sf);
+    return(0);
+    
 }
 
 /* ********** */
 
 int gmacro_c(int n,char* args)
 {
-	extern char	macbuf[];
+    extern char	macbuf[];
     
-	int fd,nread,i;
-	
-	if(*args == 0)
-		fd = open(args,READMODE);
-	else
-		fd = open(fullname(args,MACROS_DATA),READMODE);
-	
-	if(fd == -1) {
-		beep();
-		printf("Macro File '%s' Not Found.\n",args);
-		return FILE_ERR;
-	}
-	for(i=0; i<MBUFLEN; i++) *(macbuf+i) = 0;	// clear the buffer
-	nread = (int)read(fd,macbuf,MBUFLEN);		/* read the largest buffer  */
-	printf("%d Bytes Read.\n",nread);
-	
-	
-	/* the format of macro files has changed -- now they are formatted text files */
-	/* previously, they were constant length files containing C strings */
-	/* this code should read both formats */
-	
-	for(i=0; i<nread ; i++) {
-		if( *(macbuf+i) == 0x0D || *(macbuf+i) == 0x0A)
-			*(macbuf+i) = 0x00;	/* change CR or LF to null */
-	}
-	*(macbuf+nread) = 0;				/* one extra to signify end of buffer */
-	*(macbuf+nread+1) = 0;
-	
-	close(fd);
-	clear_buffer_to_end(macbuf);		/* insert trailing zeros after the macro */
-	return NO_ERR;
+    int fd,nread,i;
+    
+    if(*args == 0)
+        fd = open(args,READMODE);
+    else
+        fd = open(fullname(args,MACROS_DATA),READMODE);
+    
+    if(fd == -1) {
+        beep();
+        printf("Macro File '%s' Not Found.\n",args);
+        return FILE_ERR;
+    }
+    for(i=0; i<MBUFLEN; i++) *(macbuf+i) = 0;	// clear the buffer
+    nread = (int)read(fd,macbuf,MBUFLEN);		/* read the largest buffer  */
+    printf("%d Bytes Read.\n",nread);
+    
+    
+    /* the format of macro files has changed -- now they are formatted text files */
+    /* previously, they were constant length files containing C strings */
+    /* this code should read both formats */
+    
+    for(i=0; i<nread ; i++) {
+        if( *(macbuf+i) == 0x0D || *(macbuf+i) == 0x0A)
+            *(macbuf+i) = 0x00;	/* change CR or LF to null */
+    }
+    *(macbuf+nread) = 0;				/* one extra to signify end of buffer */
+    *(macbuf+nread+1) = 0;
+    
+    close(fd);
+    clear_buffer_to_end(macbuf);		/* insert trailing zeros after the macro */
+    return NO_ERR;
 }
 /* ********** */
 
 int echo_c(int n,char* args)
 {
-	if (*args != 0) {
-		pprintf("%s\n",args);
-	}
-	return NO_ERR;
+    if (*args != 0) {
+        pprintf("%s\n",args);
+    }
+    return NO_ERR;
 }
 
 
@@ -2127,66 +2243,82 @@ char    *fptr_name;
 
 int fopen_c (int n,char* args)
 {
-
-	fptr_name = fullname(args,CSV_DATA);
-	fptr_local = fopen(fptr_name,"w");
-	if( fptr_local != NULL) {
-		//settext(args);      /* text file type */
-		//fileflush(args]);	/* for updating directory */
-		return NO_ERR;
-	} else {
-		beep();
-		printf("Error: Could not open file: %s\n",fptr_name);
-		return FILE_ERR;
-	}
+    
+    fptr_name = fullname(args,CSV_DATA);
+    fptr_local = fopen(fptr_name,"w");
+    if( fptr_local != NULL) {
+        //settext(args);      /* text file type */
+        //fileflush(args]);	/* for updating directory */
+        return NO_ERR;
+    } else {
+        beep();
+        printf("Error: Could not open file: %s\n",fptr_name);
+        return FILE_ERR;
+    }
 }
 
 int fclose_c (int n,char* args)
 {
-	if( fptr_local != NULL) {
-		fclose(fptr_local);
-	} else {
-		beep();
-		printf("Error: No file open. File pointer is NULL\n");
-		return OMA_FILE;
-	}
-	
-	return NO_ERR;
+    if( fptr_local != NULL) {
+        fclose(fptr_local);
+    } else {
+        beep();
+        printf("Error: No file open. File pointer is NULL\n");
+        return OMA_FILE;
+    }
+    
+    return NO_ERR;
 }
 
 int fecho_c (int n,char* args)
 {
-	if (*args != 0) {
-		if( fptr_local != NULL) {
+    if (*args != 0) {
+        if( fptr_local != NULL) {
             if(strncmp(&args[strlen(args)-3],"...",3) == 0){
                 args[strlen(args)-3]=0;
                 fprintf(fptr_local, "%s",args);
             }else {
                 fprintf(fptr_local, "%s\n",args);
             }
-		} else {
-			beep();
-			printf("Error: No file open. File pointer is NULL\n");
-			return OMA_FILE;
-		}
-	}
-	return NO_ERR;
+        } else {
+            beep();
+            printf("Error: No file open. File pointer is NULL\n");
+            return OMA_FILE;
+        }
+    }
+    return NO_ERR;
 }
 
 int saveJpg_c(int n, char* args){
-#ifdef MacOSX_UI
-    beep();
-    printf("Not implemented in oma2.\n");
-    return CMND_ERR;
-#endif
-#ifndef MacOSX_UI
+    
     char txt[CHPERLN];
     int saveJpeg(char*);
+    if(*args == 0){
+        beep();
+        printf("Error: Must specify file name.\n");
+        return OMA_FILE;
+    }
     sscanf(args,"%s",txt);
     fullname(txt,SAVE_DATA_NO_SUFFIX);  // you should add the jpg suffix yourself
     printf("Writing JPG to file: %s\n",txt);
     return saveJpeg(txt);
-#endif
+    
+    
+}
+int savePdf_c(int n, char* args){
+    
+    char txt[CHPERLN];
+    int savePdf(char*);
+    if(*args == 0){
+        beep();
+        printf("Error: Must specify file name.\n");
+        return OMA_FILE;
+    }
+    sscanf(args,"%s",txt);
+    fullname(txt,SAVE_DATA_NO_SUFFIX);  // you should add the pdf suffix yourself
+    printf("Writing PDF to file: %s\n",txt);
+    return savePdf(txt);
+    
     
 }
 
@@ -2198,61 +2330,61 @@ int saveJpg_c(int n, char* args){
 int satiff_c(int n, char* args)
 {
 #ifdef MacOSX_UI
-	uint32 rowsperstrip = (uint32) -1;
-	double resolution = -1;
-	unsigned char *buf = NULL,*buf2;
-	uint32 row, col;
-	tsize_t linebytes;
-	uint16 spp;
-	TIFF *out;
-	uint32 w, h;
+    uint32 rowsperstrip = (uint32) -1;
+    double resolution = -1;
+    unsigned char *buf = NULL,*buf2;
+    uint32 row, col;
+    tsize_t linebytes;
+    uint16 spp;
+    TIFF *out;
+    uint32 w, h;
     
-	char txt[CHPERLN];
+    char txt[CHPERLN];
     
     int* specs = iBuffer.getspecs();
     
     w = specs[COLS];
     h = specs[ROWS];
-	spp = 1; // grayscale
+    spp = 1; // grayscale
     if(specs[IS_COLOR]){
         spp=3;
         h /= 3;
     }
-	
+    
     sscanf(args,"%s",txt);
-	
-	fullname(txt,TIF_DATA);  //if TIFF_DATA is not on your system use GET_DATA
-	printf("Writing TIFF to file: %s\n",txt);
-	
-	out = TIFFOpen(txt, "w");
-	if (out == NULL)
-		return (-4);
-	TIFFSetField(out, TIFFTAG_IMAGEWIDTH,  w);
-	TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
-	TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-	TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, spp);
-	TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
-	TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-	if(specs[IS_COLOR])
+    
+    fullname(txt,TIF_DATA);  //if TIFF_DATA is not on your system use GET_DATA
+    printf("Writing TIFF to file: %s\n",txt);
+    
+    out = TIFFOpen(txt, "w");
+    if (out == NULL)
+        return (-4);
+    TIFFSetField(out, TIFFTAG_IMAGEWIDTH,  w);
+    TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, spp);
+    TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
+    TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+    if(specs[IS_COLOR])
         TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
     else
         TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
     
-	TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+    TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
     
-	linebytes = spp * w;
-	buf = (unsigned char *)_TIFFmalloc(TIFFScanlineSize(out));
-	TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
+    linebytes = spp * w;
+    buf = (unsigned char *)_TIFFmalloc(TIFFScanlineSize(out));
+    TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
                  TIFFDefaultStripSize(out, rowsperstrip));
-	if (resolution > 0) {
-		TIFFSetField(out, TIFFTAG_XRESOLUTION, resolution);
-		TIFFSetField(out, TIFFTAG_YRESOLUTION, resolution);
-		TIFFSetField(out, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
-	}
+    if (resolution > 0) {
+        TIFFSetField(out, TIFFTAG_XRESOLUTION, resolution);
+        TIFFSetField(out, TIFFTAG_YRESOLUTION, resolution);
+        TIFFSetField(out, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+    }
     
-	bit8_c(0,NULL); // Convert to 8bit greyscale
-	   
-	if (specs[IS_COLOR]) {
+    bit8_c(0,NULL); // Convert to 8bit greyscale
+    
+    if (specs[IS_COLOR]) {
         for (row = 0; row < h; row++) {
             buf2 = buf;
             for (col = 0; col < w; col++){
@@ -2269,9 +2401,9 @@ int satiff_c(int n, char* args)
             if (TIFFWriteScanline(out, buf, row, 0) < 0) break;
         }
     }
-	(void) TIFFClose(out);
-	if (buf)
-		_TIFFfree(buf);
+    (void) TIFFClose(out);
+    if (buf)
+        _TIFFfree(buf);
     free(specs);
     return NO_ERR;
 #endif
@@ -2292,15 +2424,15 @@ int satiff_c(int n, char* args)
 int satiffscaled_c(int n, char* args)
 {
 #ifdef MacOSX_UI
-	uint32 rowsperstrip = (uint32) -1;
-	double resolution = -1;
-	unsigned short *buf = NULL,*buf2;
-	uint32 row, col;
-	tsize_t linebytes;
-	uint16 spp;
-	TIFF *out;
-	uint32 w, h;
-	char txt[CHPERLN];
+    uint32 rowsperstrip = (uint32) -1;
+    double resolution = -1;
+    unsigned short *buf = NULL,*buf2;
+    uint32 row, col;
+    tsize_t linebytes;
+    uint16 spp;
+    TIFF *out;
+    uint32 w, h;
+    char txt[CHPERLN];
     
     float mymin,mymax;
     int narg = 0;
@@ -2309,7 +2441,7 @@ int satiffscaled_c(int n, char* args)
     
     w = specs[COLS];
     h = specs[ROWS];
-	spp = 1; // grayscale
+    spp = 1; // grayscale
     if(specs[IS_COLOR]){
         spp=3;
         h /= 3;
@@ -2327,39 +2459,39 @@ int satiffscaled_c(int n, char* args)
         printf("Need Max > Min\n");
         return ARG_ERR;
     }
-
-	fullname(txt,TIF_DATA);  //if TIFF_DATA is not on your system use GET_DATA
-	printf("Writing TIFF to file: %s\n",txt);
-	
-	out = TIFFOpen(txt, "w");
-	if (out == NULL)
-		return (-4);
-	TIFFSetField(out, TIFFTAG_IMAGEWIDTH,  w);
-	TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
-	TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-	TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, spp);
-	TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 16);
-	TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+    
+    fullname(txt,TIF_DATA);  //if TIFF_DATA is not on your system use GET_DATA
+    printf("Writing TIFF to file: %s\n",txt);
+    
+    out = TIFFOpen(txt, "w");
+    if (out == NULL)
+        return (-4);
+    TIFFSetField(out, TIFFTAG_IMAGEWIDTH,  w);
+    TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, spp);
+    TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 16);
+    TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
     if(specs[IS_COLOR])
         TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
     else
         TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
     
-	TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
+    TIFFSetField(out, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
     
-	linebytes = spp * w;
-	buf = (unsigned short *)_TIFFmalloc(TIFFScanlineSize(out));
-	TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
+    linebytes = spp * w;
+    buf = (unsigned short *)_TIFFmalloc(TIFFScanlineSize(out));
+    TIFFSetField(out, TIFFTAG_ROWSPERSTRIP,
                  TIFFDefaultStripSize(out, rowsperstrip));
-	if (resolution > 0) {
-		TIFFSetField(out, TIFFTAG_XRESOLUTION, resolution);
-		TIFFSetField(out, TIFFTAG_YRESOLUTION, resolution);
-		TIFFSetField(out, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
-	}
+    if (resolution > 0) {
+        TIFFSetField(out, TIFFTAG_XRESOLUTION, resolution);
+        TIFFSetField(out, TIFFTAG_YRESOLUTION, resolution);
+        TIFFSetField(out, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
+    }
     
-	bit16_c(n,args); // Convert to 16 bit greyscale
+    bit16_c(n,args); // Convert to 16 bit greyscale
     
-	if (specs[IS_COLOR]) {
+    if (specs[IS_COLOR]) {
         for (row = 0; row < h; row++) {
             buf2 = buf;
             for (col = 0; col < w; col++){
@@ -2376,9 +2508,9 @@ int satiffscaled_c(int n, char* args)
             if (TIFFWriteScanline(out, buf, row, 0) < 0) break;
         }
     }
-	(void) TIFFClose(out);
-	if (buf)
-		_TIFFfree(buf);
+    (void) TIFFClose(out);
+    if (buf)
+        _TIFFfree(buf);
     free(specs);
     return NO_ERR;
 #endif
@@ -2396,23 +2528,23 @@ int satiffscaled_c(int n, char* args)
 //***************************************************
 int bit8_c(int n, char* args)
 {
-	DATAWORD mymax,mymin;
+    DATAWORD mymax,mymin;
     
-	DATAWORD range;
-	float fpval;
-	int narg = 0;
+    DATAWORD range;
+    float fpval;
+    int narg = 0;
     int* specs = iBuffer.getspecs();
     
-	//datp = datpt+doffset;
-	if(args != NULL){
+    //datp = datpt+doffset;
+    if(args != NULL){
         narg = sscanf(args,"%f %f",&mymin,&mymax);
     }
     if (narg != 2) narg = 0;
     
-	if( narg == 0 ) {
-		DATAWORD* values = iBuffer.getvalues();
-		range = values[MAX] - values[MIN];
-		for(int i=0; i<specs[ROWS]; i++){
+    if( narg == 0 ) {
+        DATAWORD* values = iBuffer.getvalues();
+        range = values[MAX] - values[MIN];
+        for(int i=0; i<specs[ROWS]; i++){
             for(int j = 0; j<specs[COLS]; j++){
                 fpval = (iBuffer.getpix(i,j)-values[MIN]) * 255.0/range;
                 iBuffer.setpix(i,j,fpval);
@@ -2430,7 +2562,7 @@ int bit8_c(int n, char* args)
                 fpval = (iBuffer.getpix(i,j)-mymin) * 255.0/range;
                 if (fpval > 255.) fpval = 255;
                 if(fpval < 0.) fpval = 0;
-
+                
                 iBuffer.setpix(i,j,fpval);
             }
         }
@@ -2448,24 +2580,24 @@ int bit8_c(int n, char* args)
 
 int bit16_c(int n, char* args)
 {
-	DATAWORD mymax,mymin;
+    DATAWORD mymax,mymin;
     
-	DATAWORD range;
-	float fpval;
-	int narg = 0;
+    DATAWORD range;
+    float fpval;
+    int narg = 0;
     int* specs = iBuffer.getspecs();
     
-	//datp = datpt+doffset;
-	if(args != NULL){
+    //datp = datpt+doffset;
+    if(args != NULL){
         narg = sscanf(args,"%f %f",&mymin,&mymax);
     }
     if (narg != 2) narg = 0;
     
     
-	if( narg == 0 ) {
-		DATAWORD* values = iBuffer.getvalues();
-		range = values[MAX] - values[MIN];
-		for(int i=0; i<specs[ROWS]; i++){
+    if( narg == 0 ) {
+        DATAWORD* values = iBuffer.getvalues();
+        range = values[MAX] - values[MIN];
+        for(int i=0; i<specs[ROWS]; i++){
             for(int j = 0; j<specs[COLS]; j++){
                 fpval = (iBuffer.getpix(i,j)-values[MIN]) * 65535.0/range;
                 iBuffer.setpix(i,j,fpval);
@@ -2476,7 +2608,7 @@ int bit16_c(int n, char* args)
         iBuffer.getmaxx(PRINT_RESULT);
         update_UI();
         return NO_ERR;
-	} else {
+    } else {
         range = mymax - mymin;
         for(int i=0; i<specs[ROWS]; i++){
             for(int j = 0; j<specs[COLS]; j++){
@@ -2490,20 +2622,20 @@ int bit16_c(int n, char* args)
         iBuffer.getmaxx(PRINT_RESULT);
         update_UI();
         return NO_ERR;
-	}
+    }
 }
 
 /* ********** */
 
 /*
  
-GAUSSIAN EdgeValue [x0 y0]
-    Generate a Gaussian distribution centered at x0, y0. If x0, and y0, are not specified, the distribution is centered.
-    The maximum is 1. For a centered distribution, EdgeValue specifies the value of the distribution at the center edge.
+ GAUSSIAN EdgeValue [x0 y0]
+ Generate a Gaussian distribution centered at x0, y0. If x0, and y0, are not specified, the distribution is centered.
+ The maximum is 1. For a centered distribution, EdgeValue specifies the value of the distribution at the center edge.
  */
 
 int gaussian_c(int n,char* args){
-	int nc,nt;
+    int nc,nt;
     float value,x,y,c2,r2,w,h;
     int narg = sscanf(args,"%f %f %f",&value,&x,&y);
     
@@ -2533,16 +2665,16 @@ int gaussian_c(int n,char* args){
     else
         c2 = - w*w/log(value);
     
-	for(nt=1; nt<=theSpecs[ROWS];nt++) {
-		for(nc=1;nc <= theSpecs[COLS]; nc++){
-			r2 = (nc-x)*(nc-x)+(nt-y)*(nt-y);
+    for(nt=1; nt<=theSpecs[ROWS];nt++) {
+        for(nc=1;nc <= theSpecs[COLS]; nc++){
+            r2 = (nc-x)*(nc-x)+(nt-y)*(nt-y);
             iBuffer.setpix(nt-1, nc-1, expf(-r2/c2));
-		}
-	}
+        }
+    }
     free(theSpecs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
-
+    
     return NO_ERR;
 }
 
@@ -2553,7 +2685,7 @@ int gaussian_c(int n,char* args){
  */
 
 int grey2rgb_c(int n,char* args){
-	
+    
     float sR = 1.,sG=1.,sB=1.;
     sscanf(args,"%f %f %f",&sR,&sG,&sB);
     Image im;
@@ -2594,12 +2726,12 @@ int ccd_width = 0;
 int ccd_height = 0;
 
 int findbad_c(int n, char* args){
-	int i,j,target=0,passes = 1;
-	DATAWORD ave_val;
-	num_hot = 0;
+    int i,j,target=0,passes = 1;
+    DATAWORD ave_val;
+    num_hot = 0;
     int* specs = iBuffer.getspecs();
-	ccd_width = specs[COLS];
-	ccd_height = specs[ROWS];
+    ccd_width = specs[COLS];
+    ccd_height = specs[ROWS];
     int narg = sscanf(args,"%d %d %d",&n,&target,&passes);
     if( n == 0) n = 200;		// a reasonable default value
     if(narg == 1){
@@ -2691,14 +2823,14 @@ int findbad_c(int n, char* args){
 
 int readbad_c(int n, char* args)			/* read bad pixel data */
 {
-	int	i,j,k;
-	FILE *fp;
-	
-	fp = fopen(fullname(args,GET_DATA),"r");
-	if( fp != NULL) {
-		
-		fscanf(fp,"%d",&num_hot);
-		fscanf(fp,"%d %d",&ccd_width, &ccd_height);
+    int	i,j,k;
+    FILE *fp;
+    
+    fp = fopen(fullname(args,GET_DATA),"r");
+    if( fp != NULL) {
+        
+        fscanf(fp,"%d",&num_hot);
+        fscanf(fp,"%d %d",&ccd_width, &ccd_height);
         if (ccd_height > 0) {
             for(k = 0; k < num_hot; k++){
                 fscanf(fp,"%d %d",&j,&i);
@@ -2711,13 +2843,13 @@ int readbad_c(int n, char* args)			/* read bad pixel data */
                 for (int l = 0; l < 8; l++) fscanf(fp,"%d",&neighbors[k][l]);
             }
         }
-	} else {
-		beep();
-		printf("Could not open file %s\n",args);
-		return FILE_ERR;
-	}
-	fclose(fp);
-	return NO_ERR;
+    } else {
+        beep();
+        printf("Could not open file %s\n",args);
+        return FILE_ERR;
+    }
+    fclose(fp);
+    return NO_ERR;
 }
 
 /*
@@ -2735,7 +2867,7 @@ int writebad_c(int n, char* args)			/* read bad pixel data */
         printf("No bad pixels found. Use FINDBAD Counts\n");
         return CMND_ERR;
     }
-	
+    
     fp = fopen(fullname(args,SAVE_DATA),"w");
     if( fp != NULL) {
         
@@ -2768,16 +2900,16 @@ int writebad_c(int n, char* args)			/* read bad pixel data */
  there are contiguous bad pixels. For that, consider using the FILBOX or FILMSK commands.
  
  readbad /volumes/in/impx-s/sbig/sbig_bad_pix
-
+ 
  */
 
 int clearbad_c(int n, char* args)
 {
-	int i,j,k;
-	DATAWORD new_val;
+    int i,j,k;
+    DATAWORD new_val;
     
     int* specs = iBuffer.getspecs();
-	
+    
     if(ccd_height > 0){
         for(k=0; k<num_hot; k++){
             i = hot_pix[k]/ccd_width;
@@ -2851,7 +2983,7 @@ int clearbad_c(int n, char* args)
             }
             
         }
-
+        
         
     }
     free(specs);
@@ -2887,8 +3019,8 @@ int cclearbad_c(int n, char* args){
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return NO_ERR;
-
- }
+    
+}
 
 void colorClearBad(Image* image){
     int row,col,k;
@@ -2930,73 +3062,73 @@ int funsize[10] = {0*10};		// the number of elements in each function
 
 int getfun_c(int n,char* args)
 {
-	int	i=0,j;
-	int ferror = 0;
-	FILE *fp;
+    int	i=0,j;
+    int ferror = 0;
+    FILE *fp;
     
-	if( n<0 || n>9){
-		beep();
-		printf("Functions must be numbered 0-9.\n");
-		return CMND_ERR;
-	}
+    if( n<0 || n>9){
+        beep();
+        printf("Functions must be numbered 0-9.\n");
+        return CMND_ERR;
+    }
     
     while(args[i] != ' ' && args[i] != EOL) i++;
-	
-	fp = fopen(fullname(&args[++i],GET_DATA),"r");
-	if( fp != NULL) {
+    
+    fp = fopen(fullname(&args[++i],GET_DATA),"r");
+    if( fp != NULL) {
         
-		fscanf(fp,"%d",&i);		// the number of data pairs in the function
-		
-		if(xptr[n] !=0) free(xptr[n]);
-		if(yptr[n] !=0) free(yptr[n]);
-		
-		xptr[n] = (float*) malloc(i*sizeof(float));
-		yptr[n] = (float*) malloc(i*sizeof(float));
-		funsize[n] = i;
-		if(yptr[n] == 0 || xptr[n]==0) {
-			beep();
-			printf(" Not enough memory.\n");
-			return MEM_ERR;
-		}
-		
-		printf("Will read %d x-y pairs.\n",i);
-		
-		
+        fscanf(fp,"%d",&i);		// the number of data pairs in the function
+        
+        if(xptr[n] !=0) free(xptr[n]);
+        if(yptr[n] !=0) free(yptr[n]);
+        
+        xptr[n] = (float*) malloc(i*sizeof(float));
+        yptr[n] = (float*) malloc(i*sizeof(float));
+        funsize[n] = i;
+        if(yptr[n] == 0 || xptr[n]==0) {
+            beep();
+            printf(" Not enough memory.\n");
+            return MEM_ERR;
+        }
+        
+        printf("Will read %d x-y pairs.\n",i);
+        
+        
         for (j=0; j < i; j++) {
             if( fscanf(fp,"%f %f",(xptr[n]+j),(yptr[n]+j)) != 2) ferror = 1;
-		}
-		
-    	fclose(fp);
-		if(ferror == 1){
-			beep();
-			printf("Data Error.\n");
-			if(xptr[n] !=0) free(xptr[n]);
-			if(yptr[n] !=0) free(yptr[n]);
-			return FILE_ERR;
-		}
-		if(*xptr[n] >= *(xptr[n]+1) ){
-			beep();
-			printf("Incorrect Data Ordering.\n");
-			if(xptr[n] !=0) free(xptr[n]);
-			if(yptr[n] !=0) free(yptr[n]);
-			return FILE_ERR;
-		}
-		
-		printf("x range is from %g to %g.\n",*(xptr[n]),*(xptr[n]+funsize[n]-1));
-		printf("y range is from %g to %g.\n",*(yptr[n]),*(yptr[n]+funsize[n]-1));
-		
-	}
-	else {
-		beep();
-		printf("Could not open file: %s\n",args);
-		return FILE_ERR;
-	}
-	return NO_ERR;
+        }
+        
+        fclose(fp);
+        if(ferror == 1){
+            beep();
+            printf("Data Error.\n");
+            if(xptr[n] !=0) free(xptr[n]);
+            if(yptr[n] !=0) free(yptr[n]);
+            return FILE_ERR;
+        }
+        if(*xptr[n] >= *(xptr[n]+1) ){
+            beep();
+            printf("Incorrect Data Ordering.\n");
+            if(xptr[n] !=0) free(xptr[n]);
+            if(yptr[n] !=0) free(yptr[n]);
+            return FILE_ERR;
+        }
+        
+        printf("x range is from %g to %g.\n",*(xptr[n]),*(xptr[n]+funsize[n]-1));
+        printf("y range is from %g to %g.\n",*(yptr[n]),*(yptr[n]+funsize[n]-1));
+        
+    }
+    else {
+        beep();
+        printf("Could not open file: %s\n",args);
+        return FILE_ERR;
+    }
+    return NO_ERR;
 }
 
 float tabfun(int n, float x)	// n is the function number, x is the desired x value
 {
-	/* Assumptions for tabulated functions:
+    /* Assumptions for tabulated functions:
      File format:
      first number is integer with the number of pairs to follow
      pairs are float with x followed by f(x) on the same line
@@ -3004,26 +3136,26 @@ float tabfun(int n, float x)	// n is the function number, x is the desired x val
      y = f(x) is single valued
      */
     
-	int i=0;
-	float x0,x1,y0,y1,y;
-	
-	if( x <= *(xptr[n]) )
-		return ( *(yptr[n]) );	// less than min x, returns f(min x)
-	if( x >= *(xptr[n]+funsize[n]-1) )
-		return ( *(yptr[n]+funsize[n]-1) ); // > max x, returns f(max x)
+    int i=0;
+    float x0,x1,y0,y1,y;
     
-	while(  x >= *(xptr[n]+i) )
-		i++;
+    if( x <= *(xptr[n]) )
+        return ( *(yptr[n]) );	// less than min x, returns f(min x)
+    if( x >= *(xptr[n]+funsize[n]-1) )
+        return ( *(yptr[n]+funsize[n]-1) ); // > max x, returns f(max x)
+    
+    while(  x >= *(xptr[n]+i) )
+        i++;
     
     i--;
-	x0 = *(xptr[n]+i);
-	x1 = *(xptr[n]+i+1);
-	y0 = *(yptr[n]+i);
-	y1 = *(yptr[n]+i+1);
-	y = y0 + (y1-y0)/(x1-x0)*(x-x0);
-	//y = y0;								// What?
-	return(y);
-	
+    x0 = *(xptr[n]+i);
+    x1 = *(xptr[n]+i+1);
+    y0 = *(yptr[n]+i);
+    y1 = *(yptr[n]+i+1);
+    y = y0 + (y1-y0)/(x1-x0)*(x-x0);
+    //y = y0;								// What?
+    return(y);
+    
 }
 
 /* ********** */
@@ -3036,19 +3168,19 @@ float tabfun(int n, float x)	// n is the function number, x is the desired x val
  */
 int lookup_c(int n,char* args)
 {
-	if(xptr[n] == 0) {
-		beep();
-		printf("Function %d is not currently defined.\n",n);
-		return CMND_ERR;
-	}
+    if(xptr[n] == 0) {
+        beep();
+        printf("Function %d is not currently defined.\n",n);
+        return CMND_ERR;
+    }
     int nc,nt;
     int* specs = iBuffer.getspecs();
-	
-	for(nt=0; nt<specs[ROWS];nt++) {
-		for(nc=0;nc < specs[COLS]; nc++){
+    
+    for(nt=0; nt<specs[ROWS];nt++) {
+        for(nc=0;nc < specs[COLS]; nc++){
             iBuffer.setpix(nt,nc,tabfun(n,iBuffer.getpix(nt,nc)));
-		}
-	}
+        }
+    }
     free(specs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -3062,14 +3194,14 @@ int lookup_c(int n,char* args)
 /* --------------------------- */
 int ramp_c(int n,char* args)				/* fill current image with a ramp from 0 to the number of number of channels */
 {
-	int nc,nt;
+    int nc,nt;
     int* specs = iBuffer.getspecs();
-	//printf("rsize = %f\n",rsize);
-	for(nt=0; nt<specs[ROWS];nt++) {
-		for(nc=0;nc < specs[COLS]; nc++){
+    //printf("rsize = %f\n",rsize);
+    for(nt=0; nt<specs[ROWS];nt++) {
+        for(nc=0;nc < specs[COLS]; nc++){
             iBuffer.setpix(nt,nc,nc);
-		}
-	}
+        }
+    }
     free(specs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -3081,14 +3213,14 @@ int ramp_c(int n,char* args)				/* fill current image with a ramp from 0 to the 
 //***************************************************************//
 int roundUp_c (int n, char* args)
 {
-	int nc,nt;
+    int nc,nt;
     int* specs = iBuffer.getspecs();
-	
-	for(nt=0; nt<specs[ROWS]; nt++) {
-		for (nc =0; nc<specs[COLS]; nc++){
-			iBuffer.setpix(nt, nc, ceilf(iBuffer.getpix(nt, nc)));
-		}
-	}
+    
+    for(nt=0; nt<specs[ROWS]; nt++) {
+        for (nc =0; nc<specs[COLS]; nc++){
+            iBuffer.setpix(nt, nc, ceilf(iBuffer.getpix(nt, nc)));
+        }
+    }
     free(specs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -3100,14 +3232,14 @@ int roundUp_c (int n, char* args)
 //***************************************************************//
 int roundoff_c(int n, char* args)
 {
-	int nc,nt;
+    int nc,nt;
     int* specs = iBuffer.getspecs();
-	
-	for(nt=0; nt<specs[ROWS]; nt++) {
-		for (nc =0; nc<specs[COLS]; nc++){
-			iBuffer.setpix(nt, nc, floorf(iBuffer.getpix(nt, nc)));
-		}
-	}
+    
+    for(nt=0; nt<specs[ROWS]; nt++) {
+        for (nc =0; nc<specs[COLS]; nc++){
+            iBuffer.setpix(nt, nc, floorf(iBuffer.getpix(nt, nc)));
+        }
+    }
     free(specs);
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -3118,10 +3250,10 @@ int roundoff_c(int n, char* args)
 
 /*
  ACCUMULATE
-Allocates and clears memory for an image accumulator buffer that can be used to sum
+ Allocates and clears memory for an image accumulator buffer that can be used to sum
  individual images. The size of the accumulator is determined by the image size parameters
  when the accumulate command is first given.
-*/
+ */
 
 int accumulate_c(int n,char* args)
 {
@@ -3165,10 +3297,10 @@ int acadd_c(int n,char* args)
         printf("Accumulator has not been initialized.\n");
         return CMND_ERR;
     }
-
+    
     if(accumulator != iBuffer){
         beep();
-        printf("Accumulator is not the corret size for the current image.\n");
+        printf("Accumulator is not the correct size for the current image.\n");
         return SIZE_ERR;
     }
     accumulator + iBuffer;
@@ -3198,10 +3330,10 @@ int acget_c(int n,char* args){
 /* --------------------------- */
 
 /*
-HDRACCUMULATE cutoffMax [cutoffMin]
+ HDRACCUMULATE cutoffMax [cutoffMin]
  Allocates and clears memory for an HDR accumulator that can be used to generate HDR
  images from a series of different exposures. The cuttoffMax value should be less than
- the saturation value for the detector. Values less than cutoffMin are not included; the default 
+ the saturation value for the detector. Values less than cutoffMin are not included; the default
  for cutoffMin is 0. The size of the accumulator is determined
  by the image size parameters when the accumulate command is first given. Be sure
  the exposure value for the image is set (e.g., imported from a raw file or set using
@@ -3225,7 +3357,7 @@ int hdrAccumulate_c(int n,char* args)
     }
     hdrAccumulator.copyABD(iBuffer);
     hdrAccumulator.zero();
-
+    
     hdrCounter = Image(specs[ROWS],specs[COLS]);
     if(hdrCounter.err()){
         free(specs);
@@ -3377,155 +3509,194 @@ int exposure_c(int n,char* args){
  */
 
 int integrateFill(int n,char* args, int integratefill ){
-	float	sum;
-	int			pxstart,pxend,pystart,pyend;
-	int 		i,j,xdirection,sbox=0,do_average=0;
-	float *acpoint,mx=0,mn=0;
-	unsigned int  acsize = 0;
+    float	sum;
+    int			pxstart,pxend,pystart,pyend;
+    int 		i,j,xdirection,sbox=0,do_average=0;
+    float *acpoint;
+    unsigned int  acsize = 0;
     
     point substart,subend;
     int* specs = iBuffer.getspecs();
-	
-	substart = UIData.iRect.ul;
+    int imageHeight = iBuffer.height();
+    
+    substart = UIData.iRect.ul;
     subend = UIData.iRect.lr;
-
+    
     xdirection = n;
+    Image newImage;
     
     sscanf(args,"%d %d %d",&xdirection,&sbox,&do_average);
     
     if(xdirection) {
         
-		if( sbox && ( substart.h == subend.h) ) {
-			beep();
+        if( sbox && ( substart.h == subend.h) ) {
+            beep();
             printf("Rectangle has 0 width; integrate entire image\n");
-			sbox = false;
-		}
-		if(sbox) {
-			pxstart = substart.h;
-			pxend = subend.h+1;
-			pystart = substart.v;
-			pyend = subend.v+1;
+            sbox = false;
+        }
+        if(sbox) {
+            pxstart = substart.h;
+            pxend = subend.h+1;
+            pystart = substart.v;
+            pyend = subend.v+1;
             
-			if( pxstart < 0 )
-				pxstart = 0;
-			if( pxend > specs[COLS])
-				pxend = specs[COLS];
-			if( pystart < 0 )
-				pystart = 0;
-			if( pyend > specs[ROWS])
-				pyend = specs[ROWS];
+            if( pxstart < 0 )
+                pxstart = 0;
+            if( pxend > specs[COLS])
+                pxend = specs[COLS];
+            if( pystart < 0 )
+                pystart = 0;
+            if( pyend > imageHeight)
+                pyend = imageHeight;
             
-		}
-		else {
-			pxstart = 0;
-			pxend = specs[COLS];
-			pystart = 0;
-			pyend = specs[ROWS];
-		}
-		
-		acsize = specs[COLS]*sizeof(DATAWORD);
-		acpoint = (float*) malloc(acsize);
-		if(acpoint == 0) {
-			nomemory();
-			return MEM_ERR;
-		}
-		
+        }
+        else {
+            pxstart = 0;
+            pxend = specs[COLS];
+            pystart = 0;
+            pyend = imageHeight;
+        }
         
-		for(j=pxstart; j < pxend; j++) {
-			sum = 0;
-			for(i=pystart; i < pyend; i++) {
-				sum += iBuffer.getpix(i,j) ;
-			}
-			if(j==pxstart)
-				mn = mx = sum;
-			*(acpoint + j) = sum;
-			if( *(acpoint+j) > mx) mx = *(acpoint+j);
-			if( *(acpoint+j) < mn) mn = *(acpoint+j);
-		}
+        acsize = specs[COLS]*sizeof(DATAWORD);
+        acpoint = (float*) malloc(acsize);
+        if(acpoint == 0) {
+            nomemory();
+            return MEM_ERR;
+        }
         
-		specs[COLS] = abs(pxend - pxstart);
-		
-		if(!integratefill) {
-			specs[ROWS] = 1;
-		}
+        for(j=pxstart; j < pxend; j++) {
+            sum = 0;
+            for(i=pystart; i < pyend; i++) {
+                sum += iBuffer.getpix(i,j) ;
+            }
+            *(acpoint + j) = sum;
+        }
         
-        iBuffer.setspecs(specs);
+        specs[COLS] = abs(pxend - pxstart);
+        
+        if(!integratefill) {
+            if(specs[IS_COLOR]){
+                specs[ROWS] = 3;
+            } else {
+                specs[ROWS] = 1;
+            }
+        }
 
-		for (i=0; i<specs[ROWS]; i++) {
-			for(j=0; j < specs[COLS]; j++) {
-				if(do_average)
-				    iBuffer.setpix(i,j, *(acpoint+j+pxstart)/(pyend-pystart));
-				else
-				    iBuffer.setpix(i,j, *(acpoint+j+pxstart));
-			}
-		}
-	}
-	else {
-		if( sbox && (substart.v == subend.v) ) {
-			beep();
-			sbox = false;
-		}
-		if(sbox) {
-			pxstart = substart.v;
-			pxend = subend.v+1;
-			pystart = substart.h;
-			pyend = subend.h+1;
-            
-			if( pxstart < 0 )
-				pxstart = 0;
-			if( pxend > specs[ROWS])
-				pxend = specs[ROWS];
-			if( pystart < 0 )
-				pystart = 0;
-			if( pyend > specs[COLS])
-				pyend = specs[COLS];
-            
-		}
-		else {
-			pxstart = 0;
-			pxend = specs[ROWS];
-			pystart = 0;
-			pyend = specs[COLS];
-		}
-		
-		acsize = specs[ROWS]*sizeof(DATAWORD);
-		acpoint = (float*) malloc(acsize);
-		if(acpoint == 0) {
-			nomemory();
-			return -1;
-		}
+        newImage.setspecs(specs);
         
-		for(j=pxstart; j < pxend; j++) {
-			sum = 0;
-			for(i=pystart; i < pyend; i++) {
-				sum += iBuffer.getpix(j,i);
-			}
-			if(j==pxstart)
-				mn = mx = sum;
-			*(acpoint + j) = sum;
-			if( *(acpoint+j) > mx) mx = *(acpoint+j);
-			if( *(acpoint+j) < mn) mn = *(acpoint+j);
-		}
-		
-		specs[ROWS] = abs(pxend - pxstart);
-		
-		if(!integratefill) {
-			specs[COLS] = 1;
-		}
-		iBuffer.setspecs(specs);
-        
-		for (i=0; i<specs[ROWS]; i++) {
-			for(j=0; j < specs[COLS]; j++) {
-			    if(do_average)
-                    iBuffer.setpix(i,j, *(acpoint+i+pxstart)/(pyend-pystart));
-			    else
-                    iBuffer.setpix(i,j, *(acpoint+i+pxstart));
-			}
-		}
-        
-		
+        for (i=0; i<newImage.height(); i++) {
+            for(j=0; j < specs[COLS]; j++) {
+                if(do_average)
+                    newImage.setpix(i,j, *(acpoint+j+pxstart)/(pyend-pystart));
+                else
+                    newImage.setpix(i,j, *(acpoint+j+pxstart));
+            }
+        }
+        if(specs[IS_COLOR]){
+            // we've done the red already, do the green and blue (colors 2 and 3)
+            for(int c=1; c<3; c++){
+                for(j=pxstart; j < pxend; j++) {
+                    sum = 0;
+                    for(i=pystart; i < pyend; i++) {
+                        sum += iBuffer.getpix(i+c*imageHeight,j) ;
+                    }
+                     *(acpoint + j) = sum;
+                }
+                for (i=0; i<newImage.height(); i++) {
+                    for(j=0; j < specs[COLS]; j++) {
+                        if(do_average)
+                            newImage.setpix(i+c*newImage.height(),j, *(acpoint+j+pxstart)/(pyend-pystart));
+                        else
+                            newImage.setpix(i+c*newImage.height(),j, *(acpoint+j+pxstart));
+                    }
+                }
+            }
+        }
 
-	}
+    }
+    else {
+        if( sbox && (substart.v == subend.v) ) {
+            beep();
+            sbox = false;
+        }
+        if(sbox) {
+            pxstart = substart.v;
+            pxend = subend.v+1;
+            pystart = substart.h;
+            pyend = subend.h+1;
+            
+            if( pxstart < 0 )
+                pxstart = 0;
+            if( pxend > imageHeight)
+                pxend = imageHeight;
+            if( pystart < 0 )
+                pystart = 0;
+            if( pyend > specs[COLS])
+                pyend = specs[COLS];
+            
+        }
+        else {
+            pxstart = 0;
+            pxend = imageHeight;
+            pystart = 0;
+            pyend = specs[COLS];
+        }
+        
+        acsize = imageHeight*sizeof(DATAWORD);
+        acpoint = (float*) malloc(acsize);
+        if(acpoint == 0) {
+            nomemory();
+            return -1;
+        }
+        
+        for(j=pxstart; j < pxend; j++) {
+            sum = 0;
+            for(i=pystart; i < pyend; i++) {
+                sum += iBuffer.getpix(j,i);
+            }
+            *(acpoint + j) = sum;
+        }
+        
+        specs[ROWS] = abs(pxend - pxstart);
+        if(specs[IS_COLOR]) specs[ROWS] *= 3;
+        
+        if(!integratefill) {
+            specs[COLS] = 1;
+        }
+
+        newImage.setspecs(specs);
+
+        for (i=0; i<newImage.height(); i++) {
+            for(j=0; j < specs[COLS]; j++) {
+                if(do_average)
+                    newImage.setpix(i,j, *(acpoint+i+pxstart)/(pyend-pystart));
+                else
+                    newImage.setpix(i,j, *(acpoint+i+pxstart));
+            }
+        }
+        if(specs[IS_COLOR]){
+            // we've done the red already, do the green and blue (colors 2 and 3)
+            for(int c=1; c<3; c++){
+                for(j=pxstart; j < pxend; j++) {
+                    sum = 0;
+                    for(i=pystart; i < pyend; i++) {
+                        sum += iBuffer.getpix(j+c*imageHeight,i);
+                    }
+                    *(acpoint + j) = sum;
+                }
+                for (i=0; i<newImage.height(); i++) {
+                    for(j=0; j < specs[COLS]; j++) {
+                        if(do_average)
+                            newImage.setpix(i+c*newImage.height(),j, *(acpoint+i+pxstart)/(pyend-pystart));
+                        else
+                            newImage.setpix(i+c*newImage.height(),j, *(acpoint+i+pxstart));
+                    }
+                }
+            }
+        }
+    }
+    iBuffer.free();
+    iBuffer = newImage;
     free(acpoint);
     free(specs);
     iBuffer.getmaxx(PRINT_RESULT);
@@ -3549,10 +3720,10 @@ int intfill_c(int n,char* args){
 
 int ln_c(int n,char* args){
     for(int nt=0; nt<iBuffer.rows(); nt++) {
-		for (int nc =0; nc<iBuffer.cols(); nc++){
-			iBuffer.setpix(nt, nc, logf(iBuffer.getpix(nt, nc)));
-		}
-	}
+        for (int nc =0; nc<iBuffer.cols(); nc++){
+            iBuffer.setpix(nt, nc, logf(iBuffer.getpix(nt, nc)));
+        }
+    }
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return NO_ERR;
@@ -3567,24 +3738,24 @@ int     bigfileFrames = 0;
 
 int createfile_c(int n,char* args)
 {
-	//strcpy(lastname,args);		// save a copy of the short name for labeling graphics windows 
-	//bigfile_fd = creat(fullname(args,SAVE_DATA),PMODE);
+    //strcpy(lastname,args);		// save a copy of the short name for labeling graphics windows
+    //bigfile_fd = creat(fullname(args,SAVE_DATA),PMODE);
     bigfile_fd = open(fullname(args,SAVE_DATA),WMODE);
-	strcpy(bigfile_name,args);
+    strcpy(bigfile_name,args);
     iBuffer.saveFile((char*)&bigfile_fd,LEAVE_OPEN);
     bigfileFrames++;
-	bigfile_open = 1;
-	return iBuffer.err();
+    bigfile_open = 1;
+    return iBuffer.err();
 }
 /* ********** */
 
 int concatfile_c(int n,char* args)
 {
-	if( bigfile_open == 0) {
-		beep();
-		printf("Use CREATE to Specify a File First.\n");
-		return FILE_ERR;
-	}
+    if( bigfile_open == 0) {
+        beep();
+        printf("Use CREATE to Specify a File First.\n");
+        return FILE_ERR;
+    }
     iBuffer.saveFile((char*)&bigfile_fd,IS_OPEN);
     bigfileFrames++;
     return iBuffer.err();
@@ -3599,7 +3770,7 @@ int closefile_c(int n,char* args)
         printf("There is no open file from the CREATEFILE command.\n");
         return FILE_ERR;
     }
-
+    
     close(bigfile_fd);
     FILE* big;
     big = fopen(bigfile_name, "r+");
@@ -3611,7 +3782,7 @@ int closefile_c(int n,char* args)
         
         int* specs = iBuffer.getspecs();
         specs[ NFRAMES] = --bigfileFrames;
-
+        
         strcpy(txt, OMA2_BINARY_DATA_STRING);
         fwrite(txt, sizeof(char), HEADLEN, big);
         fwrite(&nspecs,sizeof(int),1,big);
@@ -3621,12 +3792,12 @@ int closefile_c(int n,char* args)
         fclose(big);
         free(specs);
     }
-	bigfile_open = 0;
+    bigfile_open = 0;
     bigfileFrames = 0;
-	//setdata(bigfile_name);
-	//fileflush(bigfile_name);	/* for updating directory */
-	printf("File %s Closed.\n",bigfile_name);
-	return NO_ERR;
+    //setdata(bigfile_name);
+    //fileflush(bigfile_name);	/* for updating directory */
+    printf("File %s Closed.\n",bigfile_name);
+    return NO_ERR;
     
 }
 
@@ -3660,7 +3831,7 @@ int openfile_c(int n,char* args){
     printf("%d Frames.\n",specs[NFRAMES]+1);
     remainingFrames = specs[NFRAMES];
     user_variables[0].ivalue = user_variables[0].fvalue = specs[NFRAMES]+1;
-	user_variables[0].is_float = 0;
+    user_variables[0].is_float = 0;
     free(specs);
     update_UI();
     return NO_ERR;
@@ -3674,7 +3845,7 @@ int getNext_c(int n,char* args)
         beep();
         printf("No file has been opened. Use the OPENFILE command.\n");
         return FILE_ERR;
-
+        
     }
     Image new_im((char*)&openFileFd,IS_OPEN);
     if(new_im.err()){
@@ -3695,7 +3866,7 @@ int getNext_c(int n,char* args)
         close(openFileFd);
         printf("Last image -- file is now closed.\n");
         openFileFd= -1;
-
+        
     }
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
@@ -3704,7 +3875,7 @@ int getNext_c(int n,char* args)
     } else {
         iBuffer.getmaxx(PRINT_RESULT);
     }
-
+    
     update_UI();
     return NO_ERR;
 }
@@ -3783,70 +3954,70 @@ int pixSize_c(int n,char* args){
 
 int ruler_c(int n, char* args)
 {
-	
-	int i=0;
-	float pix,unit,rulerScale;
-	
-	
+    
+    int i=0;
+    float pix,unit,rulerScale;
+    
+    
     int* specs = iBuffer.getspecs();
     
-	if (*args == 0) {
-		if( specs[HAS_RULER]) {
+    if (*args == 0) {
+        if( specs[HAS_RULER]) {
             char* unit_text = iBuffer.getunit_text();
             float* values = iBuffer.getvalues();
-			if( unit_text[0] )
-				printf("%f Pixels per %s.\n",values[RULER_SCALE],unit_text);
-			else
-				printf("%f Pixels per Unit.\n",values[RULER_SCALE]);
+            if( unit_text[0] )
+                printf("%f Pixels per %s.\n",values[RULER_SCALE],unit_text);
+            else
+                printf("%f Pixels per Unit.\n",values[RULER_SCALE]);
             free(values);
             free(unit_text);
-		} else {
-			printf("No Ruler Defined.\n");
-		}
+        } else {
+            printf("No Ruler Defined.\n");
+        }
         free(specs);
-		return NO_ERR;
-	}
-	
-	if( sscanf(args,"%f %f",&pix,&unit) != 2) {
-		beep();
-		printf("Two Arguments Needed.\n");
+        return NO_ERR;
+    }
+    
+    if( sscanf(args,"%f %f",&pix,&unit) != 2) {
+        beep();
+        printf("Two Arguments Needed.\n");
         specs[HAS_RULER] = 0;
         iBuffer.setspecs(specs);
         free(specs);
-		return CMND_ERR;
-	}
-	rulerScale = pix/unit;
-	
-	char unit_text[NRULERCHAR];
+        return CMND_ERR;
+    }
+    rulerScale = pix/unit;
+    
+    char unit_text[NRULERCHAR];
     unit_text[0] = 0;
     
     //if( sscanf(args,"%f %f %s",&pix,&unit,unit_text) == 3)
-	int index = 0;
-	/* Now see if a unit was specified */
+    int index = 0;
+    /* Now see if a unit was specified */
     while (args[index] != EOL && args[index] != ';') {
-	 	if(args[index] == ' ') {
-			i++;
-			if(i==2) {		/* if this is the second space, assume we have a comment */
-				index++;
-				for(n=0; (n<NRULERCHAR-1) && (args[index] != EOL) && (args[index] != ';') ; n++) {
-					unit_text[n] = args[index];
-					index++;
-				}
-				unit_text[n] = EOL;
-				break;
-			}
-		}
-	 	index++;
-	}
+        if(args[index] == ' ') {
+            i++;
+            if(i==2) {		/* if this is the second space, assume we have a comment */
+                index++;
+                for(n=0; (n<NRULERCHAR-1) && (args[index] != EOL) && (args[index] != ';') ; n++) {
+                    unit_text[n] = args[index];
+                    index++;
+                }
+                unit_text[n] = EOL;
+                break;
+            }
+        }
+        index++;
+    }
     iBuffer.setRuler(rulerScale,unit_text);
     
-	if( unit_text[0] )
-		printf("%f Pixels per %s.\n",rulerScale,unit_text);
-	else
-		printf("%f Pixels per Unit.\n",rulerScale);
+    if( unit_text[0] )
+        printf("%f Pixels per %s.\n",rulerScale,unit_text);
+    else
+        printf("%f Pixels per Unit.\n",rulerScale);
     free(specs);
     return NO_ERR;
-	
+    
 }
 
 /* ********** */
@@ -3866,44 +4037,44 @@ int ruler_c(int n, char* args)
 
 int doc2rgb_c(int n, char* args){
     
-	int bayer[2][2] = {{ 0 }};
+    int bayer[2][2] = {{ 0 }};
     
-	int narg = sscanf(args,"%d %d %d %d",&bayer[0][0],&bayer[0][1],&bayer[1][0],&bayer[1][1]);
-	if(narg != 4){
-		beep();
-		printf("4 arguments needed. E.g., 1 2 0 1 for GBRG\n");
-		return CMND_ERR;
-	}
+    int narg = sscanf(args,"%d %d %d %d",&bayer[0][0],&bayer[0][1],&bayer[1][0],&bayer[1][1]);
+    if(narg != 4){
+        beep();
+        printf("4 arguments needed. E.g., 1 2 0 1 for GBRG\n");
+        return CMND_ERR;
+    }
     int* specs = iBuffer.getspecs();
     
     int newrow = specs[ROWS]/2;
-	int newcol = specs[COLS]/2;
-	int row,col;
-	   
+    int newcol = specs[COLS]/2;
+    int row,col;
+    
     Image red(newrow,newcol),green(newrow,newcol),blue(newrow,newcol);
     
-	for (row=0; row < newrow*2; row++) {
-		//if( row&1)
-			//pt_green -= nchan;
-		for (col=0; col < newcol*2; col++){
-			switch (bayer[row&1][col&1]){
-				case 0:		// red
-					red.setpix(row/2,col/2,iBuffer.getpix(row,col));   //*datp++;
-					break;
-				case 1:		// green
-					if(row&1){
-						green.setpix(row/2,col/2,(green.getpix(row/2,col/2)+iBuffer.getpix(row,col))/2.);
-					} else {
-						green.setpix(row/2,col/2,iBuffer.getpix(row,col));// =  *datp++;
-					}
-					break;
-				case 2:		// blue
-					blue.setpix(row/2,col/2,iBuffer.getpix(row,col));// *pt_blue++ =  *datp++;
-					break;
-			}
-		}
-	    //if(header[NCHAN]&1) datp++;	// there may be an odd number of columns
-	}
+    for (row=0; row < newrow*2; row++) {
+        //if( row&1)
+        //pt_green -= nchan;
+        for (col=0; col < newcol*2; col++){
+            switch (bayer[row&1][col&1]){
+                case 0:		// red
+                    red.setpix(row/2,col/2,iBuffer.getpix(row,col));   //*datp++;
+                    break;
+                case 1:		// green
+                    if(row&1){
+                        green.setpix(row/2,col/2,(green.getpix(row/2,col/2)+iBuffer.getpix(row,col))/2.);
+                    } else {
+                        green.setpix(row/2,col/2,iBuffer.getpix(row,col));// =  *datp++;
+                    }
+                    break;
+                case 2:		// blue
+                    blue.setpix(row/2,col/2,iBuffer.getpix(row,col));// *pt_blue++ =  *datp++;
+                    break;
+            }
+        }
+        //if(header[NCHAN]&1) datp++;	// there may be an odd number of columns
+    }
     
     red.composite(green);
     red.composite(blue);
@@ -3933,8 +4104,8 @@ int doc2rgb_c(int n, char* args){
  R G
  c1 - c4 should be 1 2 0 1
  c5 is 0, 1, or 2 for conversion to red, green, or blue
- Pixels associated with non-selected colors have a value of 0. Doing a BLOCK 2 2 command after this command will remove the zeros. 
-Blocking 2 by 2 on the green channel will sum the two green pixels.
+ Pixels associated with non-selected colors have a value of 0. Doing a BLOCK 2 2 command after this command will remove the zeros.
+ Blocking 2 by 2 on the green channel will sum the two green pixels.
  
  Appropriate values depend on the specific camera. (See the output from the GETRGB command.)
  */
@@ -3996,23 +4167,23 @@ int	normal_prefix = 1;
 int uprefix_c(int n,char* args)		/* force the use of a particular prefix andsuffix */
 {
     
-	switch( *args ) {
-		case 'G':
-		case 'g':
-			printf("Using 'Get File' Prefixes.\n");
-			normal_prefix = 0;
-			break;
-		case 'S':
-		case 's':
-			printf("Using 'Save File' Prefixes.\n");
-			normal_prefix = -1;
-			break;
-		default:
-			printf("Using Default Prefixes.\n");
-			normal_prefix = 1;
-			break;
-	}
-	return 0;
+    switch( *args ) {
+        case 'G':
+        case 'g':
+            printf("Using 'Get File' Prefixes.\n");
+            normal_prefix = 0;
+            break;
+        case 'S':
+        case 's':
+            printf("Using 'Save File' Prefixes.\n");
+            normal_prefix = -1;
+            break;
+        default:
+            printf("Using Default Prefixes.\n");
+            normal_prefix = 1;
+            break;
+    }
+    return 0;
     
 }
 
@@ -4020,7 +4191,7 @@ int uprefix_c(int n,char* args)		/* force the use of a particular prefix andsuff
 
 /*
  SEQ2HDR filename cutoff
-    Convert a sequence of images with different exposures to an HDR image. The file contains all images and must have information on exposures stored in the EXTRA data (see the EXTRA command). This type of file can be created by GigE cameras in oma2cam or can be created using the CREATEFILE/CONCATENATEFILE/COLSEFILE commands. Note that all exposure information must be entered in the extra space before CREATEFILE is used to open the file.
+ Convert a sequence of images with different exposures to an HDR image. The file contains all images and must have information on exposures stored in the EXTRA data (see the EXTRA command). This type of file can be created by GigE cameras in oma2cam or can be created using the CREATEFILE/CONCATENATEFILE/COLSEFILE commands. Note that all exposure information must be entered in the extra space before CREATEFILE is used to open the file.
  */
 
 int seq2hdr_c(int n,char* args){
@@ -4060,7 +4231,7 @@ int seq2hdr_c(int n,char* args){
     
     
     float* expValues = iBuffer.getextra();
-
+    
     for( int row=0; row < specs[ROWS]; row++){
         for( int col=0; col < specs[COLS]; col++){
             DATAWORD sum = 0.;
@@ -4089,14 +4260,14 @@ int seq2hdr_c(int n,char* args){
     delete[] exp;
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
-
+    
     return NO_ERR;
 }
 /* ********** */
 
 /*
  SEQ2IMAGE filename
-    Open all frames of a sequence of images to a single image whose height is NFRAMES*FRAMEHEIGHT.
+ Open all frames of a sequence of images to a single image whose height is NFRAMES*FRAMEHEIGHT.
  */
 
 int seq2Image_c(int n,char* args){
@@ -4126,7 +4297,7 @@ int seq2Image_c(int n,char* args){
             printf("Composite error.\n");
             return err;
         }
-
+        
     }
     iBuffer.free();
     iBuffer = result;
@@ -4139,7 +4310,7 @@ int seq2Image_c(int n,char* args){
 
 /*
  IM2SEQUENCE filename frames
-    Save the current image as a sequence of images with the specified number of frames. This type of data file can be used by the SEQ2HDR command.
+ Save the current image as a sequence of images with the specified number of frames. This type of data file can be used by the SEQ2HDR command.
  */
 
 int im2Sequence_c(int n,char* args){
@@ -4191,7 +4362,7 @@ int im2Sequence_c(int n,char* args){
 /* ********** */
 /*
  EXTRA [index] [value]
-    Add extra information to the current image in the form of a floating point value. If no argument is given, the command lists extra values in the current image buffer. Indexing starts at 1. With no arguments, the extra values are put into the command_return variables. With one argument, the extra value is put into command_return_1.
+ Add extra information to the current image in the form of a floating point value. If no argument is given, the command lists extra values in the current image buffer. Indexing starts at 1. With no arguments, the extra values are put into the command_return variables. With one argument, the extra value is put into command_return_1.
  */
 
 int extra_c(int n,char* args){
@@ -4212,7 +4383,7 @@ int extra_c(int n,char* args){
                 user_variables[i].ivalue = user_variables[i].fvalue = extra[i];
                 user_variables[i].is_float = 1;
             }
-
+            
             //free(extra);
             delete[] extra;
             update_UI();
@@ -4304,7 +4475,7 @@ int disp2rgb_c(int n,char* args){
             iBuffer.setpix(r+2*height, c, *pixbytes++);
         }
     }
-
+    
     bitmap.freeMaps();
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
@@ -4315,7 +4486,7 @@ int disp2rgb_c(int n,char* args){
 
 /* ********** */
 /*
-MASK> value
+ MASK> value
  Create a mask based on values in the current image greater than or equal to the specified value. Mask values are 0 or 1.
  
  */
@@ -4366,7 +4537,29 @@ int maskLess_c(int n,char* args){
     return NO_ERR;
     
 }
+/* ********** */
+/*
+ NAN2ZERO
+ Set any nan values to 0.
+ 
+ */
 
+int nan2zero_c(int n,char* args){
+    float value = n;
+    sscanf(args,"%f",&value);
+    int* specs = iBuffer.getspecs();
+    for (int r = 0; r < specs[ROWS]; r++) {
+        for (int c = 0; c < specs[COLS]; c++) {
+            if (isnan(iBuffer.getpix(r, c))) iBuffer.setpix(r, c, 0.);
+        }
+    }
+    free(specs);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    
+    return NO_ERR;
+    
+}
 /* ********** */
 
 float x1_ref,y1_ref,x2_ref,y2_ref,x1_i1,x2_i1,x1_i2,x2_i2,y1_i1,y2_i1,y1_i2,y2_i2;
@@ -4686,7 +4879,7 @@ int match_c(int n, char* args)			/* Using the data in the current buffer as one 
     printf("Image 2 cropped to %d %d %d %d.\n",substart.h,substart.v,subend.h,subend.v);
     
     /* must read parameters in before each match since we have changed things */
-    have_match_stuff = 0;	
+    have_match_stuff = 0;
     return 0;
 }
 
@@ -4900,9 +5093,9 @@ float ywarp(float x, float y)
 
 /* ********** */
 /*
-SNR gsmoothx gsmoothy aveSize
+ SNR gsmoothx gsmoothy aveSize
  Calculate the signal/noise ratio of the image by first gaussian smoothing the image by the specified amount, then dividing the smoothed image by the original unsmoothed image. The SNR is taken to be the rms deviation calculated over an aveSize x aveSize area (the average is assumed to be 1)centered on each pixel.
-
+ 
  */
 int snr_c(int n, char* args){
     int gsx,gsy,aveSize,err,r,c,i,j;
@@ -4949,7 +5142,7 @@ int snr_c(int n, char* args){
     update_UI();
     
     return NO_ERR;
-
+    
 }
 
 /* ************************* */
@@ -4986,7 +5179,7 @@ int noise_c(int n,char* args)
     }
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
-
+    
     return NO_ERR;
 }
 
@@ -5003,11 +5196,11 @@ int gnoise_c(int n,char* args)
     float x;
     float mean=0, rms = 1;
     int nt,nc;
-
+    
     // Get the arguments
     sscanf(args,"%f %f %d",&mean,&rms,&seed);
     printf(" Mean: %.2f, rms: %.2f, seed %d\n",mean,rms,seed);
- 
+    
     srand(seed);
     int height = iBuffer.height();
     if (iBuffer.isColor()) {
@@ -5022,7 +5215,7 @@ int gnoise_c(int n,char* args)
     iBuffer.getmaxx(PRINT_RESULT);
     update_UI();
     return NO_ERR;
-
+    
 }
 // gaussian deviate generator.  source: "Numerical Recipes in C", W.H. Press
 float ranfGauss()
@@ -5056,10 +5249,10 @@ float ranfGauss()
 /* ************************* */
 
 /*
-// shot noise
-SHOTNOISE seed
-    Treat the data as counts and add random root N noise to the data
-
+ // shot noise
+ SHOTNOISE seed
+ Treat the data as counts and add random root N noise to the data
+ 
  */
 int shotnoise_c(int n,char* args)
 {
@@ -5112,7 +5305,7 @@ int demosaic_c(int n,char* args){
             break;
     }
     
-
+    
     int* bufferspecs = iBuffer.getspecs();
     Image newIm(bufferspecs[ROWS]*3,bufferspecs[COLS]);
     
@@ -5124,7 +5317,7 @@ int demosaic_c(int n,char* args){
     bufferspecs[IS_COLOR] = 1;
     newIm.setspecs(bufferspecs);
     newIm.demosaic(iBuffer, redx, redy, method);
-        
+    
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
@@ -5190,7 +5383,7 @@ int hobjSettings_c(int n,char* args)
     int decode = 1;
     int demosaic = 0;
     int clearBad = 0;
-
+    
     int nargs = sscanf(args,"%d %d %d",&decode,&demosaic,&clearBad);
     printf("Settings for .hobj files are:\n");
     if(nargs <= 0){
@@ -5198,7 +5391,7 @@ int hobjSettings_c(int n,char* args)
             printf("Automatic decoding.\n");
             switch (UIData.demosaicHobjFlag) {
                 case HOBJ_DOC2RGB:
-
+                    
                     printf("Demosaic using DOC2RGB 0 1 1 2\n");
                     break;
                 case HOBJ_BILINEAR:
@@ -5253,7 +5446,7 @@ int hobjSettings_c(int n,char* args)
         printf("Automatically clear bad pixels.\n");
     else
         printf("No clearing bad pixels.\n");
-
+    
     
     return NO_ERR;
 }
@@ -5263,24 +5456,259 @@ int hobjSettings_c(int n,char* args)
 
 int say_c(int n,char* args)
 {
-/*    if(*args == 0)
-        sprintf(pause_string, "PAUSED");
-    else
-        strlcpy(pause_string,args,CHPERLN);
-    // this string will be spoken during pause
-    if (macflag || exflag) {    // don't set this unless we are in a macro
-        pause_flag = 1;
-    }
-    
-    update_status();
- */
+    /*    if(*args == 0)
+     sprintf(pause_string, "PAUSED");
+     else
+     strlcpy(pause_string,args,CHPERLN);
+     // this string will be spoken during pause
+     if (macflag || exflag) {    // don't set this unless we are in a macro
+     pause_flag = 1;
+     }
+     
+     update_status();
+     */
     alertSound(args);
     return NO_ERR;
 }
 
+/* ***************** */
+
+/* Scatter Plot from first and second half of current image */
+/* Size of scatter plot is specified */
+/* bin size is determined by the min and max values of each half */
+
+int scatter_c(int n, char* args)
+{
+    int sizx,sizy,binx,biny,i,j;
+    DATAWORD xmin,xmax,ymin,ymax;
+    float binsizex,binsizey,x,y;
+    
+    int halfHeight = iBuffer.height()/2;
+    rect topRect={0,0,iBuffer.width()-1,halfHeight-1};
+    rect bottomRect={0,halfHeight,iBuffer.width()-1,halfHeight*2-1};
+    
+    // get default values in case no arguments are given
+    sizx = 250;
+    sizy = 250;
+    
+    Image copy;
+    copy << iBuffer;
+    copy.crop(topRect);
+    xmin = copy.min();
+    xmax = copy.max();
+    
+    copy << iBuffer;
+    copy.crop(bottomRect);
+    ymin = copy.min();
+    ymax = copy.max();
+    copy.free();
+    
+    if( sscanf(args,"%d %d %f %f %f %f",&sizx,&sizy,&xmin,&xmax,&ymin,&ymax) != 6) {
+        printf("Using xmin xmax of %g\t%g;  ymin ymax of %g\t%g\n",xmin,xmax,ymin,ymax);
+    }
+    printf("%d x %d Scatter Plot.\n",sizx,sizy);
+    Image newIm(sizy,sizx);
+    if(newIm.err()){
+        return newIm.err();
+    }
+    newIm.zero();
+    binsizex = (xmax - xmin)/sizx;
+    binsizey = (ymax - ymin)/sizy;
+    
+    if( binsizex <= 0.) {
+        binsizex = 1.0;
+        beep();
+        printf("Possible bin size error.\nX Bin size set to 1.\n");
+    }
+    if( binsizey <= 0.) {
+        binsizey = 1.0;
+        beep();
+        printf("Possible bin size error.\nY Bin size set to 1.\n");
+    }
+    
+    printf("%.2f x bin %.2f  y bin\n %d points.\n",binsizex,binsizey,halfHeight*iBuffer.width());
+    for(i=0; i <halfHeight; i++){
+        for(j=0; j<iBuffer.width();j++){
+            x = (iBuffer.getpix(i, j) - xmin)/binsizex;
+            binx = x+.5;
+            y = (iBuffer.getpix(i+halfHeight, j) - ymin)/binsizey;
+            biny = y+.5;
+            newIm.setpix(biny,binx,newIm.getpix(biny,binx)+1);
+        }
+    }
+    newIm.invert();
+    newIm.mirror();     // make so y increases from bottom to top
+    iBuffer.free();     // release the old data
+    iBuffer = newIm;   // this is the new data
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
 
 /* ************************* */
 
+/*
+ REMAP Value1 Value2 [Value3]
+ With two arguments, every occurence of Value1 in the current image is replaced with Value2. With three arguments, values in the range from Value1 to Value2 are set to Value3.
+ */
+
+int remap_c(int n, char* args)
+{
+    DATAWORD v1,v2,v3;
+    int narg = sscanf(args,"%f %f %f",&v1,&v2,&v3);
+    if( narg < 2) {
+        beep();
+        printf("At least two arguments are required.\n");
+        return CMND_ERR;
+    }else if (narg == 2){
+        for (int r = 0; r < iBuffer.rows(); r++) {
+            for (int c = 0; c < iBuffer.cols(); c++) {
+                if (iBuffer.getpix(r,c) == v1) iBuffer.setpix(r,c,v2);
+            }
+        }
+    }else{
+        for (int r = 0; r < iBuffer.rows(); r++) {
+            for (int c = 0; c < iBuffer.cols(); c++) {
+                if (iBuffer.getpix(r,c) >= v1 && iBuffer.getpix(r,c) <= v2) iBuffer.setpix(r,c,v3);
+            }
+        }
+    }
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+/* ************************* */
+
+/*
+ BLEED thresholdCount fraction
+ For correcting readout errors on a CCD detector, where intensity from one pixel bleeds into an adjacent pixel on readout. No correction is made when the value is less than thresholdCount. For a pixel with pixValue greater than thresholdCount, pixValue is increased by  (pixValue-thresholdCount)*fraction. The pixel in the next column is decreased by the same amount.
+ */
+
+int bleed_c(int n, char* args)
+{
+    DATAWORD thresholdCount,fraction,correction,pixValue;
+    int narg = sscanf(args,"%f %f",&thresholdCount,&fraction);
+    if( narg < 2) {
+        beep();
+        printf("Two arguments are required: thresholdCount fraction.\n");
+        return CMND_ERR;
+    }
+    for (int r = 0; r < iBuffer.rows(); r++) {
+        for (int c = 0; c < iBuffer.cols()-1; c++) {
+            if ((pixValue=iBuffer.getpix(r,c)) >= thresholdCount) {
+                correction=(pixValue-thresholdCount)*fraction;
+                iBuffer.setpix(r,c,pixValue+correction);
+                iBuffer.setpix(r,c+1,iBuffer.getpix(r,c+1)-correction);
+            }
+        }
+    }
+
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+/* ************************* */
+
+/*
+ C2RGB
+ If the current image is a color image, define temporary images named r, g, and b that correspond to the red, green, and blue color channels. The current image buffer is not modified.
+ */
+
+int c2rgb_c(int n, char* args)
+{
+    
+    if(!iBuffer.isColor()){
+        beep();
+        printf("Current image is not a color image.\n");
+        return CMND_ERR;
+    }
+    // copy of the current color image
+    Image copy;
+    
+    // get each component
+    copy << iBuffer;
+    copy.rgb2color(0);
+    n = temp_image_index((char*)"r",1);
+    if(n >=0){
+        iTempImages[n] << copy;
+    } else {
+        return MEM_ERR;
+    }
+    
+    copy << iBuffer;
+    copy.rgb2color(1);
+    n = temp_image_index((char*)"g",1);
+    if(n >=0){
+        iTempImages[n] << copy;
+    } else {
+        return MEM_ERR;
+    }
+
+    copy << iBuffer;
+    copy.rgb2color(2);
+    n = temp_image_index((char*)"b",1);
+    if(n >=0){
+        iTempImages[n] << copy;
+    } else {
+        return MEM_ERR;
+    }
+
+    update_UI();
+    return NO_ERR;
+}
+
+/* ************************* */
+
+/*
+ ABELCLEAN X
+ Try to clean up Abel inverted images.
+ Calculate average horizontal gradient magnitude
+ If a single line is more than X times greater than the average, replace it with the
+ average of the tracks above and below.
+ 
+ */
+/*
+int abelClean_c(int n, char* args)
+{
+    float overfactor = 3.0;
+    float ave = 0.,grad,imageave=0;
+    float *line_grad;
+    int nt,nc,i;
+    DATAWORD *pt;
+    
+    int narg = sscanf(args,"%f",&overfactor);
+    line_grad = new float[iBuffer.height()+iBuffer.isColor()*2*iBuffer.height()];
+    
+    for(nt=0; nt< header[NTRAK]; nt++){
+        ave = 0;
+        for(nc=1; nc<header[NCHAN]; nc++) {
+            grad = idat(nt,nc) - idat(nt,nc-1);
+            ave += grad*grad;
+        }
+        line_grad[nt] = ave/nc;
+        imageave += ave/nc;
+    }
+    imageave /= nt;
+    pt = datpt + doffset;
+    
+    for(nt=1; nt< header[NTRAK]-1; nt++){
+        if(line_grad[nt] > imageave*overfactor){
+            for(nc=0; nc<header[NCHAN]; nc++) {
+                *(pt+nc +header[NCHAN]*nt) = (idat(nt-1,nc) + idat(nt+1,nc))/2;
+            }
+        }
+    }
+    
+    free(line_grad);
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+
+}
+ */
+
+
+/* ************************* */
 
 int getVariableError(char* name, float*);
 float getMaxDiff(float dataArray[], int numPoints,float *average);
@@ -5308,7 +5736,7 @@ float getMaxDiff(float dataArray[], int numPoints,float *average);
  */
 
 /*
-ACMEVELOCITY telemetryFileName
+ ACMEVELOCITY telemetryFileName
  For ACME color data camera images, this returns values for the velocities of the
  coflow, N2, and fuel, along with their relative MAXIMUM deviations. The data for this
  is based on the timestamp in the image file name and data in the telemetry file. The command requires
@@ -5334,13 +5762,12 @@ int acmevelocity_c(int n, char* filename){
     float tempCoefficient = 0.92546163; // SLPM to room temp from Zin spreadsheet tables
     float burnerArea = 3.66096154E-06;  // from Zin spreadsheet tables
     float coflowArea = 4.86050E-04;     // from Zin spreadsheet tables
-
+    
     extern Variable user_variables[];
     
     // get necessary values
-
+    
     if(getVariableError((char*)"mfc2Range", &mfc2Range)) return ARG_ERR;
-    if(getVariableError((char*)"mfc3Range", &mfc3Range)) return ARG_ERR;
     if(getVariableError((char*)"exposure", &exposure)) return ARG_ERR;
     if(getVariableError((char*)"fuelCorrection", &fuelCorrection)) return ARG_ERR;
     int index = get_variable_index((char*)"name", 0);
@@ -5446,8 +5873,8 @@ int acmevelocity_c(int n, char* filename){
     user_variables[6].is_float=0;
     user_variables[7].fvalue = atm;
     user_variables[7].is_float=1;
-
-
+    
+    
     sprintf(time,"1 %f",exposure);
     extra_c(1,time);
     sprintf(time,"2 %f",mfc2Range);
@@ -5468,7 +5895,7 @@ int acmevelocity_c(int n, char* filename){
     extra_c(9,time);
     sprintf(time,"10 %f",atm);
     extra_c(9,time);
-
+    
     delete[] mfc1;
     delete[] mfc2;
     delete[] mfc3;
@@ -5503,5 +5930,181 @@ int getVariableError(char* name, float* value){
         return ARG_ERR;
     }
     *value = user_variables[index].fvalue;
+    return NO_ERR;
+}
+
+/* ************************* */
+
+
+/*
+ FOLD fraction new_width
+ Fold an image in half vertically. It is assumed to be symmetric about some nearly verticle axis.
+ The center of symmetry is found separately for each row, except if there are dark regions at the top and bottom of the image.
+ For the dark regions, the average center of the middle part of the image is used as the center of symmetry.
+ Dark regions are rows (at the top and bottom) whose values are all less than fraction*image_max. x0,y0 and x1,y1 are coordinates of the top and bottom of the dark region, center is the average center. These are returned in command_return_1-5.
+ */
+
+int fold_c(int n, char* args){
+    DATAWORD datval,max_fraction=0.,max_val = 0.;
+    int y1,y0,sizx,sizy,new_width,center,x0,x1;
+    int nt,nc;
+    double xcom=0.,ave=0.,ave_xcom=0.;
+    
+    extern Variable user_variables[];
+
+    nc = sscanf(args,"%f %d",&max_fraction, &new_width);
+    if (nc < 2){
+        beep();
+        printf("Command format is FOLD fraction new_width\n");
+        return CMND_ERR;
+    }
+    
+    Image new_im(iBuffer.rows(),new_width);
+    if(new_im.err()){
+        beep();
+        printf("Could not create image.\n",args);
+        return new_im.err();
+    }
+    max_val = max_fraction*iBuffer.max();
+    printf("Data cutoff is at %g\n",max_val);
+    printf("max is %g\n",iBuffer.max());
+    printf("max_fract is %g\n",max_fraction);
+    
+    y1 = 0;
+    y0 = 0;
+    sizx = iBuffer.cols();
+    sizy = iBuffer.rows();
+    
+    for(nt=0; nt< sizy; nt++){
+        for(nc=0; nc<sizx; nc++) {
+            if(iBuffer.getpix(nt,nc) > max_val) break;
+        }
+        if(nc != sizx) break;
+    }
+    y0 = nt;
+    x0 = nc;
+
+    for(nt=sizy-1; nt>=0; nt--){
+        for(nc=sizx-1; nc>=0; nc--) {
+            if(iBuffer.getpix(nt,nc) > max_val) break;
+        }
+        if(nc != -1) break;
+    }
+    y1 = nt;
+    x1 = nc;
+    
+    printf("Using region between rows %d and %d\n",y0,y1);
+    sizy = y1-y0+1;
+
+    for(nt=y0; nt<= y1; nt++){
+        ave = xcom = 0.;
+        for(nc=0; nc<sizx; nc++) {
+            datval = iBuffer.getpix(nt,nc);
+            ave += datval;                    // average
+            xcom += nc * (datval);            // x center of mass -- subtract min
+            
+        }
+        ave = ave/(float)sizx;
+        
+        xcom /= sizx;
+        xcom /= (ave);
+        ave_xcom += xcom;
+        center = xcom+.5;
+        
+        for(nc=0; nc<new_width; nc++) {
+            new_im.setpix(nt,nc,(iBuffer.getpix(nt,center+nc) + iBuffer.getpix(nt,center-nc))/2.0);
+        }
+    }
+    ave_xcom /= sizy;
+    center = ave_xcom + .5;
+    
+    for(nt=0; nt< y0; nt++){
+        for(nc=0; nc<new_width; nc++) {
+            new_im.setpix(nt,nc,(iBuffer.getpix(nt,center+nc) + iBuffer.getpix(nt,center-nc))/2.0);
+        }
+    }
+    for(nt=y1+1; nt< iBuffer.rows(); nt++){
+        for(nc=0; nc<new_width; nc++) {
+            new_im.setpix(nt,nc,(iBuffer.getpix(nt,center+nc) + iBuffer.getpix(nt,center-nc))/2.0);
+        }
+    }
+
+    user_variables[0].fvalue = user_variables[0].ivalue = x0;
+    user_variables[0].is_float=0;
+    user_variables[1].fvalue = user_variables[1].ivalue = y0;
+    user_variables[1].is_float=0;
+    user_variables[2].fvalue = user_variables[2].ivalue = x1;
+    user_variables[2].is_float=0;
+    user_variables[3].fvalue = user_variables[3].ivalue = y1;
+    user_variables[3].is_float=0;
+    user_variables[4].fvalue = user_variables[4].ivalue = center;
+    user_variables[4].is_float=0;
+
+    
+    iBuffer.free();     // release the old data
+    iBuffer = new_im;   // this is the new data
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+
+}
+
+/* ************************* */
+
+
+/*
+ UNFOLD
+ Treat the current image as the right half of an image and "unfold" it to create a new symmetric image.
+ 
+ */
+
+int unfold_c(int n, char* args){
+    int colorImage=0;
+    if( iBuffer.isColor()){
+        int* theSpecs=iBuffer.getspecs();
+        theSpecs[IS_COLOR]=0;
+        iBuffer.setspecs(theSpecs);
+        delete [] theSpecs;
+        colorImage=1;
+    }
+    iBuffer.rotate(90.0);
+    Image newIm;
+    newIm << iBuffer;
+    iBuffer.invert();
+    iBuffer.mirror();
+    int w=iBuffer.width()-1,h=iBuffer.rows()-1;
+    rect cropRect={0,1,w,h};
+    iBuffer.crop(cropRect);
+    newIm.composite(iBuffer);
+    newIm.rotate(-90.);
+    
+    iBuffer.free();     // release the old data
+    iBuffer = newIm;   // this is the new data
+    if( colorImage){
+        int* theSpecs=iBuffer.getspecs();
+        theSpecs[IS_COLOR]=1;
+        iBuffer.setspecs(theSpecs);
+        delete [] theSpecs;
+    }
+    iBuffer.getmaxx(PRINT_RESULT);
+    update_UI();
+    return NO_ERR;
+}
+/* ************************* */
+
+
+/*
+ DSATURATE [displaySaturationValue]
+    This affects how the display command behaves when the Scale option is selected. If a displaySaturationValue is specified, the Color Max value used will be the dataMaxium*displaySaturationValue. If no argument is given, the current value is printed.
+ */
+
+int dsaturate_c(int n,char* args){
+    float dSatValue=1;
+    int nargs = sscanf(args,"%f",&dSatValue);
+
+    if(nargs ==1){
+        UIData.displaySaturateValue = dSatValue;
+    }
+    printf("Display Saturation Value is %f\n",UIData.displaySaturateValue);
     return NO_ERR;
 }

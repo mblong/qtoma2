@@ -1,9 +1,9 @@
 FOLDER=/Users/mblong/oma2/oma2
 
-DEST=/Users/mblong/qtoma2/trunk/oma2UiIndependent
+DEST=/Users/mblong/qtoma2/oma2UiIndependent
 #
 cp $FOLDER/oma2/ImageBitmap.h $DEST/
-cp $FOLDER/ImageBitmap.mm $DEST/ImageBitmap.cpp
+cp $FOLDER/oma2/ImageBitmap.mm $DEST/ImageBitmap.cpp
 cp $FOLDER/oma2/comdec.h $DEST/
 cp $FOLDER/oma2/comdec.mm $DEST/comdec.cpp
 cp $FOLDER/oma2/commands_1.h $DEST/

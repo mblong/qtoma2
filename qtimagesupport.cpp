@@ -26,7 +26,7 @@ int readTiff(char* filename,Image* im){
                 }
             }
             return NO_ERR;
-            break;
+
         case QImage::Format_RGB32:
         case QImage::Format_ARGB32:
             *im = Image(h*3,w);
@@ -44,7 +44,7 @@ int readTiff(char* filename,Image* im){
                 }
             }
             return NO_ERR;
-            break;
+
         }
     }
 
@@ -78,7 +78,7 @@ int readJpeg(char* filename,Image* im)
                 }
             }
             return NO_ERR;
-            break;
+
 
         case QImage::Format_ARGB32:
         case QImage::Format_RGB32:
@@ -97,7 +97,7 @@ int readJpeg(char* filename,Image* im)
                 }
             }
             return NO_ERR;
-            break;
+
         }
     }
 
@@ -115,3 +115,12 @@ int saveJpeg(char* filename){
     myImageWriter.setFormat("jpg");
     return myImageWriter.write(currentWindowImage);
 }
+
+int savePdf(char* filename)
+{
+    beep();
+    printf("Not implemented in QtOma2.\n");
+  return CMND_ERR;
+
+}
+

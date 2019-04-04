@@ -40,7 +40,7 @@ enum {NO_PRINT,PRINT_RESULT};
 enum {BILINEAR,MALVAR};
 
 // special file reader types
-enum {DCRAW,JPEG,TIFREAD,HDR,HOBJ,OMA};
+enum {DCRAW,JPEG,TIFREAD,HDR,HOBJ,OMA,TXT};
 
 
 /******************** Class Definitions ********************/
@@ -108,6 +108,8 @@ public:
     int cols();                 ///< returns the number of columns in the current image (width)
     void setspecs(int*);        ///< sets the image specs array
     DATAWORD* getvalues();      ///< returns a copy of the image values array
+    DATAWORD min();             ///< returns the image min
+    DATAWORD max();             ///< returns the image max
     void setvalues(DATAWORD*);  ///< sets the image values array
     char* getunit_text();       ///< returns a copy of the image ruler units
     char* getComment();        ///< returns a copy of the comment buffer
@@ -144,6 +146,7 @@ public:
     friend int readTiff(char* filename, Image*);
     friend int readHDR(char* filename, Image*);
     friend int readHobj(char* filename, Image*);
+    friend int readCsv(char* filename, Image*);
     friend void oma_write_ppm_tiff (int thecolor, Image* im);
 #ifdef GIGE_
     friend int gige(int n, char* args);

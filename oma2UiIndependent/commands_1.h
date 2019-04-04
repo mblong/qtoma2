@@ -30,6 +30,8 @@ int bit8_c(int,char*);
 int bit16_c(int,char*);
 int binarguments_c(int,char*);
 int binextension_c(int,char*);
+int boundbox_c(int, char*);
+int bleed_c(int, char*);
 
 int colorflag_c(int,char*);
 int compositefile_c(int,char*);
@@ -48,6 +50,7 @@ int createfile_c(int n,char* args);
 int concatfile_c(int n,char* args);
 int closefile_c(int n,char* args);
 int columns_c(int n,char* args);
+int c2rgb_c(int n,char* args);
 
 int dcrawarg_c(int,char*);
 int divfile_c(int,char*);
@@ -64,6 +67,7 @@ int divRGB_c(int,char*);
 int disp2rgb_c(int,char*);
 int demosaic_c(int,char*);
 int decodeHobj_c(int,char*);
+int dsaturate_c(int,char*);
 
 int echo_c(int,char*);
 int extra_c(int,char*);
@@ -76,6 +80,7 @@ int frame_c(int n, char* args);
 int ftemp_c(int, char*);
 int findbad_c(int,char*);
 int fwdatm_c(int n,char* args);
+int fold_c(int n, char* args);
 
 int getfile_c(int,char*);
 int getFileNames_c(int,char*);
@@ -122,7 +127,7 @@ int maskGreater_c(int,char*);
 int maskLess_c(int,char*);
 int match_c(int, char*);
 
-#ifdef Qt_UI
+#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
 int mySqServer_q(int, char*);
 int mySqTable_q(int, char*);
 #endif
@@ -131,6 +136,7 @@ int newWindow_c(int,char*);
 int nextFile_c(int,char*);
 int nextPrefix_c(int,char*);
 int noise_c(int, char*);
+int nan2zero_c(int,char*);
 
 int openfile_c(int,char*);
 
@@ -156,6 +162,7 @@ int roundUp_c(int,char*);
 int roundoff_c(int,char*);
 int rows_c(int,char*);
 int ruler_c(int, char*);
+int remap_c(int, char*);
 
 int setcminmax_c(int,char*);
 int size_c(int,char*);
@@ -168,6 +175,7 @@ int subtmp_c(int, char*);
 int savefile_c(int,char*);
 int satiff_c(int,char*);
 int saveJpg_c(int,char*);
+int savePdf_c(int,char*);
 int satiffscaled_c(int,char*);
 int sysCommand_c(int,char*);
 int seq2hdr_c(int,char*);
@@ -176,8 +184,9 @@ int subRGB_c(int,char*);
 int snr_c(int,char*);
 int shotnoise_c(int,char*);
 int say_c(int,char*);
+int scatter_c(int,char*);
 
-#ifdef Qt_UI
+#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
 int sqlAdd_q(int,char*);
 int sqlNew_q(int,char*);
 int sqlOpen_q(int,char*);
@@ -188,6 +197,7 @@ int sqlClose_q(int,char*);
 int tsmooth_c(int,char*);
 
 int uprefix_c(int n,char* args);
+int unfold_c(int n,char* args);
 
 int warpar_c(int, char*);
 int warp_c(int, char*);

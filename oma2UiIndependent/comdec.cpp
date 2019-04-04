@@ -36,6 +36,8 @@ ComDef   commands[] =    {
     {{"BIT16          "},	bit16_c},
     {{"BINARGUMENTS   "},	binarguments_c},
     {{"BINEXTENSION   "},	binextension_c},
+    {{"BOUNDBOX       "},   boundbox_c},
+    {{"BLEED          "},   bleed_c},
     
     {{"CALCULATE      "},	calc_cmd_c},
     {{"CALCALL        "},	calcall_c},
@@ -56,6 +58,7 @@ ComDef   commands[] =    {
     {{"CREATEFILE     "},	createfile_c},
     {{"CONCATFILE     "},	concatfile_c},
     {{"CLOSEFILE      "},	closefile_c},
+    {{"C2RGB          "},   c2rgb_c},
     
     {{"DISPLAY        "},	display},
     {{"DMACRO         "},	defmac},
@@ -73,6 +76,7 @@ ComDef   commands[] =    {
     {{"DISP2RGB       "},	disp2rgb_c},
     {{"DEMOSAIC       "},	demosaic_c},
     {{"DECODEHOBJ     "},	decodeHobj_c},
+    {{"DSATURATE      "},   dsaturate_c},
     
     {{"ERASE          "},	erase},
     {{"ENDIF          "},	endifcmnd},
@@ -91,6 +95,7 @@ ComDef   commands[] =    {
     {{"FOLD           "},	fold_g},
     {{"FINDBADPIX     "},	findbad_c},
     {{"FWDATMATLAB    "},	fwdatm_c},
+    {{"FOLD2          "},   fold_c},
         
     {{"GET            "},	getfile_c},
     {{"GETRGB         "},	getfile_c},
@@ -147,7 +152,7 @@ ComDef   commands[] =    {
     {{"MASK<          "},	maskLess_c},
     {{"MATCH          "},	match_c},
 
-#ifdef Qt_UI
+#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
     {{"MYSQSERVER     "},    mySqServer_q},
     {{"MYSQTABLE      "},    mySqTable_q},
 #endif
@@ -156,6 +161,7 @@ ComDef   commands[] =    {
     {{"NEXTFILE       "},	nextFile_c},
     {{"NEXTPREFIX     "},	nextPrefix_c},
     {{"NOISE          "},	noise_c},
+    {{"NAN2ZERO       "},   nan2zero_c},
         
     {{"OPENFILE       "},	openfile_c},
         
@@ -181,6 +187,7 @@ ComDef   commands[] =    {
     {{"RNDOFF         "},	roundoff_c},
     {{"RNDUP          "},	roundUp_c},
     {{"RULER          "},	ruler_c},
+    {{"REMAP          "},   remap_c},
     
     
     {{"SAVEFILE       "},	savefile_c},
@@ -188,6 +195,7 @@ ComDef   commands[] =    {
     {{"SATIFF         "},	satiff_c},
     {{"SATIFFSCALED   "},	satiffscaled_c},
     {{"SAVEJPG        "},	saveJpg_c},
+    {{"SAVEPDF        "},   savePdf_c},
     {{"SIZE           "},	size_c},
     {{"SINGRID        "},	sinGrid_c},
     {{"STEMPIMAGE     "},	stemp_c},
@@ -202,8 +210,9 @@ ComDef   commands[] =    {
     {{"SNR            "},	snr_c},
     {{"SHOTNOISE      "},	shotnoise_c},
     {{"SAY            "},	say_c},
+    {{"SCATTER        "},   scatter_c},
 
-#ifdef Qt_UI
+#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
     {{"SQLADD         "},    sqlAdd_q},
     {{"SQLOPEN        "},    sqlOpen_q},
     {{"SQLCLOSE       "},    sqlClose_q},
@@ -213,6 +222,7 @@ ComDef   commands[] =    {
     {{"TSMOOTH        "},	tsmooth_c},
     
     {{"UPREFIX        "},	uprefix_c},
+    {{"UNFOLD         "},   unfold_c},
     
     {{"VARIABLES      "},	variab},
     {{"VARCLEAR       "},	varClear},
@@ -573,8 +583,13 @@ int comdec(char* cmnd)
         // First, check for an "=" --> means this is an assignment command
         while ( cmnd[i] != EOL  && cmnd[i]!= ';'){
             if ( cmnd[i++] == '='){
-                if(if_condition_met) do_assignment(cmnd);		// don't do assignments if an if condition is not met
-                if(exflag==0 && macflag==0) return NO_ERR;
+                if(if_condition_met){// don't do assignments if an if condition is not met
+                    //command_return = error_return = do_assignment(cmnd);
+                    // the above doesn't behave properly and in macros causes real trouble
+                    // below doesn't seem to do anything in terms of having %e return nonzero after error
+                    command_return = do_assignment(cmnd);
+                }
+                if(exflag==0 && macflag==0) return command_return;
                 assignmentDone = 1;
             }
         }
@@ -1018,7 +1033,7 @@ int do_assignment(char* cmnd)
 	//printf("%d values; %c\n",rhs_vals,exp_el[0].op_char);
 	vprint(var_index);
     update_UI();
-	return 0;
+	return NO_ERR;
 }
 
 // return the index of a variable if it is already defined
@@ -1143,6 +1158,9 @@ Expression_Element evaluate_string(char* ex_string)
 			}
 			exp_el[rhs_vals].ivalue = user_variables[arg_index].ivalue;
 			exp_el[rhs_vals].fvalue = user_variables[arg_index].fvalue;
+            if(user_variables[arg_index].is_float == 0){
+                exp_el[rhs_vals].fvalue = user_variables[arg_index].ivalue;
+            }
 			if(user_variables[arg_index].is_float == -1) { // this is a string variable
 				strcpy(&exp_el[rhs_vals].estring[0],&user_variables[arg_index].estring[0]); // copy the string too
 				exp_el[rhs_vals].op_char = 's';

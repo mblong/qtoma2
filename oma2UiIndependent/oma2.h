@@ -144,7 +144,7 @@ enum  {SAVE_DATA,GET_DATA,MACROS_DATA,GRAPHICS_DATA,SETTINGS_DATA,TIFF_DATA,TIF_
 #define NUMPAL 8
 enum  {DEFAULTMAP,BGRBOW,GRAYMAP,REDMAP,GREENMAP,BLUEMAP,FROMAFILE2,FROMAFILE3};
 
-#define MAX_WINDOW_COUNT 10
+#define MAX_WINDOW_COUNT 20
 #define SETTINGS_VERSION_1  "OMA2 Settings Version 1.0"
 #define OMA2_BINARY_DATA_STRING  "OMA2 Binary Data 1.0"
 
@@ -227,6 +227,7 @@ typedef struct {
     int demosaicHobjFlag;    // setting for whether or not to demosaic after decoding
     int clearHobjFlag;      // setting for whether or not to clear bad color pixels (call cclearbad_c)
  
+    float displaySaturateValue; // when Scale is selected, cmax will be data max * displaySaturateValue
     
     /*
 	settings[4] = detector;
