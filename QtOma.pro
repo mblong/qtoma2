@@ -18,8 +18,11 @@ macx:QMAKE_CXXFLAGS += -DQt_UI\
 win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive\
     -Wno-unused-parameter -Wno-overflow -Wno-aggressive-loop-optimizations -Wno-array-bounds\
     -Wno-unused-variable -Wno-sign-compare -Wno-write-strings -Wno-unused-but-set-variable\
-    -Wno-unknown-pragmas -Wno-strict-overflow -Wno-narrowing -Wno-type-limits\
-    -D_WIN32 -DWIN32
+    -Wno-unknown-pragmas -Wno-strict-overflow -Wno-narrowing -Wno-type-limits
+
+# Use the new 64-bit mingw on windows
+#    -D_WIN32 -DWIN32
+
 unix:!macx: QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive -Wno-unused-parameter
 
 SOURCES += main.cpp\
@@ -116,7 +119,7 @@ win32 {
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette2.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
-    EXTRA_FILES +=  $$SFILE\Resources\OMA%20Settings
+    EXTRA_FILES +=  $$SFILE\Resources\OMASettings
 
     for(FILE,EXTRA_FILES){
         #message($$quote(copy \"$${FILE}\" \"$${DFILE}\"$$escape_expand(\\n\\t)))
@@ -130,7 +133,7 @@ macx {
     MediaFiles.files += "Resources/OMApalette.pa1"
     MediaFiles.files += "Resources/OMApalette2.pa1"
     MediaFiles.files += "Resources/OMApalette3.pa1"
-    MediaFiles.files += "Resources/OMA Settings"
+    MediaFiles.files += "Resources/OMASettings"
     MediaFiles.path = Contents/Resources
     QMAKE_BUNDLE_DATA += MediaFiles
 }
@@ -142,7 +145,7 @@ unix:!macx:{
         $$_PRO_FILE_PWD_/Resources/OMApalette.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMApalette2.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMApalette3.pa1
-        $$_PRO_FILE_PWD_/Resources/OMA%20Settings
+        $$_PRO_FILE_PWD_/Resources/OMASettings
     for(FILE,EXTRA_FILES){
         QMAKE_POST_LINK += $$quote(cp $${FILE} ./$$escape_expand(\\n\\t))
     }
