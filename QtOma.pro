@@ -136,6 +136,8 @@ macx {
     MediaFiles.files += "Resources/OMASettings"
     MediaFiles.path = Contents/Resources
     QMAKE_BUNDLE_DATA += MediaFiles
+
+    ICON = qtOma2Icon.icns
 }
 
 #for linux
@@ -158,3 +160,5 @@ unix:!macx:{
 #
 
 OBJECTIVE_SOURCES +=
+
+DISTFILES +=
