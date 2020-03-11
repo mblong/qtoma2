@@ -90,19 +90,24 @@ ComDef   commands[] =    {
     {{"FECHO          "},	fecho_c},
     {{"FOPEN          "},	fopen_c},
     {{"FRAME          "},	frame_c},
+    {{"FRAMECNTR      "},   framecntr_c},
     {{"FTEMPIMAGE     "},	ftemp_c},
     {{"FFT            "},	dofft},
     {{"FOLD           "},	fold_g},
     {{"FINDBADPIX     "},	findbad_c},
     {{"FWDATMATLAB    "},	fwdatm_c},
     {{"FOLD2          "},   fold_c},
-        
+#if defined(MacOSX_UI)
+    {{"FLIPPID        "},   flippid_c},
+#endif
+    
     {{"GET            "},	getfile_c},
     {{"GETRGB         "},	getfile_c},
     {{"GETFILENAMES   "},	getFileNames_c},
     {{"GETSETTINGS    "},	getsettings},
     {{"GETFUNCTION    "},	getfun_c},
     {{"GETBINARYFILE  "},	getbin_c},
+    {{"GETANGLE       "},   getangle_c},
     {{"GMACRO         "},	gmacro_c},
     {{"GAUSSIAN       "},	gaussian_c},
     {{"GTEMPIMAGE     "},	gtemp_c},
@@ -1023,9 +1028,9 @@ int do_assignment(char* cmnd)
 		strcpy(&user_variables[var_index].estring[0],&ex_result.estring[0]);
 		user_variables[var_index].is_float = -1;
 	} else {
-		if(ex_result.op_char == 'f'){
-            user_variables[var_index].is_float = 1; // this was a simple assignment to a float, so force float as variable type
-        }
+		//if(ex_result.op_char == 'f'){
+        //    user_variables[var_index].is_float = 1; // this was a simple assignment to a float, so force float as variable type
+        //}
 		user_variables[var_index].fvalue = ex_result.fvalue;
         user_variables[var_index].ivalue = ex_result.ivalue;
 	}

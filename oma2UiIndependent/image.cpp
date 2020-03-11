@@ -954,12 +954,12 @@ void Image::saveFile(char* name, int kindOfName){
 }
 
 void Image::resize(int newRows, int newCols){
+    
+    if(specs[IS_COLOR]){
+        newRows *= 3;
+    }
     // allocate the new image
     Image resized(newRows,newCols);
-    if(resized.err()){
-        error = resized.err();
-        return;
-    }
     resized.copyABD(*this); // get the old specs, some of which will have to be changed
     resized.specs[ROWS] = newRows;
     resized.specs[COLS] = newCols;
@@ -1227,7 +1227,7 @@ void Image::crop(rect crop_rect){
     int save_rgb_rectangle = specs[IS_COLOR];
     
     if(save_rgb_rectangle){
-        if( y0 + sizy*3 >= specs[ROWS] ){
+        if( y0 + sizy*3 > specs[ROWS] ){
             //beep();
             //printf("Can't save rectangle as RGB image -- rectangle size problem.\n");
             error = SIZE_ERR;

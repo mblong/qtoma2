@@ -77,10 +77,14 @@ int fopen_c (int,char*);
 int fclose_c (int,char*);
 int fecho_c (int,char*);
 int frame_c(int n, char* args);
+int framecntr_c(int n, char* args);
 int ftemp_c(int, char*);
 int findbad_c(int,char*);
 int fwdatm_c(int n,char* args);
 int fold_c(int n, char* args);
+#if defined(MacOSX_UI)
+    int flippid_c(int n, char* args);
+#endif
 
 int getfile_c(int,char*);
 int getFileNames_c(int,char*);
@@ -95,6 +99,7 @@ int gtemp_c(int, char*);
 int getmatch_c(int, char*);
 int gnoise_c(int, char*);
 int getbin_c(int,char*);
+int getangle_c(int,char*);
 
 int hdrAccumulate_c(int,char*);
 int hdrAcadd_c(int,char*);
