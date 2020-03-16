@@ -204,6 +204,13 @@ int tsmooth_c(int,char*);
 int uprefix_c(int n,char* args);
 int unfold_c(int n,char* args);
 
+#if defined(Qt_UI)
+
+int vidAddFrame_c(int,char*);
+int vidOpenFile_c(int,char*);
+int vidCloseFile_c(int,char*);
+#endif
+
 int warpar_c(int, char*);
 int warp_c(int, char*);
 int writebad_c(int,char*);

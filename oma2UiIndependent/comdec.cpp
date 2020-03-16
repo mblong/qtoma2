@@ -231,6 +231,12 @@ ComDef   commands[] =    {
     
     {{"VARIABLES      "},	variab},
     {{"VARCLEAR       "},	varClear},
+
+#if defined(Qt_UI)
+    {{"VIDADDFRAME    "},	vidAddFrame_c},
+    {{"VIDOPENFILE    "},	vidOpenFile_c},
+    {{"VIDCLOSEFILE   "},	vidCloseFile_c},
+#endif
     
     {{"WRITEBADPIX    "},	writebad_c},
     {{"WARP           "},	warp_c},

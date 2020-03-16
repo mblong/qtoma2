@@ -67,7 +67,7 @@ void DataWindow::showData(char* name){
     intensity = new unsigned char[intensitySize];
     memcpy(intensity,iBitmap.getintensitydata(),intensitySize);
 
-    iBitmap.freeMaps();
+    //iBitmap.freeMaps();   // this will be needed in the video commands
 
    ui->label->setPixmap(pixmap);
    ui->label->show();

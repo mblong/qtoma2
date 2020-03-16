@@ -13,8 +13,10 @@ RGBColor color[256][8];
 
 
 ImageBitmap::ImageBitmap(){
-    pixdata = 0;            //
-    intensity = 0;
+    pixdata = nullptr;            //
+    intensity = nullptr;
+    BGRpixdata = nullptr;
+    pdptr = &pixdata;
     width = height = 0;
     UIData.pixsiz = 1;
     
@@ -35,8 +37,7 @@ int ImageBitmap::scale_pixval(DATAWORD val)
 }
 
 void ImageBitmap::operator=(Image im){
-	//Ptr ptr;
-	pdptr = &pixdata;
+    // The color bitmap ordering is RGB RGB RGB
 	int k = 0, i,j,n=0,m=0;
 	int ntrack = im.specs[ROWS];
 	int nchan = im.specs[COLS];
@@ -149,9 +150,28 @@ void ImageBitmap::operator=(Image im){
     }
 }
 
+
+
 PIXBYTES* ImageBitmap::getpixdata(){
     return pixdata;
 }
+
+PIXBYTES* ImageBitmap::getBGRpixdata(){
+    if(BGRpixdata) free(BGRpixdata);
+    BGRpixdata = (PIXBYTES*)malloc(width*height*3);
+    if(BGRpixdata == nullptr){
+        beep();
+        printf("memory error\n");
+        return nullptr;
+    }
+    for(int i=0; i<width*height*3; i+=3){
+        *(BGRpixdata+i) = *(pixdata+i+2);
+        *(BGRpixdata+i+1) = *(pixdata+i+1);
+        *(BGRpixdata+i+2) = *(pixdata+i);
+    }
+    return BGRpixdata;
+}
+
 
 PIXBYTES* ImageBitmap::getintensitydata(){
     return intensity;

@@ -25,6 +25,7 @@ class ImageBitmap
 private:
     PIXBYTES**  pdptr;
     PIXBYTES*   pixdata;            // the RGB to be displayed
+    PIXBYTES*   BGRpixdata;         // BGR pixdata buffer for video commands
     int         width;              // 
     int         height;
     int         thePalette;
@@ -43,6 +44,7 @@ public:
     PIXBYTES* getpixdata();
     PIXBYTES** getpixdatap();
     PIXBYTES* getintensitydata();
+    PIXBYTES* getBGRpixdata();
     int getwidth();
     int getheight();
     int getpalette();

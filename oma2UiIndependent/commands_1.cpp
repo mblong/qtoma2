@@ -6674,3 +6674,54 @@ int flippid_c(int notUsed,char* args){
 }
 #endif
 
+#if defined(Qt_UI)
+
+static cv::VideoWriter outputVideo;
+static cv::Mat frame;
+static cv::Size frame_size;
+
+int vidAddFrame_c(int n,char* args){
+    using namespace cv;
+    extern ImageBitmap iBitmap;
+    frame = Mat(iBitmap.getheight(), iBitmap.getwidth(), CV_8UC3, iBitmap.getBGRpixdata());
+    outputVideo.write(frame);
+    return NO_ERR;
+}
+
+int vidOpenFile_c(int n,char* args){
+    using namespace cv;
+    int frames_per_second=15;
+    extern ImageBitmap iBitmap;
+    char filename[CHPERLN];
+
+    int narg = sscanf(args,"%d %s",&frames_per_second,filename);
+    if(narg !=2){
+        beep();
+        printf("Two arguments needed: framesPerSecond filename\n");
+        return CMND_ERR;
+    }
+
+    frame_size= Size(iBitmap.getwidth(),iBitmap.getheight());
+    //qDebug()<<iBitmap.getheight()<<" "<<iBitmap.getwidth()<<endl;
+
+    outputVideo = VideoWriter(fullname(filename,SAVE_DATA_NO_SUFFIX), VideoWriter::fourcc('M', 'J', 'P', 'G'),
+                                frames_per_second, frame_size, true);
+
+    if(outputVideo.isOpened()){
+        frame = Mat(iBitmap.getheight(), iBitmap.getwidth(), CV_8UC3, iBitmap.getBGRpixdata());
+        outputVideo.write(frame);
+        return NO_ERR;
+    } else {
+        beep();
+        printf("Could not open VideoWriter.\n");
+        return FILE_ERR;
+    }
+}
+
+int vidCloseFile_c(int n,char* args){
+    using namespace cv;
+    outputVideo.release();
+    return NO_ERR;
+}
+#endif
+

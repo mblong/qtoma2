@@ -6,9 +6,9 @@
 #include "oma2UiIndependent/UI.h"
 #include "qtoma2.h"
 
-QSqlDatabase db;
-int isMySql = 0;
-char databaseName[128],tableName[128],server[64],user[64],password[64];
+static QSqlDatabase db;
+static int isMySql = 0;
+static char databaseName[128],tableName[128],server[64],user[64],password[64];
 
 /*
 SQLADD
