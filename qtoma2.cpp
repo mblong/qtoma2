@@ -989,3 +989,30 @@ int QtOma2::fillInDataFromPixmap( QSqlDatabase db, char* tableName){
 
     return NO_ERR;
 }
+
+QImage QtOma2::getVideoFrame(){
+    int windowNumber = activeWindow();
+    QImage theImage;
+    if(windowNumber<0){
+        //can't do this
+        beep();
+        return theImage;
+    }
+    if(windowArray[windowNumber].type != DATA){
+        //can't do this
+        beep();
+        return theImage;
+    }
+
+    theImage = (windowArray[windowNumber].dataWindow->pixmap).toImage();    // convert to image
+
+    // the data is evidently BGRX BGRX in the image -- we need BGR BGR
+    uchar* data=theImage.bits();
+    int j=0;
+    for(int i=0; i<theImage.height()*theImage.width()*4; i++ ){
+        *(data+j++)=*(data+i++);
+        *(data+j++)=*(data+i++);
+        *(data+j++)=*(data+i++);
+    }
+    return theImage;
+}

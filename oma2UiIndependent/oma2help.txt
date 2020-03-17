@@ -727,6 +727,15 @@ VARIABLES
 VARCLEAR
 	Clears all user-defined variables.
 
+VIDOPENFILE framesPerSecond filename
+	Open a video file with the specified name and add the image in the last-displayed data data window to the video. The file is saved to the directory specified by Save Data Files; the extension ".avi" should be specified as part of the filename. [qtoma command]
+
+VIDADDFRAME
+	Adds the image from the last-displayed data window to the video opened with the VIDOPENFILE command. [qtoma command]
+
+VIDCLOSEFILE
+	Closes the currently open video file. This must be done after adding frames to a video. [qtoma command]
+
 WARP subpix
 	Remaps an image coordinate system using bilinear geometric warping.
 	x' = a00 + a01x + a10y + a11xy

@@ -102,6 +102,8 @@ int pprintf(const char* format, ...);
 #include <QApplication>
 #include "qtoma2.h"
 #include "Hardware/cameraSelector.h"
+#include <opencv2/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #define display_data displayData(args);
 #define erase_window eraseWindow(n);

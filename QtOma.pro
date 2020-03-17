@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     Hardware/gige.cpp \
     oma2UiIndependent/dmmalvar.cpp \
     oma2UiIndependent/dmbilinear.cpp \
-    sqlRoutines.cpp
+    sqlRoutines.cpp \
+    videoRoutines.cpp
 
 
 unix:!macx: {
@@ -83,7 +84,8 @@ HEADERS  += qtoma2.h\
     Hardware/ImageLib.h \
     Hardware/PvApi.h \
     oma2UiIndependent/dmbilinear.h \
-    oma2UiIndependent/dmmalvar.h
+    oma2UiIndependent/dmmalvar.h \
+    videoRoutines.h
 
 
 FORMS    += qtoma2.ui \
@@ -138,6 +140,16 @@ macx {
     QMAKE_BUNDLE_DATA += MediaFiles
 
     ICON = qtOma2Icon.icns
+# for video commands
+
+INCLUDEPATH += /usr/local/cellar/opencv/4.2.0_3/include/opencv4
+INCLUDEPATH += /usr/local/cellar/opencv/4.2.0_3/lib
+DEPENDPATH += /usr/local/cellar/opencv/4.2.0_3/lib
+
+LIBS += -L/usr/local/Cellar/opencv/4.2.0_3/lib/ -lopencv_core.4.2.0 \
+        -lopencv_imgcodecs.4.2.0 \
+        -lopencv_video.4.2.0 \
+        -lopencv_videoio.4.2.0
 }
 
 #for linux
