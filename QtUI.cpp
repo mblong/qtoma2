@@ -49,8 +49,23 @@ void labelDataMinMax(){
    wPointer->addDataWindowMinMax();
 }
 
-void labelData(char* label){
-   wPointer->addDataWindowLabel(label);
+void labelData(char* args){
+   int line=0;
+   if(args[0] != '"'){  // doesn't start with quote, so goes in line 0
+       wPointer->addDataWindowLabel(args,line);
+       return;
+   }
+   char label[PREFIX_CHPERLN];
+   int i;
+   for(i=1; i<PREFIX_CHPERLN && args[i] != '"' && args[i] != 0; i++){
+       label[i-1]=args[i];      // find second quote OR end of string OR end of buffer
+   }
+   if(args[i] == 0 || i == PREFIX_CHPERLN)
+       wPointer->addDataWindowLabel(label,line);
+   else {
+       sscanf(&args[i+1],"%d",&line);
+   }
+   wPointer->addDataWindowLabel(label,line);
 }
 
 void eraseWindow(int n){

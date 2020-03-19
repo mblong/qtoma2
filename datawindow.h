@@ -11,6 +11,8 @@
 
 #include "oma2UiIndependent/oma2.h"
 
+
+
 class DrawingWindow;
 
 namespace Ui {
@@ -45,7 +47,7 @@ public:
     QPoint pixmapCoords(QPoint pos);
 
     void labelMinMax();
-    void label(char* string);
+    void label(char* string, int lineNo);
 
     friend class QtOma2;
 
@@ -78,7 +80,8 @@ private:
     int         dataRows;
     int         dataCols;
     char minMaxString[PREFIX_CHPERLN];
-    char labelString[PREFIX_CHPERLN];
+    char labelString[NUMLABELS][PREFIX_CHPERLN];
+    char hasLabel = 0;
 
 };
 

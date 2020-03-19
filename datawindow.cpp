@@ -20,7 +20,8 @@ DataWindow::DataWindow(QWidget *parent) :
     colLine = -1;
     hasColPlot = 0;
     minMaxString[0] = 0;
-    labelString[0] = 0;
+    for(int i=0; i<NUMLABELS; i++)
+        strcpy(labelString[i],"");
     intensity = NULL;
     this->setAttribute(Qt::WA_DeleteOnClose, true);
 }
@@ -199,8 +200,9 @@ void DataWindow::labelMinMax(){
      update();
 }
 
-void DataWindow::label(char* string){
-     strncpy(labelString,string,PREFIX_CHPERLN);
+void DataWindow::label(char* string,int lineNo){
+     hasLabel=1;
+     strncpy(labelString[lineNo],string,PREFIX_CHPERLN);
      update();
 }
 
@@ -390,26 +392,35 @@ void DataWindow::paintEvent(QPaintEvent *event)
     }
     if(minMaxString[0]){
         QPainter painter( &pixmap);
-        painter.setRenderHint(QPainter::TextAntialiasing, true);
-        //painter.setCompositionMode(QPainter::CompositionMode_Source);
-        QPen penHText(QColor("#909090"));
-        painter.setPen(penHText);
         int index;
         for(index = 0;minMaxString[index] != ' ';index++ );
         minMaxString[index] = 0;
+
+        QFont font("Monaco");
+        painter.setFont(font);
+        QPen textPen(QColor("#000000"));
+        painter.setPen(textPen);
+
+        painter.fillRect(8,ui->label->pixmap()->height()-45,2+8*strlen(minMaxString),18,QBrush(Qt::white));
         painter.drawText(QPoint(10,ui->label->pixmap()->height()-30),QString(minMaxString));
+        painter.fillRect(8,ui->label->pixmap()->height()-30,2+8*strlen(&minMaxString[index+1]),18,QBrush(Qt::white));
         painter.drawText(QPoint(10,ui->label->pixmap()->height()-15),QString(&minMaxString[index+1]));
         minMaxString[index] = ' ';
         ui->label->setPixmap(pixmap);
     }
-    if(labelString[0]){
-        QPainter painter( &pixmap);
-        painter.setRenderHint(QPainter::TextAntialiasing, true);
-        //painter.setCompositionMode(QPainter::CompositionMode_Source);
-        QPen penHText(QColor("#909090"));
-        painter.setPen(penHText);
-        painter.drawText(QPoint(10,15),QString(labelString));
-        ui->label->setPixmap(pixmap);
+    if(hasLabel){
+        for(int i=0; i<NUMLABELS;i++){
+            if(labelString[i][0] != 0){
+                QPainter painter( &pixmap);
+                QFont font("Monaco");
+                painter.setFont(font);
+                painter.fillRect(8,i*20+2,2+8*strlen(labelString[i]),18,QBrush(Qt::white));
+                QPen textPen(QColor("#000000"));
+                painter.setPen(textPen);
+                painter.drawText(QPoint(10,16+i*20),QString(labelString[i]));
+                ui->label->setPixmap(pixmap);
+            }
+        }
     }
 
 }

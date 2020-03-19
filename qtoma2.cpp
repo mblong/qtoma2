@@ -649,14 +649,14 @@ void QtOma2::newLinePlot(QPoint start, QPoint end){
 
 }
 
-void QtOma2::addDataWindowLabel(char* string){
+void QtOma2::addDataWindowLabel(char* string, int line){
     int n = activeWindow();
     if(n<0 || windowArray[n].type  != DATA){
         //can't do this
         beep();
         return;
     }
-    windowArray[n].dataWindow->label(string);
+    windowArray[n].dataWindow->label(string,line);
 }
 
 void QtOma2::addDataWindowMinMax(){

@@ -92,7 +92,7 @@ public:
     void newRowPlot();
     void newColPlot();
     void newLinePlot(QPoint start, QPoint end);
-    void addDataWindowLabel(char* string);
+    void addDataWindowLabel(char* string, int line);
     void addDataWindowMinMax();
     void eraseWindow(int n);
     void showPreferences();

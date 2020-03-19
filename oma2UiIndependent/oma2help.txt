@@ -444,8 +444,8 @@ KWABEL n
 LIST
 	Lists the current detector parameters and log block.
 
-LABEL text_string
-	Display the text_string in the upper left of the current window.
+LABEL textString [lineNumber]
+        Display the text_string in the upper left of the current window. If textString is in quotes, the optional lineNumber (range 0-5) specifies what line the text appears on.
 
 LOG [n] [comment]
 	Adds a comment to the comment buffer at line n. If n is not specified, the comment is added to the beginning of the comment buffer. If "comment" is not present, the program prompts for additional comment lines until a null comment is entered (i.e. <CR> only). If the optional "comment" is included on the same line, the text of "comment" replaces any comment already existing at line n and no further comment lines are solicited.
