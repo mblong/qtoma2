@@ -257,6 +257,7 @@ void QtOma2::newData(char* name){
 
 void QtOma2::updateData(){
     if(currentDataWindow >=0)
+        windowArray[currentDataWindow].dataWindow->clearLabels();
         windowArray[currentDataWindow].dataWindow->showData(nil);
 }
 

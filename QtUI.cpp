@@ -64,6 +64,7 @@ void labelData(char* args){
        wPointer->addDataWindowLabel(label,line);
    else {
        sscanf(&args[i+1],"%d",&line);
+       label[i-1]=0;
    }
    wPointer->addDataWindowLabel(label,line);
 }

@@ -206,6 +206,16 @@ void DataWindow::label(char* string,int lineNo){
      update();
 }
 
+void DataWindow::clearLabels(){
+     hasLabel=0;
+     minLabelSet=0;
+     minMaxString[0]=0;
+     for(int i=0; i<NUMLABELS; i++){
+         labelSet[i]=0;
+         labelString[i][0]=0;
+     }
+}
+
 
 void DataWindow::mouseMoveEvent(QMouseEvent *event)
 {
@@ -391,26 +401,29 @@ void DataWindow::paintEvent(QPaintEvent *event)
         ui->label->setPixmap(pixmap);
     }
     if(minMaxString[0]){
-        QPainter painter( &pixmap);
-        int index;
-        for(index = 0;minMaxString[index] != ' ';index++ );
-        minMaxString[index] = 0;
+        if(!minLabelSet){
+            QPainter painter( &pixmap);
+            int index;
+            for(index = 0;minMaxString[index] != ' ';index++ );
+            minMaxString[index] = 0;
 
-        QFont font("Monaco");
-        painter.setFont(font);
-        QPen textPen(QColor("#000000"));
-        painter.setPen(textPen);
+            QFont font("Monaco");
+            painter.setFont(font);
+            QPen textPen(QColor("#000000"));
+            painter.setPen(textPen);
 
-        painter.fillRect(8,ui->label->pixmap()->height()-45,2+8*strlen(minMaxString),18,QBrush(Qt::white));
-        painter.drawText(QPoint(10,ui->label->pixmap()->height()-30),QString(minMaxString));
-        painter.fillRect(8,ui->label->pixmap()->height()-30,2+8*strlen(&minMaxString[index+1]),18,QBrush(Qt::white));
-        painter.drawText(QPoint(10,ui->label->pixmap()->height()-15),QString(&minMaxString[index+1]));
-        minMaxString[index] = ' ';
-        ui->label->setPixmap(pixmap);
+            painter.fillRect(8,ui->label->pixmap()->height()-45,2+8*strlen(minMaxString),18,QBrush(Qt::white));
+            painter.drawText(QPoint(10,ui->label->pixmap()->height()-30),QString(minMaxString));
+            painter.fillRect(8,ui->label->pixmap()->height()-30,2+8*strlen(&minMaxString[index+1]),18,QBrush(Qt::white));
+            painter.drawText(QPoint(10,ui->label->pixmap()->height()-15),QString(&minMaxString[index+1]));
+            minMaxString[index] = ' ';
+            ui->label->setPixmap(pixmap);
+            minLabelSet=1;
+        }
     }
     if(hasLabel){
-        for(int i=0; i<NUMLABELS;i++){
-            if(labelString[i][0] != 0){
+    for(int i=0; i<NUMLABELS;i++){
+            if(labelString[i][0] != 0 && !labelSet[i]){
                 QPainter painter( &pixmap);
                 QFont font("Monaco");
                 painter.setFont(font);
@@ -419,10 +432,10 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 painter.setPen(textPen);
                 painter.drawText(QPoint(10,16+i*20),QString(labelString[i]));
                 ui->label->setPixmap(pixmap);
+                labelSet[i]=1;
             }
         }
     }
-
 }
 
 int DataWindow::getThePalette(){

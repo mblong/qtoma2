@@ -48,6 +48,7 @@ public:
 
     void labelMinMax();
     void label(char* string, int lineNo);
+    void clearLabels();
 
     friend class QtOma2;
 
@@ -80,7 +81,9 @@ private:
     int         dataRows;
     int         dataCols;
     char minMaxString[PREFIX_CHPERLN];
+    char minLabelSet=0;
     char labelString[NUMLABELS][PREFIX_CHPERLN];
+    char labelSet[NUMLABELS]={0};
     char hasLabel = 0;
 
 };
