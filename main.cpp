@@ -24,9 +24,16 @@ int main(int argc, char *argv[])
 
     extern oma2UIData UIData;
     UIData.newwindowflag = 1;   // this default is set initially
+    UIData.autoFloatFlag = 1;   // this default is set initially
 
     strlcpy(text,DCRAW_ARG,NEW_PREFIX_CHPERLN);
     dcrawarg_c(0,text);
+
+    if(argc > 1){
+        gmacro_c(0,argv[1]);
+        char cmnd[10]={"mac"};
+        comdec(cmnd);
+    }
 
     printf("OMA2>");
     w.show();

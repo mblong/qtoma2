@@ -1,14 +1,16 @@
+
 #include "oma2.h"
 #include "image_support.h"
 #include "UI.h"
 #include <math.h>
 #include "dmbilinear.h"
 #include "dmmalvar.h"
-//#include "ImageBitmap.h"
 
 
 #ifndef oma2_Image_h
 #define oma2_Image_h
+
+
 
 typedef struct{
     char ext[6];

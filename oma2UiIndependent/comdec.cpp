@@ -6,6 +6,7 @@
 extern char    reply[1024];   // buffer for sending messages to be typed out by the user interface
 extern Image   iBuffer;       // the image buffer
 extern ImageBitmap iBitmap;
+extern oma2UIData UIData;
 
 ComDef   commands[] =    {
     {{"               "},	null},			
@@ -93,10 +94,10 @@ ComDef   commands[] =    {
     {{"FRAMECNTR      "},   framecntr_c},
     {{"FTEMPIMAGE     "},	ftemp_c},
     {{"FFT            "},	dofft},
-    {{"FOLD           "},	fold_g},
+    {{"FOLD           "},	fold_c},
     {{"FINDBADPIX     "},	findbad_c},
     {{"FWDATMATLAB    "},	fwdatm_c},
-    {{"FOLD2          "},   fold_c},
+    {{"FLOATAUTO      "},   floatAuto},
 #if defined(MacOSX_UI)
     {{"FLIPPID        "},   flippid_c},
 #endif
@@ -1034,9 +1035,9 @@ int do_assignment(char* cmnd)
 		strcpy(&user_variables[var_index].estring[0],&ex_result.estring[0]);
 		user_variables[var_index].is_float = -1;
 	} else {
-		//if(ex_result.op_char == 'f'){
-        //    user_variables[var_index].is_float = 1; // this was a simple assignment to a float, so force float as variable type
-        //}
+        if(ex_result.op_char == 'f' && UIData.autoFloatFlag){
+            user_variables[var_index].is_float = 1; // this was a simple assignment to a float, so force float as variable type
+        }
 		user_variables[var_index].fvalue = ex_result.fvalue;
         user_variables[var_index].ivalue = ex_result.ivalue;
 	}
@@ -2632,6 +2633,26 @@ int vfloat(int n, char* args)	// set flag to use floating pt value of a variable
     update_UI();
 	return NO_ERR;
 }
+
+// **********
+
+/*
+FLOATAUTO <flag>
+    If flag is nonzero, assignment of a variable to a floating point value will set its type to FLOAT. If flag is 0, the default INTEGER data type will be used. With no argument, the current value of the flag is echoed.
+ */
+
+int floatAuto(int n, char* args)	// set flag to use floating pt value of a variable
+{
+    int flag;
+    int narg = sscanf(args, "%d", &flag);
+    if(narg == 1)
+        UIData.autoFloatFlag = flag;
+
+    printf("autoFloatFlag is %d\n",UIData.autoFloatFlag);
+
+    return NO_ERR;
+}
+
 
 // ********** 
 

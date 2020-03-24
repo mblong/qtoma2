@@ -1,5 +1,5 @@
-//#ifndef oma2_commands_1_h
-//#define oma2_commands_1_h
+#ifndef oma2_commands_1_h
+#define oma2_commands_1_h
 
 
 #include "image.h"
@@ -234,4 +234,4 @@ float tabfun(int,float);
 float ranfGauss();
 void decodeHobj(Image*,int,int);
 
-//#endif
+#endif
