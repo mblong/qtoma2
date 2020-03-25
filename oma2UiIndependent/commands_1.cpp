@@ -5787,7 +5787,7 @@ int acmevelocity_c(int n, char* filename){
     char longString[2048],time[32],time2[32],c;
     float exposure,mfc1Range=20,mfc2Range,mfc3Range,fuelCorrection;
     mfc1Range = 20;     //SLPM N2 full scale (coflow)
-    mfc3Range = 0.1;     //SLPM N2 full scale (fuel mixture)
+    //mfc3Range = 0.1;     //SLPM N2 full scale (fuel mixture)
     float mfc1CorrectionFactor = 0.995276533; // air from Zin spreadsheet tables
     float mfc2CorrectionFactor = 1;     // N2
     float tempCoefficient = 0.92546163; // SLPM to room temp from Zin spreadsheet tables
@@ -5799,6 +5799,7 @@ int acmevelocity_c(int n, char* filename){
     // get necessary values
     
     if(getVariableError((char*)"mfc2Range", &mfc2Range)) return ARG_ERR;
+    if(getVariableError((char*)"mfc3Range", &mfc3Range)) return ARG_ERR;
     if(getVariableError((char*)"exposure", &exposure)) return ARG_ERR;
     if(getVariableError((char*)"fuelCorrection", &fuelCorrection)) return ARG_ERR;
     int index = get_variable_index((char*)"name", 0);

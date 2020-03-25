@@ -142,14 +142,15 @@ macx {
     ICON = qtOma2Icon.icns
 # for video commands
 
-INCLUDEPATH += /usr/local/cellar/opencv/4.2.0_3/include/opencv4
-INCLUDEPATH += /usr/local/cellar/opencv/4.2.0_3/lib
-DEPENDPATH += /usr/local/cellar/opencv/4.2.0_3/lib
+INCLUDEPATH += /usr/local/include/opencv4
+#INCLUDEPATH += /usr/local/lib/opencv4
+#DEPENDPATH += /usr/local/lib/opencv4
 
-LIBS += -L/usr/local/Cellar/opencv/4.2.0_3/lib/ -lopencv_core.4.2.0 \
-        -lopencv_imgcodecs.4.2.0 \
-        -lopencv_video.4.2.0 \
-        -lopencv_videoio.4.2.0
+LIBS += -L/usr/local/Cellar/opencv/4.2.0_3/lib/ \
+        -lopencv_core \
+        -lopencv_imgcodecs \
+        -lopencv_video \
+        -lopencv_videoio
 }
 
 #for linux
