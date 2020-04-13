@@ -1,5 +1,7 @@
 #include "videoRoutines.h"
 
+#ifdef Qt_UI_Mac
+
 extern QtOma2* wPointer;
 
 static cv::VideoWriter outputVideo;
@@ -70,3 +72,5 @@ int vidCloseFile_q(int n,char* args){
     return FILE_ERR;
 
 }
+
+#endif

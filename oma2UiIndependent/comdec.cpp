@@ -233,7 +233,7 @@ ComDef   commands[] =    {
     {{"VARIABLES      "},	variab},
     {{"VARCLEAR       "},	varClear},
 
-#if defined(Qt_UI)
+#if defined(Qt_UI_Mac)
     {{"VIDOPENFILE    "},	vidOpenFile_q},
     {{"VIDADDFRAME    "},	vidAddFrame_q},
     {{"VIDCLOSEFILE   "},	vidCloseFile_q},
