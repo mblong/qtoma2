@@ -158,7 +158,7 @@ ComDef   commands[] =    {
     {{"MASK<          "},	maskLess_c},
     {{"MATCH          "},	match_c},
 
-#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
+#if defined(Qt_UI_Mac)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
     {{"MYSQSERVER     "},    mySqServer_q},
     {{"MYSQTABLE      "},    mySqTable_q},
 #endif
@@ -218,7 +218,7 @@ ComDef   commands[] =    {
     {{"SAY            "},	say_c},
     {{"SCATTER        "},   scatter_c},
 
-#if defined(Qt_UI)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
+#if defined(Qt_UI_Mac)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
     {{"SQLADD         "},    sqlAdd_q},
     {{"SQLOPEN        "},    sqlOpen_q},
     {{"SQLCLOSE       "},    sqlClose_q},

@@ -13,7 +13,7 @@ TARGET = QtOma
 TEMPLATE = app
 
 #macx:QMAKE_MAC_SDK = macosx10.12
-macx:QMAKE_CXXFLAGS += -DQt_UI\
+macx:QMAKE_CXXFLAGS += -DQt_UI_Mac\
     -Wno-c++11-narrowing -Wno-sign-conversion
 win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive\
     -Wno-unused-parameter -Wno-overflow -Wno-aggressive-loop-optimizations -Wno-array-bounds\

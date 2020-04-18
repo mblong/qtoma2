@@ -367,10 +367,27 @@ int binextension_c(int n,char* args)
     
     extern int bin_rows, bin_cols, bin_header, binary_file_bytes_per_data_point, swap_bytes_flag, unsigned_flag;
     extern char binaryExtension[];
+    extern FileDecoderExtensions fileDecoderExtensions[];
+    
+    if(args[0] == '.'){
+        beep();
+        printf("Please omit the leading '.'\n");
+        return CMND_ERR;
+    }
+    
+    for(int i=0; i<strlen(args); i++){
+         args[i] = toupper(args[i]);
+     }
     
     if( args[0] != 0){
         sscanf(args,"%s",binaryExtension);
     }
+    
+    int extLength = (int)strlen(args);
+
+    
+    strncpy(&fileDecoderExtensions[RAW_FILE_EXT_INDEX].ext[1],args,extLength);
+    
     printf("Settings for reading binary files with extension %s are:\n%d rows\n%d comumns\n%d header bytes\n%d bytes per point\n",
            binaryExtension,bin_rows, bin_cols, bin_header, binary_file_bytes_per_data_point);
     printf("%d swap bytes flag\n%d unsigned flag\n",swap_bytes_flag, unsigned_flag);

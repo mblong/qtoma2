@@ -130,7 +130,7 @@ enum  {SAVE_DATA,GET_DATA,MACROS_DATA,GRAPHICS_DATA,SETTINGS_DATA,TIFF_DATA,TIF_
     #endif
 #endif
 
-#ifdef Qt_UI
+#ifdef Qt_UI_Mac
     #ifndef SETTINGSFILE
         #define SETTINGSFILE "../Resources/OMA Settings"
         #define PALETTEFILE	"../Resources/OMA palette.pa1"

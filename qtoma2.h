@@ -22,7 +22,7 @@
 #define STATUS_WIDTH 260
 int comdec(char*);
 
-#ifdef Qt_UI
+#ifdef Qt_UI_Mac
 
 // This isn't the right way to do this
 #define TITLEBAR_HEIGHT 0
@@ -139,6 +139,8 @@ private slots:
     void on_actionSave_Data_File_triggered();
 
 
+
+    void on_actionSave_Settings_triggered();
 
 private:
     Ui::QtOma2 *ui;

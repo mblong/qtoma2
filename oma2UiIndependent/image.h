@@ -42,7 +42,8 @@ enum {NO_PRINT,PRINT_RESULT};
 enum {BILINEAR,MALVAR};
 
 // special file reader types
-enum {DCRAW,JPEG,TIFREAD,HDR,HOBJ,OMA,TXT};
+enum {DCRAW,JPEG,TIFREAD,HDR,HOBJ,OMA,TXT,RAW};
+#define RAW_FILE_EXT_INDEX 12
 
 
 /******************** Class Definitions ********************/

@@ -1017,3 +1017,18 @@ QImage QtOma2::getVideoFrame(){
     }
     return theImage;
 }
+
+void QtOma2::on_actionSave_Settings_triggered()
+{
+    QString fn = QFileDialog::getSaveFileName(nullptr, tr("Save Settings File"),
+                                              QString(UIData.graphicsprefixbuf)+QString("oma2Settings"),
+                                              tr("Settings Files (*.o2s);;All Files (*)"));
+    if (!fn.isEmpty()){
+        QByteArray ba = fn.toLocal8Bit();
+        printf("File is: %s\nOMA2>",ba.data());
+        int err = saveprefs(ba.data());
+        if(err)
+            printf("Could not save file.\nOMA2>");
+    }
+
+}
