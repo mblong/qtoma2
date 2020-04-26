@@ -1,6 +1,7 @@
 #include "qtimagesupport.h"
 #include "oma2UiIndependent/ImageBitmap.h"
 #include <QtGui>
+#include <qimage.h>
 
 int readTiff(char* filename,Image* im){
     QString name = QString(filename);
@@ -114,6 +115,27 @@ int saveJpeg(char* filename){
     myImageWriter.setQuality(80);
     myImageWriter.setFormat("jpg");
     return myImageWriter.write(currentWindowImage);
+}
+
+int saveTiff(char* filename){
+
+    extern ImageBitmap iBitmap;
+    QImage currentWindowImage = QImage(iBitmap.getpixdata(), iBitmap.getwidth(), iBitmap.getheight(),
+        iBitmap.getwidth()*3, QImage::Format_RGB888);
+    //QImage currentWindowImage = QImage("/users/mblong/data/imageTypes/jcv.jpg");
+
+    QImageWriter myImageWriter;
+    myImageWriter.setFileName(QString(fullname(filename,TIF_DATA)));
+    myImageWriter.setFormat("TIFF");
+    myImageWriter.setCompression(1);
+    if(myImageWriter.write(currentWindowImage))
+         return NO_ERR;
+    beep();
+    printf("Could not save Tiff file %s\n",filename);
+    return FILE_ERR;
+
+    // https://maverick.inria.fr/Software/TiffIO/
+    //if(currentWindowImage.save(fullname(filename,RAW_DATA),"TIFF",0))
 }
 
 int savePdf(char* filename)

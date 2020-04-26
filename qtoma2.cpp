@@ -63,9 +63,22 @@ QtOma2::~QtOma2()
 void QtOma2::on_omaCommands_textChanged()
 {
     if(programmedText) return;
+
     QString thetext = ui->omaCommands->toPlainText();
     QChar thechar = thetext.at(thetext.size()-1);
     char ch = thechar.toLatin1();
+
+    extern int pause_flag;
+    // this could still use some work -- the characters typed at the pause command are echoed and saved in the command buffer
+    if(pause_flag){
+        pause_flag=0;
+        //int returnValue =
+        comdec((char*) oma2Command);
+        //if(returnValue < GET_MACRO_LINE) addCString((char*)"OMA2>");
+        return;
+    }
+
+
     if(ch == '\n'){
         QString command =  thetext.mid( lastReturn, thetext.size()-1-lastReturn);
         QByteArray ba = command.toLocal8Bit();

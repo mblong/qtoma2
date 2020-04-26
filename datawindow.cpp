@@ -68,7 +68,7 @@ void DataWindow::showData(char* name){
     intensity = new unsigned char[intensitySize];
     memcpy(intensity,iBitmap.getintensitydata(),intensitySize);
 
-    iBitmap.freeMaps();
+    //iBitmap.freeMaps();  // can't do this or save to jpg or tiff won't work
 
    ui->label->setPixmap(pixmap);
    ui->label->show();
