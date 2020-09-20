@@ -241,3 +241,7 @@ void DrawingWindow::mousePressEvent(QMouseEvent *event)
             this->setWindowOpacity(ovalue);
         }
 }
+
+void DrawingWindow::setWindowAlpha(float newAlpha){
+    this->setWindowOpacity(newAlpha);
+}

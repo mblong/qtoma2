@@ -49,6 +49,11 @@ void labelDataMinMax(){
    wPointer->addDataWindowMinMax();
 }
 
+void setWindowAlpha(float newAlpha){
+   wPointer->setWindowAlpha(newAlpha);
+}
+
+
 void labelData(char* args){
    int line=0;
    if(args[0] != '"'){  // doesn't start with quote, so goes in line 0

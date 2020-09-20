@@ -35,6 +35,7 @@ public:
     void setWidthScale(float scale);
     void setMyDataWindow(DataWindow* win);
     DataWindow* getMyDataWindow();
+    void setWindowAlpha(float newAlpha);
 
 protected:
     void paintEvent(QPaintEvent* event);

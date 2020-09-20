@@ -683,6 +683,17 @@ void QtOma2::addDataWindowMinMax(){
     windowArray[n].dataWindow->labelMinMax();
 }
 
+void QtOma2::setWindowAlpha(float newAlpha){
+    int n = activeWindow();
+    if(n>=0 && windowArray[n].type  == DATA){
+        windowArray[n].dataWindow->setWindowAlpha(newAlpha);
+    }
+    if(n>=0 && windowArray[n].type  == LINE_DRAWING){
+        windowArray[n].drawingWindow->setWindowAlpha(newAlpha);
+    }
+
+
+}
 void QtOma2::eraseWindow(int n){
     if(n < 0){  // close all
         for(int i=0; i< numWindows; i++){

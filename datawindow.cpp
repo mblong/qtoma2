@@ -110,6 +110,11 @@ void DataWindow::mousePressEvent(QMouseEvent *event)
         }
 }
 
+
+void DataWindow::setWindowAlpha(float newAlpha){
+    this->setWindowOpacity(newAlpha);
+}
+
 void DataWindow::mouseReleaseEvent(QMouseEvent *event)
 {
     QPoint start,next;

@@ -49,6 +49,7 @@ public:
     void labelMinMax();
     void label(char* string, int lineNo);
     void clearLabels();
+    void setWindowAlpha(float newAlpha);
 
     friend class QtOma2;
 

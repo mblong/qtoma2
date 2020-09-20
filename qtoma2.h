@@ -112,6 +112,7 @@ public:
     int whichDrawingWindow(DrawingWindow* theWindow);
     void openDataFile();
     void saveDataFile();
+    void setWindowAlpha(float newAlpha);
 
     int fillInDataFromPixmap(QSqlDatabase db, char* tableName);    // for saving pixmap to sql database
     QImage getVideoFrame();                                 // save pixmap to video
