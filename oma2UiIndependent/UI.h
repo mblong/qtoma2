@@ -38,13 +38,6 @@ enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 
 #define printf omaprintf
-/*
- #define display_data [appController showDataWindow:(char*) args];
- #define erase_window [appController eraseWindow:(int) n];
- #define label_data [appController labelDataWindow:(char*) args];
- #define label_data_minMax [appController labelMinMax];
- */
-
 #define checkEvents ;
 
 #define WMODE   O_CREAT|O_WRONLY,0666
@@ -185,6 +178,7 @@ BOOL dropped_file(char*,char*);
 #define erase_window eraseWindow(n);
 #define label_data labelData(args);
 #define label_data_minMax labelDataMinMax();
+#define set_alpha setWindowAlpha(newAlpha);
 #define checkEvents QCoreApplication::processEvents();
 
 #define pprintf omaprintf
@@ -203,13 +197,13 @@ BOOL dropped_file(char*,char*);
 
 
 #ifndef SETTINGSFILE
-#define SETTINGSFILE "OMASettings"
-#define PALETTEFILE	"OMApalette.pa1"
-#define PALETTEFILE2 "OMApalette2.pa1"
-#define PALETTEFILE3 "OMApalette3.pa1"
+#define SETTINGSFILE "../OMASettings"
+#define PALETTEFILE	"../OMApalette.pa1"
+#define PALETTEFILE2 "../OMApalette2.pa1"
+#define PALETTEFILE3 "../OMApalette3.pa1"
 
-#define HELPFILE "oma2help.txt"
-#define HELPURL "LightOma2Help/index.html"
+#define HELPFILE "../oma2help.txt"
+#define HELPURL "../LightOma2Help/index.html"
 #endif
 /*
 #pragma gcc diagnostic ignored "-Wsign-compare"
@@ -250,6 +244,7 @@ void displayData(char*);
 void eraseWindow(int);
 void labelDataMinMax();
 void labelData(char*);
+void setWindowAlpha(float);
 BOOL dropped_file(char*,char*);
 
 #endif

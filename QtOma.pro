@@ -12,16 +12,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = QtOma
 TEMPLATE = app
 
-#macx:QMAKE_MAC_SDK = macosx10.12
+
 macx:QMAKE_CXXFLAGS += -DQt_UI_Mac\
     -Wno-c++11-narrowing -Wno-sign-conversion
+
 win32:QMAKE_CXXFLAGS += -DQt_UI_Win -fpermissive\
     -Wno-unused-parameter -Wno-overflow -Wno-aggressive-loop-optimizations -Wno-array-bounds\
     -Wno-unused-variable -Wno-sign-compare -Wno-write-strings -Wno-unused-but-set-variable\
     -Wno-unknown-pragmas -Wno-strict-overflow -Wno-narrowing -Wno-type-limits
-
-# Use the new 64-bit mingw on windows
-#    -D_WIN32 -DWIN32
 
 unix:!macx: QMAKE_CXXFLAGS += -DQt_UI_Linux -fpermissive -Wno-unused-parameter
 
@@ -95,24 +93,13 @@ FORMS    += qtoma2.ui \
     drawingwindow.ui \
     variableswindow.ui
 
-#macx: LIBS += -L/opt/local/lib/ -ljpeg
-#macx: INCLUDEPATH += /opt/local/lib
-#macx: DEPENDPATH += /opt/local/lib
-#macx: PRE_TARGETDEPS += /opt/local/lib/libjpeg.a
-
-
-unix:!macx: LIBS += -landor -lgphoto2
-
-#win32:  LIBS += -ljpeg -lws2_32
-win32:  LIBS += -lws2_32
-
-
 
 RESOURCES += \
     qtoma2.qrc
 
 #for Windows
 win32 {
+    LIBS += -lws2_32
     SFILE = $$_PRO_FILE_PWD_
     SFILE ~= s,/,\\,g
     DFILE = $$OUT_PWD
@@ -140,21 +127,31 @@ macx {
     QMAKE_BUNDLE_DATA += MediaFiles
 
     ICON = qtOma2Icon.icns
-# for video commands
 
-INCLUDEPATH += /usr/local/include/opencv4
-#INCLUDEPATH += /usr/local/lib/opencv4
-#DEPENDPATH += /usr/local/lib/opencv4
 
-LIBS += -L/usr/local/Cellar/opencv/4.2.0_3/lib/ \
+
+    # for video commands
+    # suggest making symbolic link in /usr/local/lib as follows:
+    #   cd /usr/local/lib
+    #   ln -s ../Cellar/opencv/4.4.0/lib opencv
+    # Update to whatever is the latest version of opencv (4.4.0 in this case)
+
+    INCLUDEPATH += /usr/local/include/opencv4
+    DEPENDPATH += /usr/local/lib
+
+    LIBS += -L/usr/local/lib/opencv \
         -lopencv_core \
         -lopencv_imgcodecs \
         -lopencv_video \
-        -lopencv_videoio
+        -lopencv_videoio \
+
 }
 
 #for linux
 unix:!macx:{
+
+    LIBS += -landor -lgphoto2
+
     EXTRA_FILES += \
         $$_PRO_FILE_PWD_/oma2UiIndependent/oma2help.txt \
         $$_PRO_FILE_PWD_/Resources/OMApalette.pa1 \
