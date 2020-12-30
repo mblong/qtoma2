@@ -84,9 +84,9 @@ QPoint DataWindow::pixmapCoords(QPoint pos){
     if(pos.y() > height()-1)pos.setY(height()-1);
 
     float windowWidth = width();
-    float pixWidth = ui->label->pixmap()->width();
+    float pixWidth = ui->label->pixmap(Qt::ReturnByValue).width();
     float windowHeight = height();
-    float pixHeight = ui->label->pixmap()->height();
+    float pixHeight = ui->label->pixmap(Qt::ReturnByValue).height();
     float scaleWidth = pixWidth/windowWidth;
     float scaleHeight = pixHeight/windowHeight;
     QPoint pixPos = QPoint(pos.x()*scaleWidth,pos.y()*scaleHeight);
@@ -285,7 +285,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P1 = oldP1;
             P2 = oldP2;
             P1.setX(0);
-            P2.setX((ui->label->pixmap()->width()-1));
+            P2.setX((ui->label->pixmap(Qt::ReturnByValue).width()-1));
             if(thereIsDrawing != NEWROW)
                 painter.drawLine(P1,P2); // get rid of old one
             // now draw the new row line
@@ -293,7 +293,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P1 = startPoint;
             P2 = nextPoint;
             P1.setX(0);
-            P2.setX((ui->label->pixmap()->width()-1));
+            P2.setX((ui->label->pixmap(Qt::ReturnByValue).width()-1));
             painter.drawLine(P1,P2); // draw the new one
             if(thereIsDrawing != NEWCOL)
                 thereIsDrawing = RULER;
@@ -314,7 +314,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 break;
             }
             startPoint.setX(0);
-            nextPoint.setX(ui->label->pixmap()->width()-1);
+            nextPoint.setX(ui->label->pixmap(Qt::ReturnByValue).width()-1);
             startPoint.setY(nextPoint.y());
 
             painter.drawLine(startPoint,nextPoint);
@@ -336,7 +336,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P1 = oldP1;
             P2 = oldP2;
             P1.setY(0);
-            P2.setY((ui->label->pixmap()->height()-1));
+            P2.setY((ui->label->pixmap(Qt::ReturnByValue).height()-1));
             if(thereIsDrawing != NEWCOL)
                 painter.drawLine(P1,P2); // get rid of old one
             // now draw the new col line
@@ -344,7 +344,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
             P1 = startPoint;
             P2 = nextPoint;
             P1.setY(0);
-            P2.setY((ui->label->pixmap()->height()-1));
+            P2.setY((ui->label->pixmap(Qt::ReturnByValue).height()-1));
             painter.drawLine(P1,P2); // draw the new one
             thereIsDrawing = RULER;
             oldP1.setX(startPoint.x());
@@ -365,7 +365,7 @@ void DataWindow::paintEvent(QPaintEvent *event)
                 break;
             }
             startPoint.setY(0);
-            nextPoint.setY(ui->label->pixmap()->height()-1);
+            nextPoint.setY(ui->label->pixmap(Qt::ReturnByValue).height()-1);
             startPoint.setX(nextPoint.x());
 
             painter.drawLine(startPoint,nextPoint);
@@ -417,10 +417,10 @@ void DataWindow::paintEvent(QPaintEvent *event)
             QPen textPen(QColor("#000000"));
             painter.setPen(textPen);
 
-            painter.fillRect(8,ui->label->pixmap()->height()-45,2+8*strlen(minMaxString),18,QBrush(Qt::white));
-            painter.drawText(QPoint(10,ui->label->pixmap()->height()-30),QString(minMaxString));
-            painter.fillRect(8,ui->label->pixmap()->height()-30,2+8*strlen(&minMaxString[index+1]),18,QBrush(Qt::white));
-            painter.drawText(QPoint(10,ui->label->pixmap()->height()-15),QString(&minMaxString[index+1]));
+            painter.fillRect(8,ui->label->pixmap(Qt::ReturnByValue).height()-45,2+8*strlen(minMaxString),18,QBrush(Qt::white));
+            painter.drawText(QPoint(10,ui->label->pixmap(Qt::ReturnByValue).height()-30),QString(minMaxString));
+            painter.fillRect(8,ui->label->pixmap(Qt::ReturnByValue).height()-30,2+8*strlen(&minMaxString[index+1]),18,QBrush(Qt::white));
+            painter.drawText(QPoint(10,ui->label->pixmap(Qt::ReturnByValue).height()-15),QString(&minMaxString[index+1]));
             minMaxString[index] = ' ';
             ui->label->setPixmap(pixmap);
             minLabelSet=1;

@@ -2,7 +2,8 @@
 #define QTOMA2_H
 
 #include <QMainWindow>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
+#include <QScreen>
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QDesktopServices>

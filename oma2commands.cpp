@@ -18,7 +18,8 @@ oma2Commands::oma2Commands(QWidget *parent) :
     const int tabStop = 4;  // 4 characters
 
     QFontMetrics metrics(font);
-    this->setTabStopWidth(tabStop * metrics.width(' '));
+//    this->setTabStopWidth(tabStop * metrics.width(' '));
+    this->setTabStopDistance(tabStop * metrics.horizontalAdvance(QChar(' ')));
 }
 
 void oma2Commands::keyPressEvent(QKeyEvent *event){

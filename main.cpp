@@ -12,8 +12,13 @@ int main(int argc, char *argv[])
 
     QtOma2 w;
     wPointer = &w;
-    QDesktopWidget widget;
-    QRect mainScreenSize = widget.availableGeometry(widget.primaryScreen());
+ //   QDesktopWidget widget;
+//    QRect mainScreenSize = QGuiApplication::primaryScreen()->mainScreenSize;
+
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect mainScreenSize = screen->availableGeometry();
+
+
     w.setGeometry(0,mainScreenSize.y()+mainScreenSize.height()-WINDOW_HEIGHT,COMMAND_WIDTH,WINDOW_HEIGHT);
 
 

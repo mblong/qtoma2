@@ -26,8 +26,11 @@ QtOma2::QtOma2(QWidget *parent) :
     strlcpy(applicationPath ,ba.data(),CHPERLN);
     fprintf(stderr,"App path is:%s\n",applicationPath);
 
-    QDesktopWidget widget;
-    mainScreenSize = widget.availableGeometry(widget.primaryScreen());
+//    QDesktopWidget widget;
+//    mainScreenSize = widget.availableGeometry(widget.primaryScreen());
+    QScreen *screen = QGuiApplication::primaryScreen();
+    mainScreenSize = screen->availableGeometry();
+
     window_placement.x = (mainScreenSize.x()+WINDOW_OFFSET);
     window_placement.y = (mainScreenSize.y()+WINDOW_OFFSET);
     status = new Status(this);

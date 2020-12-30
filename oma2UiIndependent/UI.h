@@ -118,8 +118,8 @@ int pprintf(const char* format, ...);
 
 // dcraw needs these
 #define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
+//#define MIN(a,b) ((a) < (b) ? (a) : (b))
+//#define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "../Resources/OMASettings"

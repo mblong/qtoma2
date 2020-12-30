@@ -137,7 +137,7 @@ void Preferences::on_highlightBox_clicked(bool checked)
 
 void Preferences::on_highlightColorButton_clicked()
 {
-    const QColor color = QColorDialog::getColor(highlightColor, this, "Select Highlight Color", 0);
+    const QColor color = QColorDialog::getColor(highlightColor, this, "Select Highlight Color", QFlag(0));
     if (color.isValid()) {
         highlightColor = color;
         QString qss = QString("background-color: %1").arg(color.name());
