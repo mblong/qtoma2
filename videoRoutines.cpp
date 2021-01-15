@@ -3,6 +3,10 @@
 #ifdef Qt_UI_Mac
 
 extern QtOma2* wPointer;
+extern Image   iBuffer;       // the image buffer
+extern ImageBitmap iBitmap;   // the bitmap buffer
+extern oma2UIData UIData;
+
 
 static cv::VideoWriter outputVideo;
 static cv::Mat frame;
@@ -65,6 +69,7 @@ int vidCloseFile_q(int n,char* args){
     if(videoOpened){
         outputVideo.release();
         videoOpened=0;
+        frame.release();
         return NO_ERR;
     }
     beep();
@@ -72,5 +77,7 @@ int vidCloseFile_q(int n,char* args){
     return FILE_ERR;
 
 }
+
+
 
 #endif
