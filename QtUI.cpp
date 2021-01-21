@@ -80,6 +80,7 @@ void eraseWindow(int n){
 
 
 BOOL dropped_file(char* extension, char* name){
+    int i;
 /*
     //printf("File ext is: %s\n",extension);
     printf("File name is: %s\n",name);
@@ -113,9 +114,35 @@ BOOL dropped_file(char* extension, char* name){
     char upperCaseBinExt[256];
     extern FileDecoderExtensions fileDecoderExtensions[];
 
+    // extension and name seem to have the same value (MacOS anyway)
+    // check for ending in "/"
+#ifdef Qt_UI_Win
+    // windows doesn't include the / after the folder
+    // check for a . in the last 5 characters
+    int isFolder = 1;
+    for(i=strlen(name)-1; i>=0 && i>strlen(name)-6; i--){
+       if( name[i] == '.') isFolder=0;
+    }
+    if( isFolder ){
+        strcat(name,"/");
+#else
+    if( extension[strlen(extension)-1] == '/' ){
+#endif
+        // assume this is a directory and reset the preferences accordingly.
+        printf("File prefixes set to: %s\n",name);
+        strcpy(UIData.saveprefixbuf,name);
+        strcpy(UIData.getprefixbuf,name);
+        strcpy(UIData.graphicsprefixbuf,name);
+        strcat(name,"macros/");
+
+        strcpy(UIData.macroprefixbuf,name);
+        printf("OMA2>",name);
+        return NO;
+    }
+
     //printf("File ext is: %s\n",extension);
     printf("File name is: %s\n",name);
-    int i;
+
     for(i=0; i<strlen(extension); i++){
         extension[i] = toupper(extension[i]);
         upperCaseBinExt[i] = toupper(binaryExtension[i]);
