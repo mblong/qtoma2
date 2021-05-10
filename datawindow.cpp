@@ -507,6 +507,7 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
           if(event->key() == Qt::Key_T) wPointer->newColPlot();
           if(event->key() == Qt::Key_F) wPointer->showPreferences();
           if(event->key() == Qt::Key_O) wPointer->openDataFile();
+          if(event->key()== Qt::Key_K) wPointer->clearCommandWindowText();
           return;
       }
       extern int stopMacroNow;
@@ -528,8 +529,6 @@ void DataWindow::keyPressEvent(QKeyEvent *event){
                   wPointer->nextHistory();
                   return;
       }
-
-
 
       QString string = event->text();
       wPointer->addForwardedCharacter(string);

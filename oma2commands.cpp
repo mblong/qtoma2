@@ -33,6 +33,12 @@ void oma2Commands::keyPressEvent(QKeyEvent *event){
                 event->accept();
                 return;
     }
+     if(event->modifiers()== Qt::ControlModifier && event->key()== Qt::Key_K){           //
+        wPointer->clearCommandWindowText();
+        event->accept();
+        return;
+    }
+
 
      QPlainTextEdit::keyPressEvent(event);
 

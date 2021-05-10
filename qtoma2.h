@@ -115,6 +115,8 @@ public:
     void saveDataFile();
     void setWindowAlpha(float newAlpha);
 
+    void clearCommandWindowText();
+
     int fillInDataFromPixmap(QSqlDatabase db, char* tableName);    // for saving pixmap to sql database
     QImage getVideoFrame();                                 // save pixmap to video
 
@@ -143,6 +145,7 @@ private slots:
 
 
     void on_actionSave_Settings_triggered();
+
 
 private:
     Ui::QtOma2 *ui;

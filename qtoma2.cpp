@@ -63,6 +63,7 @@ QtOma2::~QtOma2()
     delete ui;
 }
 
+
 void QtOma2::on_omaCommands_textChanged()
 {
     if(programmedText) return;
@@ -118,6 +119,12 @@ void QtOma2::keyPressEvent(QKeyEvent *event)
     {
         stopMacroNow = 1;
     }
+    if(event->modifiers()== Qt::ControlModifier && event->key()== Qt::Key_K){           //
+       clearCommandWindowText();
+       //event->accept();
+       return;
+   }
+
 }
 
 
@@ -272,9 +279,10 @@ void QtOma2::newData(char* name){
 }
 
 void QtOma2::updateData(){
-    if(currentDataWindow >=0)
+    if(currentDataWindow >=0){
         windowArray[currentDataWindow].dataWindow->clearLabels();
         windowArray[currentDataWindow].dataWindow->showData(nil);
+    }
 }
 
 int QtOma2::activeWindow(){
@@ -1058,4 +1066,11 @@ void QtOma2::on_actionSave_Settings_triggered()
             printf("Could not save file.\nOMA2>");
     }
 
+}
+
+void QtOma2::clearCommandWindowText(){
+    ui->omaCommands->setPlainText("OMA2>");
+    oma2Command[0]=0;
+    lastReturn=5;
+    ui->omaCommands->moveCursor(QTextCursor::End,QTextCursor::MoveAnchor);
 }
