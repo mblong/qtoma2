@@ -17,6 +17,7 @@ extern float   hdrMaxScale;        // this is the biggest scale factor -- use to
 extern int      hdrFrames;     // HDR frame counter
 extern int numberNamedTempImages;
 extern Variable namedTempImages[];
+extern int printMax;
 
 /* ********** */
 /// Add a constant
@@ -26,7 +27,7 @@ int plus_c(int n,char* args){
     if( sscanf(args,"%f",&val) != 1)
         val = n;
     (iBuffer+val);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     //cout << "test message\n";
     return NO_ERR;
@@ -48,7 +49,7 @@ int minus_c(int n,char* args){
     if( sscanf(args,"%f",&val) != 1)
         val = n;
     (iBuffer-val);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -61,7 +62,7 @@ int divide_c(int n,char* args){
     if( sscanf(args,"%f",&val) != 1)
         val = n;
     (iBuffer/val);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -75,7 +76,7 @@ int multiply_c(int n,char* args){
     if( sscanf(args,"%f",&val) != 1)
         val = n;
     (iBuffer*val);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -94,7 +95,7 @@ int mulRGB_c(int n,char* args){
         return CMND_ERR;
     }
     iBuffer.rgbMult(x,y,z);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -112,7 +113,7 @@ int divRGB_c(int n,char* args){
         return CMND_ERR;
     }
     iBuffer.rgbDiv(x,y,z);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -130,7 +131,7 @@ int subRGB_c(int n,char* args){
         return CMND_ERR;
     }
     iBuffer.rgbSub(x,y,z);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -148,7 +149,7 @@ int addRGB_c(int n,char* args){
         return CMND_ERR;
     }
     iBuffer.rgbAdd(x,y,z);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -167,7 +168,7 @@ int powRGB_c(int n,char* args){
         return CMND_ERR;
     }
     iBuffer.rgbPow(x,y,z);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -180,7 +181,7 @@ int power_c(int n,char* args)				// raise the data to a power
     if( sscanf(args,"%f",&val) != 1)
         val = n;
     iBuffer.power(val);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -322,7 +323,7 @@ int getfile_c(int n,char* args){
     }
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     int extraSize = iBuffer.getExtraSize();
     if (extraSize) {
         printf("Image has %d extra floating point values.\n",extraSize);
@@ -367,7 +368,7 @@ int getbin_c(int n,char* args)
     if(error)return error;
     iBuffer.free();     // release the old data
     iBuffer = newImage;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -448,7 +449,7 @@ int addfile_c(int n,char* args){
     }
     if(iBuffer == new_im){
         (iBuffer+new_im);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         new_im.free();
         update_UI();
         return NO_ERR;
@@ -470,7 +471,7 @@ int mulfile_c(int n,char* args){
     }
     if(iBuffer == new_im){
         (iBuffer*new_im);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         new_im.free();
         update_UI();
         return NO_ERR;
@@ -493,7 +494,7 @@ int subfile_c(int n,char* args){
     }
     if(iBuffer == new_im){
         (iBuffer-new_im);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         new_im.free();
         update_UI();
         return NO_ERR;
@@ -516,7 +517,7 @@ int divfile_c(int n,char* args){
     }
     if(iBuffer == new_im){
         (iBuffer/new_im);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         new_im.free();
         update_UI();
         return NO_ERR;
@@ -546,15 +547,49 @@ int compositefile_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     new_im.free();
     update_UI();
     return NO_ERR;
 }
 
 /* ********** */
+/*
+ 
+ CROP [x0 y0 x1 y1]
+     With no arguments, use the current rectangle to crop the image in the buffer. If four arguments are given, the current rectangele is redefined and used for cropping. The command history buffer includes the rectangle bounds.
+ */
 
 int croprectangle_c(int n,char* args){
+    
+    extern Variable user_variables[];
+    extern char cmnd_history[];
+    extern int hist_index;
+    extern int selected_hist_index;
+    extern int stored_commands;
+    
+    if(*args != 0){         // the arguments case
+        rect new_rect;
+        // For this need 4 arguments
+        int narg = sscanf(args,"%d %d %d %d",&new_rect.ul.h,&new_rect.ul.v,&new_rect.lr.h,&new_rect.lr.v);
+
+        if(narg != 4) {
+            beep();
+            printf("Need 4 Arguments.\n");
+            return -1;
+        }
+        
+        UIData.iRect = new_rect;
+    } else {    // no rectangle bounds were given
+        // add the rectangle bounds to the crop command in the command history buffer
+        sprintf(args," %d %d %d %d",UIData.iRect.ul.h, UIData.iRect.ul.v, UIData.iRect.lr.h, UIData.iRect.lr.v);
+        if(hist_index+strlen(args)+1 < HISTORY_BUFFER_SIZE){
+            sprintf(&cmnd_history[hist_index-1],"%s",args);
+            hist_index += strlen(args);
+        }
+        
+    }
+    
     rect crop_rect = UIData.iRect;
     iBuffer.crop(crop_rect);
     int err = iBuffer.err();
@@ -575,9 +610,20 @@ int croprectangle_c(int n,char* args){
     printf("%d x %d Image.\n",sizx,sizy);
     printf("Current image starts at: %d\t%d\n",x0,y0);
     
-    iBuffer.getmaxx(PRINT_RESULT);
+    user_variables[0].ivalue = UIData.iRect.ul.h;
+    user_variables[0].is_float = 0;
+    user_variables[1].ivalue = UIData.iRect.ul.v;
+    user_variables[1].is_float = 0;
+    user_variables[2].ivalue = UIData.iRect.lr.h;
+    user_variables[2].is_float = 0;
+    user_variables[3].ivalue = UIData.iRect.lr.v;
+    user_variables[3].is_float = 0;
+
+    iBuffer.getmaxx(printMax);
     update_UI();
+
     return NO_ERR;
+
 }
 
 /* ***************** */
@@ -639,7 +685,7 @@ int frame_c(int n, char* args)
     for(int c=0; c<nColors; c++){
         for(i=0; i<sizy; i++){
             for(j=0; j<sizx; j++) {
-                if(i+y0<0 || i+y0 >=oldHeight ||
+                if(i+y0<0 || i+y0 >=oldHeight/nColors ||
                    j+x0<0 || j+x0 >=oldWidth) {
                     im.setpix(i+c*sizy,j,value);
                 }else {
@@ -654,7 +700,7 @@ int frame_c(int n, char* args)
     free(specs);  // release specs copy
     iBuffer.free();     // release the old data
     iBuffer = im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return 0;
     
@@ -706,7 +752,7 @@ int resize_c(int n,char* args){
         iBuffer.errclear();
         return iBuffer.err();
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -836,7 +882,7 @@ int list_c(int n, char* args){
 
 int invert_c(int n,char* args){
     iBuffer.invert();
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -845,7 +891,7 @@ int invert_c(int n,char* args){
 
 int mirror_c(int n,char* args){
     iBuffer.mirror();
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -861,7 +907,7 @@ int rgb2red_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -877,7 +923,7 @@ int rgb2green_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -893,7 +939,7 @@ int rgb2blue_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -916,7 +962,7 @@ int rgb2grey_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -942,11 +988,203 @@ int rgb2color_c(int n,char* args){
         iBuffer.errclear();
         return err;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
 
+/* ********** */
+
+/*
+ RGB2HSV
+    Convert the current color image to HSV, scaled from 0-255.
+ */
+// https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+
+int rgb2hsv_c(int n,char* args){
+    if(!iBuffer.isColor()){
+        beep();
+        printf("Current image is not color.\n");
+        return CMND_ERR;
+    }
+    DATAWORD max,min,r,g,b,cmin,cmax,diff,h,s,v;
+    int width = iBuffer.width();
+    int height = iBuffer.height();
+    max = iBuffer.max();
+    min = iBuffer.min();
+    //float* values=iBuffer.getvalues();
+    
+    Image hsvImage(iBuffer.rows(),iBuffer.cols());
+    hsvImage.copyABD(iBuffer);
+     for (int i=0; i<height;i++){
+        for (int j=0; j<width;j++){
+            // map to [0,1]
+            r=(iBuffer.getpix(i,j)-min)/max;
+            g=(iBuffer.getpix(i+height,j)-min)/max;
+            b=(iBuffer.getpix(i+2*height,j)-min)/max;
+            cmax=MAX(r,MAX(g,b));
+            cmin=MIN(r,MIN(g,b));
+            diff=cmax-cmin;
+            if(cmax == cmin )
+                h=0.;
+            else if(cmax == r)
+                //h = fmod((60 * ((g - b) / diff) + 360), 360.);
+                h = 60. * fmod((g - b) / diff + 6. , 6.);
+            else if (cmax == g)
+                //h = fmod((60 * ((b - r) / diff) + 120), 360.);
+                h = 60. * ((b - r) / diff + 2.);
+            else
+                //h = fmod((60 * ((r - g) / diff) + 240), 360.);
+                h = 60. * ((r - g) / diff + 4.);
+            if (cmax == 0)
+                s = 0;
+            else
+                s = (diff / cmax) * 255;
+            v = cmax * 255;
+            hsvImage.setpix(i, j, h*255./360.);
+            hsvImage.setpix(i+height, j, s);
+            hsvImage.setpix(i+2*height, j, v);
+        }
+    }
+    iBuffer.free();     // release the old data
+    iBuffer = hsvImage;   // this is the new data
+    iBuffer.getmaxx(printMax);
+    update_UI();
+
+    return NO_ERR;
+}
+
+/*
+ HSV2RGB
+    Convert the current HSV image to RGB, scaled from 0-255.
+ */
+// https://www.rapidtables.com/convert/color/rgb-to-hsv.html
+
+int hsv2rgb_c(int n,char* args){
+    if(!iBuffer.isColor()){
+        beep();
+        printf("Current image is not three-component.\n");
+        return CMND_ERR;
+    }
+    DATAWORD c,x,m,r,g,b,h,s,v;
+    int width = iBuffer.width();
+    int height = iBuffer.height();
+    
+    Image rgbImage(iBuffer.rows(),iBuffer.cols());
+    rgbImage.copyABD(iBuffer);
+     for (int i=0; i<height;i++){
+        for (int j=0; j<width;j++){
+            h=iBuffer.getpix(i,j)*360./255.;
+            s=iBuffer.getpix(i+height,j)/255.;
+            v=iBuffer.getpix(i+2*height,j)/255.;
+            c=v*s;
+            x=c*(1. - fabs(fmod(h/60.,2.) - 1.));
+            m=v-c;
+            if(h < 60.){
+                r = c;
+                g = x;
+                b = 0;
+            } else if (h < 120.){
+                r = x;
+                g = c;
+                b = 0;
+            } else if (h < 180.){
+                r = 0;
+                g = c;
+                b = x;
+            }  else if (h < 240.){
+                r = 0;
+                g = x;
+                b = c;
+            }  else if (h < 300.){
+                r = x;
+                g = 0;
+                b = c;
+            }  else {
+                r = c;
+                g = 0;
+                b = x;
+            }
+            rgbImage.setpix(i, j, (r+m)*255.);
+            rgbImage.setpix(i+height, j, (g+m)*255.);
+            rgbImage.setpix(i+2*height, j, (b+m)*255.);
+        }
+    }
+    iBuffer.free();     // release the old data
+    iBuffer = rgbImage;   // this is the new data
+    iBuffer.getmaxx(printMax);
+    update_UI();
+
+    return NO_ERR;
+}
+
+/* ********** */
+
+/*
+ SATURATE factor
+    Increase the color saturation by the specified factor.
+ */
+
+int saturate_c(int n,char* args){
+    if(!iBuffer.isColor()){
+        beep();
+        printf("Current image is not three-component.\n");
+        return CMND_ERR;
+    }
+    float factor=2.0;
+    sscanf(args, "%f",&factor);
+    float* values=iBuffer.getvalues();
+    printMax=NO_PRINT;
+    
+    rgb2hsv_c(0, (char*)"0" );
+    sprintf(args,"1.0 %f 1.0",factor);
+    mulRGB_c(0, args);
+    clip_c(255, (char*)"255");
+    hsv2rgb_c(0, (char*)"0" );
+    sprintf(args,"%f %f",values[MIN],values[MAX]);
+    map_c(0,args);
+
+    free(values);
+    printMax=PRINT_RESULT;
+    iBuffer.getmaxx(printMax);
+    update_UI();
+
+    return NO_ERR;
+}
+/* ********** */
+
+/*
+ BITMAP2RGB
+    Convert the current bitmap image to an RGB color image. This will result in 8-bit integer data as the current image.
+ */
+
+int bitmap2rgb_c(int n,char* args){
+    if(iBitmap.getwidth() == 0 || iBitmap.getheight() == 0){
+        beep();
+        printf("There is no valid bitmap to convert.\n");
+        return CMND_ERR;
+    }
+    
+    Image rgbImage(iBitmap.getheight()*3,iBitmap.getwidth());
+    iBuffer.free();     // release the old data
+    iBuffer = rgbImage;
+    int width = iBuffer.width();
+    int height = iBuffer.height()/3;
+    unsigned char* bitmap = iBitmap.getpixdata();
+
+     for (int i=0; i<height;i++){
+        for (int j=0; j<width;j++){
+            iBuffer.setpix(i, j, *bitmap++);
+            iBuffer.setpix(i+height, j, *bitmap++);
+            iBuffer.setpix(i+2*height, j, *bitmap++);
+        }
+    }
+    colorflag_c(1, (char*)"1" );
+    iBuffer.getmaxx(printMax);
+    update_UI();
+
+    return NO_ERR;
+}
 
 /* ********** */
 
@@ -986,7 +1224,7 @@ int rotate_c(int n,char* args){
             return err;
         }
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else{
@@ -1015,7 +1253,7 @@ int rotate_c(int n,char* args){
             iBuffer.errclear();
             return err;
         }
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     }
@@ -1077,7 +1315,7 @@ int smooth_c(int n,char* args){
     free(bufferspecs);  // release specs copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1173,7 +1411,7 @@ int gsmooth_c(int n, char* args)
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1253,7 +1491,7 @@ int tsmooth_c(int n, char* args)
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = smoothed;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1289,7 +1527,7 @@ int diffy_c(int n,char* args )				/* differentiate the data in the y direction  
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1318,7 +1556,7 @@ int diffx_c(int n,char* args)				/* differentiate the data in the x direction  -
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1339,30 +1577,42 @@ int gradient_c(int n,char* args)				/* get the 2D (x & y) gradient magnitude */
     }
     newIm.copyABD(iBuffer);
     
-    for(nc=0;nc < specs[COLS]; nc++){
-        //*(datp2++) = 0;
-        newIm.setpix(0,nc,0);
-    }
-    
+    /*
+     for(nc=0;nc < specs[COLS]; nc++){
+         // d*(datp2++) = 0;
+         newIm.setpix(0,nc,0);
+     }
+
     for(nt=1; nt<specs[ROWS]-1;nt++) {
-        //*(datp2++) = 0;
+        // *(datp2++) = 0;
         newIm.setpix(nt,0,0);
         for(nc=1;nc < specs[COLS]-1; nc++){
             dx = (iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.0;
             dy = (iBuffer.getpix(nt+1,nc) - iBuffer.getpix(nt-1,nc))/2.0;
             newIm.setpix(nt,nc,sqrt(dx*dx +dy*dy));
         }
-        //*(datp2++) = 0;
+        // *(datp2++) = 0;
         newIm.setpix(nt,0,0);
     }
     for(nc=0;nc < specs[COLS]; nc++){
-        //*(datp2++) = 0;
+        // *(datp2++) = 0;
         newIm.setpix(specs[ROWS]-1,nc,0);
     }
+     */
+    
+    for(nt=0; nt<specs[ROWS];nt++) {
+        for(nc=0;nc < specs[COLS]; nc++){
+            dx = (iBuffer.getpix(nt,nc+1) - iBuffer.getpix(nt,nc-1))/2.0;
+            dy = (iBuffer.getpix(nt+1,nc) - iBuffer.getpix(nt-1,nc))/2.0;
+            newIm.setpix(nt,nc,sqrt(dx*dx +dy*dy));
+        }
+    }
+
+    
     free(specs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1382,7 +1632,7 @@ int size_c(int n,char* args){
             }
             iBuffer.free();     // release the old data
             iBuffer = new_im;   // this is the new data
-            iBuffer.getmaxx(PRINT_RESULT);
+            iBuffer.getmaxx(printMax);
             update_UI();
             return NO_ERR;
         }
@@ -1407,7 +1657,7 @@ int rows_c(int n,char* args){
         }
         iBuffer.free();     // release the old data
         iBuffer = new_im;   // this is the new data
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         free(specs);
         return NO_ERR;
@@ -1430,7 +1680,7 @@ int columns_c(int n,char* args){
         }
         iBuffer.free();     // release the old data
         iBuffer = new_im;   // this is the new data
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         free(specs);
         return NO_ERR;
@@ -1502,7 +1752,7 @@ int killBox_c(int n, char* args)
     }
     free(bufferspecs);
     
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1512,7 +1762,7 @@ int killBox_c(int n, char* args)
 int positive_c(int n, char* args)
 {
     iBuffer.floor(0.);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1522,7 +1772,7 @@ int positive_c(int n, char* args)
 int absolute_c(int n, char* args)
 {
     iBuffer.abs();
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -1534,7 +1784,7 @@ int clip_c(int n, char* args)
     sscanf(args,"%f",&clipval);
     
     iBuffer.clip(clipval);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -1548,7 +1798,7 @@ int clipbottom_c(int n, char* args)
     sscanf(args,"%f",&clipval);
     
     iBuffer.floor(clipval);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -1565,7 +1815,7 @@ int clipfraction_c(int n, char* args)
     iBuffer.clip(clipval*values[MAX]);
     
     free(values);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -1582,7 +1832,7 @@ int clipfbottom_c(int n, char* args)
     iBuffer.floor(clipval*values[MAX]);
     
     free(values);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -1861,7 +2111,7 @@ int gtemp_c(int n, char* args)
             return MEM_ERR;
         }
         iBuffer << iTempImages[n];
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -1946,7 +2196,7 @@ int addtmp_c(int n, char* args)
             return SIZE_ERR;
         }
         iBuffer + iTempImages[n];
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -1964,7 +2214,7 @@ int subtmp_c(int n, char* args)
             return SIZE_ERR;
         }
         iBuffer - iTempImages[n];
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -1983,7 +2233,7 @@ int multmp_c(int n, char* args)
             return SIZE_ERR;
         }
         iBuffer * iTempImages[n];
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -2002,7 +2252,7 @@ int divtmp_c(int n, char* args)
             return SIZE_ERR;
         }
         iBuffer / iTempImages[n];
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -2022,7 +2272,7 @@ int comtmp_c(int n, char* args)
             return SIZE_ERR;
         }
         iBuffer.composite(iTempImages[n]);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else
@@ -2055,7 +2305,7 @@ int sinGrid_c(int n, char* args)				/* draw grid from sin function */
         }
     }
     free(theSpecs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -2217,8 +2467,13 @@ int nextFile_c(int n,char* args){
     user_variables[1].is_float = -1;
     length = (int)strlen(txt);
     while(txt[length] != '.' && length > 0) length--;
-    strncpy( user_variables[1].estring,&txt[length-shortNameLength],shortNameLength);
-    user_variables[1].estring[shortNameLength+1] = 0;   // need to end this explicitly
+    if(length > shortNameLength){
+        strncpy( user_variables[1].estring,&txt[length-shortNameLength],shortNameLength);
+        user_variables[1].estring[shortNameLength+1] = 0;   // need to end this explicitly
+    } else {
+        strncpy( user_variables[1].estring,txt,length);
+        user_variables[1].estring[length] = 0;   // need to end this explicitly
+    }
 
     
     Image new_im(fulltxt,LONG_NAME);
@@ -2229,7 +2484,7 @@ int nextFile_c(int n,char* args){
     }
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -2693,7 +2948,7 @@ int bit8_c(int n, char* args)
         }
         free(values);
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else {
@@ -2708,7 +2963,7 @@ int bit8_c(int n, char* args)
             }
         }
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
         
@@ -2746,7 +3001,7 @@ int bit16_c(int n, char* args)
         }
         free(values);
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     } else {
@@ -2760,7 +3015,7 @@ int bit16_c(int n, char* args)
             }
         }
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     }
@@ -2813,7 +3068,7 @@ int gaussian_c(int n,char* args){
         }
     }
     free(theSpecs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -2843,7 +3098,7 @@ int grey2rgb_c(int n,char* args){
     
     iBuffer.free();     // release the old data
     iBuffer = im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3092,7 +3347,7 @@ int clearbad_c(int n, char* args)
             }
         }
         free(specs);
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
         update_UI();
         return NO_ERR;
     }
@@ -3157,7 +3412,7 @@ int clearbad_c(int n, char* args)
     if (strncmp(args, "NoPrint", 7)== 0) {
         iBuffer.getmaxx(NO_PRINT);
     } else {
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
     }
     
     update_UI();
@@ -3186,7 +3441,7 @@ int cclearbad_c(int n, char* args){
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -3352,7 +3607,7 @@ int lookup_c(int n,char* args)
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3373,7 +3628,7 @@ int ramp_c(int n,char* args)				/* fill current image with a ramp from 0 to the 
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3392,7 +3647,7 @@ int roundUp_c (int n, char* args)
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3411,7 +3666,7 @@ int roundoff_c(int n, char* args)
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3491,7 +3746,7 @@ int acget_c(int n,char* args){
     }
     iBuffer.free();
     iBuffer << accumulator;
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return iBuffer.err();
 }
@@ -3626,7 +3881,7 @@ int hdrAcget_c(int n,char* args){
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return iBuffer.err();
 }
@@ -3640,7 +3895,7 @@ int hdrNumget_c(int n,char* args){
     iBuffer.free();
     iBuffer << hdrCounter;
     
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return iBuffer.err();
 }
@@ -3869,7 +4124,7 @@ int integrateFill(int n,char* args, int integratefill ){
     iBuffer = newImage;
     free(acpoint);
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return iBuffer.err();
 }
@@ -3894,7 +4149,7 @@ int ln_c(int n,char* args){
             iBuffer.setpix(nt, nc, logf(iBuffer.getpix(nt, nc)));
         }
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -3992,7 +4247,7 @@ int openfile_c(int n,char* args){
     fileIsOpen = 1;
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     int* specs = iBuffer.getspecs();
     if (filesize < specs[ROWS]*specs[COLS]*sizeof(DATAWORD)*specs[NFRAMES]) { // number of frames must not have been set
         specs[NFRAMES] = (int)(filesize-sizeof(Image))/(specs[ROWS]*specs[COLS]*sizeof(DATAWORD))-1;    // this is a reasonable guess
@@ -4043,7 +4298,7 @@ int getNext_c(int n,char* args)
     if (strncmp(args, "NoPrint", 7)== 0) {
         iBuffer.getmaxx(NO_PRINT);
     } else {
-        iBuffer.getmaxx(PRINT_RESULT);
+        iBuffer.getmaxx(printMax);
     }
     
     update_UI();
@@ -4104,18 +4359,18 @@ int y0_c(int n,char* args)
 /* ********** */
 
 int pixSize_c(int n,char* args){
-    extern float windowScaleFactor;
+    //extern float windowScaleFactor;
     if(*args == 0){
-        printf("Pixel scaling is %.2f\n",windowScaleFactor);
+        printf("Pixel scaling is %.2f\n",UIData.windowScaleFactor);
         return NO_ERR;
     }
-    int narg = (sscanf(args,"%f",&windowScaleFactor));
-    if(narg != 1 )windowScaleFactor = 1.;
-    if (windowScaleFactor == 0.) {
-        windowScaleFactor = 1.;
+    int narg = (sscanf(args,"%f",&UIData.windowScaleFactor));
+    if(narg != 1 )UIData.windowScaleFactor = 1.;
+    if (UIData.windowScaleFactor == 0.) {
+        UIData.windowScaleFactor = 1.;
     }
-    if (windowScaleFactor < 0.) {
-        windowScaleFactor = -1./windowScaleFactor;
+    if (UIData.windowScaleFactor < 0.) {
+        UIData.windowScaleFactor = -1./UIData.windowScaleFactor;
     }
     return NO_ERR;
 }
@@ -4257,7 +4512,7 @@ int doc2rgb_c(int n, char* args){
     specs[COLS] = newcol;
     iBuffer.setspecs(specs);
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -4325,7 +4580,7 @@ int doc2color_c(int n, char* args){
     
     iBuffer.free();     // release the old data
     iBuffer = newim;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -4428,7 +4683,7 @@ int seq2hdr_c(int n,char* args){
     free(specs);
     free(expValues);
     delete[] exp;
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4471,7 +4726,7 @@ int seq2Image_c(int n,char* args){
     }
     iBuffer.free();
     iBuffer = result;
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4523,7 +4778,7 @@ int im2Sequence_c(int n,char* args){
         fclose(big);
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4647,7 +4902,7 @@ int disp2rgb_c(int n,char* args){
     }
     
     bitmap.freeMaps();
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4674,7 +4929,7 @@ int maskGreater_c(int n,char* args){
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4701,7 +4956,7 @@ int maskLess_c(int n,char* args){
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4724,7 +4979,7 @@ int nan2zero_c(int n,char* args){
         }
     }
     free(specs);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -4998,7 +5253,7 @@ int match_c(int n, char* args)			/* Using the data in the current buffer as one 
      */
     rect cropRect = {{substart.h,substart.v},{subend.h,subend.v}};
     iBuffer.crop(cropRect);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     iBuffer.saveFile(fullname(txt,SAVE_DATA), LONG_NAME);
     
     printf("Image 1 cropped to %d %d %d %d.\n",substart.h,substart.v,subend.h,subend.v);
@@ -5040,7 +5295,7 @@ int match_c(int n, char* args)			/* Using the data in the current buffer as one 
     
     rect cropRect2 = {{substart.h,substart.v},{subend.h,subend.v}};
     iBuffer.crop(cropRect2);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     iBuffer.saveFile(fullname(txt,SAVE_DATA), LONG_NAME);
     
     update_UI();
@@ -5242,7 +5497,7 @@ int warp_c(int n,char* args)
     }
     iBuffer.free();
     iBuffer =  warpedImage;
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -5308,7 +5563,7 @@ int snr_c(int n, char* args){
     }
     iBuffer.free();
     iBuffer = original;
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -5347,7 +5602,7 @@ int noise_c(int n,char* args)
             iBuffer.setpix(nt,nc,mean + x);
         }
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -5382,7 +5637,7 @@ int gnoise_c(int n,char* args)
             iBuffer.setpix(nt,nc,(x*rms+mean));
         }
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
     
@@ -5448,7 +5703,7 @@ int shotnoise_c(int n,char* args)
             iBuffer.setpix(nt,nc,x);
         }
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -5491,11 +5746,59 @@ int demosaic_c(int n,char* args){
     free(bufferspecs);  // release buffer copy
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
 }
+/*----------------------------------------------------------------*/
+
+/* RAWPARAMS [demosaic subtractBlack applyWhiteBalance, applyGamma]
+    Controlls whether or not additional processing is done when the libRaw routines are called to open raw camera data files. If no parameters are given, the current values of the various flags are listed. If only the first argument is given, 0 will specify no additional processing (i.e, raw data is returned); if a single non-zero argument is given, all corrections will be done. Otherwise, all four arguments must be specified and corrections will be done according to the specified values. The applyGamma argument is a float, indicating the gamma correction to be done for all colors. applyGamma=1.0 corresponds to no nonlinear processing.
+ */
+
+int rawparams_c(int n,char* args){
+    int a,b,c;
+    float d;
+    n = sscanf(args,"%d %d %d %f",&a,&b,&c,&d);
+    switch(n){
+        case -1:
+            printf("Raw decoding parameters are demosaicFlag: %d subtractBlack: %d applyWhiteBalance: %d applyGamma: %f\n",
+                   UIData.demosaic,UIData.subtractBlack,UIData.applyWhiteBalance, UIData.applyGamma  );
+            return NO_ERR;
+        case 1:
+            if(a){
+                UIData.demosaic=1;
+                UIData.subtractBlack=2;
+                UIData.applyWhiteBalance=1;
+                UIData.applyGamma=2.2;
+                printf("Raw decoding parameters set to demosaicFlag: %d subtractBlack: %d applyWhiteBalance: %d applyGamma: %f\n",
+                       UIData.demosaic,UIData.subtractBlack,UIData.applyWhiteBalance, UIData.applyGamma);
+                return NO_ERR;
+            } else {
+                UIData.demosaic=0;
+                UIData.subtractBlack=0;
+                UIData.applyWhiteBalance=0;
+                UIData.applyGamma=1.0;
+                printf("Raw decoding parameters set to demosaicFlag: %d subtractBlack: %d applyWhiteBalance: %d applyGamma: %f\n",
+                       UIData.demosaic,UIData.subtractBlack,UIData.applyWhiteBalance, UIData.applyGamma);
+                return NO_ERR;
+                
+            }
+        case 4:
+            UIData.demosaic=a;
+            UIData.subtractBlack=b;
+            UIData.applyWhiteBalance=c;
+            UIData.applyGamma=d;
+            printf("Raw decoding parameters set to demosaicFlag: %d subtractBlack: %d applyWhiteBalance: %d applyGamma: %d\n",
+                   UIData.demosaic,UIData.subtractBlack,UIData.applyWhiteBalance, UIData.applyGamma);
+            return NO_ERR;
+    }
+    beep();
+    printf("Must have 0, 1, or 4 arguments.\n");
+    return CMND_ERR;
+}
+
 
 /* ************************* */
 
@@ -5509,7 +5812,7 @@ int decodeHobj_c(int n,char* args)
         height *=3;
     }
     decodeHobj(&iBuffer,width, height);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -5699,7 +6002,7 @@ int scatter_c(int n, char* args)
     newIm.mirror();     // make so y increases from bottom to top
     iBuffer.free();     // release the old data
     iBuffer = newIm;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -5732,7 +6035,7 @@ int remap_c(int n, char* args)
             }
         }
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -5762,7 +6065,7 @@ int bleed_c(int n, char* args)
         }
     }
 
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -5859,7 +6162,7 @@ int abelClean_c(int n, char* args)
     }
     
     free(line_grad);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 
@@ -6203,7 +6506,7 @@ int fold_c(int n, char* args){
     
     iBuffer.free();     // release the old data
     iBuffer = new_im;   // this is the new data
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 
@@ -6246,7 +6549,7 @@ int unfold_c(int n, char* args){
         iBuffer.setspecs(theSpecs);
         delete [] theSpecs;
     }
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     return NO_ERR;
 }
@@ -6254,18 +6557,22 @@ int unfold_c(int n, char* args){
 
 
 /*
- DSATURATE [displaySaturationValue]
- This affects how the display command behaves when the Scale option is selected. If a displaySaturationValue is specified, the Color Max value used will be the dataMaxium*displaySaturationValue. If no argument is given, the current value is printed.
+ DSATURATE [displaySaturationValue displayFloorValue]
+ This affects how the display command behaves when the Scale option is selected. If a displaySaturationValue is specified, the Color Max value used will be the dataMax-dataRange*( 1-displaySaturateValue). If a displayFloorValue is specified, the Color Min value used will be the dataMinimum + dataRange*displayFloorValue. If no argument is given, the current values are printed. If displaySaturateValue = 1.0 and no second argument is given, displayFloorValue is set to 0.0.
  */
 
 int dsaturate_c(int n,char* args){
-    float dSatValue=1;
-    int nargs = sscanf(args,"%f",&dSatValue);
+    float dSatValue=1,dFloorValue=0;
+    int nargs = sscanf(args,"%f %f",&dSatValue,&dFloorValue);
     
-    if(nargs ==1){
+    if(nargs == 1){
         UIData.displaySaturateValue = dSatValue;
+        if (dSatValue == 1.0)UIData.displayFloorValue=0.0;
+    } else if(nargs == 2){
+        UIData.displaySaturateValue = dSatValue;
+        UIData.displayFloorValue = dFloorValue;
     }
-    printf("Display Saturation Value is %f\n",UIData.displaySaturateValue);
+    printf("Display Saturation Value is %f\nDisplay Floor Value is %f\n",UIData.displaySaturateValue,UIData.displayFloorValue);
     update_UI();
     
     return NO_ERR;
@@ -6405,7 +6712,7 @@ int map_c(int n,char* args){
     iBuffer+min;
     
     free(values);
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
 
     return NO_ERR;
@@ -6414,6 +6721,45 @@ int map_c(int n,char* args){
 }
 
 /* ************************* */
+/*
+ LAST Ncommands
+    Print the last Ncommands out to the terminal. Could be used to save interactive commands to a macro. The LAST command is not saved to the command history buffer.
+ */
+int last_c(int n,char* args){
+    extern char cmnd_history[];
+    extern int hist_index;
+    extern int selected_hist_index;
+    extern int stored_commands;
+    
+    if( n<=1 )n=1;
+    
+    // the last stored command will be this LAST command -- take that out of the buffer;
+    for( hist_index-=2; cmnd_history[hist_index] != 0 ; hist_index--);
+    hist_index++;
+    stored_commands--;
+    
+    int charPtr=hist_index-1;
+    if( n > stored_commands) n = stored_commands;
+    int i;
+    for( i=0; i<=n; i++){
+        for( ; cmnd_history[charPtr] != 0 && charPtr > 0; charPtr--);
+        if(charPtr > 0 )charPtr--;   // last character of previous command
+    }
+    if(charPtr > 0 )charPtr+=2;
+    for( i=0; i<n; i++){
+        printf("%s\n",&cmnd_history[charPtr]);
+        charPtr += strlen(&cmnd_history[charPtr])+1;
+        
+    }
+
+
+    return NO_ERR;
+
+    
+}
+
+/* ************************* */
+
 
 #if defined(MacOSX_UI)
 
@@ -6844,7 +7190,7 @@ int flippid_c(int notUsed,char* args){
         return MEM_ERR;
     }
     projection.free();
-    iBuffer.getmaxx(PRINT_RESULT);
+    iBuffer.getmaxx(printMax);
     update_UI();
     
     return NO_ERR;

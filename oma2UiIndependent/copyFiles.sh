@@ -24,4 +24,5 @@ cp $FOLDER/oma2/dmbilinear.h $DEST/
 cp $FOLDER/oma2/dmbilinear.mm $DEST/dmbilinear.cpp
 cp $FOLDER/oma2/dmmalvar.h $DEST/
 cp $FOLDER/oma2/dmmalvar.mm $DEST/dmmalvar.cpp
+cp $FOLDER/oma2/UI.h $DEST/UI.h
 

@@ -3,6 +3,7 @@
 
 extern char reply[1024];
 extern oma2UIData UIData;
+extern int printMax;
 
 /*
  These are general purpose C functions that may be used anywhere.
@@ -26,8 +27,7 @@ void setUpUIData(){
     UIData.thepalette = FROMAFILE2;
     getpalettefile(text);
     
-    strcpy(text,PALETTEFILE3
-           );
+    strcpy(text,PALETTEFILE3);
     UIData.thepalette = FROMAFILE3;
     getpalettefile(text);
     
@@ -56,6 +56,7 @@ void setUpUIData(){
                     color[i][thepalette].red = color[i][thepalette].blue = 0; }
                 break;
             case BGRBOW:
+                /*
                 unsigned int thrd = (1 << thedepth)/3;
                 unsigned int constant = NCOLORS/thrd;
                 for (i=0; i<thrd; i++) {
@@ -68,6 +69,11 @@ void setUpUIData(){
                     color[i+thrd*2][thepalette].green = thrd*constant - i*constant;
                     color[i+thrd*2][thepalette].blue = 0;
                 }
+                 */
+                strcpy(text,CUSTOMPALETTE);
+                UIData.thepalette = BGRBOW;
+                getpalettefile(text);
+
         }
     }
     // end of palette setup
@@ -75,6 +81,10 @@ void setUpUIData(){
     UIData.r_scale = 1.;
     UIData.g_scale = 1.;
     UIData.b_scale = 1.;
+    
+    UIData.redGamma = 1.;
+    UIData.greenGamma = 1.;
+    UIData.blueGamma = 1.;
     
     UIData.alphaValue = 0.5;
     
@@ -86,9 +96,19 @@ void setUpUIData(){
     UIData.decodeHobjFlag = 1;     // setting for automatic decoding Halcon .hobj files
     UIData.demosaicHobjFlag = HOBJ_NO_DEMOSAIC;    // setting for whether or not to demosaic after decoding
     UIData.clearHobjFlag = 0;    // setting for whether or not to automatically clear bad pixels
-    UIData.displaySaturateValue = 1.; // when Scale is selected, cmax will be data max * displaySaturateValue
+    UIData.displaySaturateValue = 1.; // when Scale is selected, cmax will be dataMax-dataRange*( 1-displaySaturateValue)
+    UIData.displayFloorValue = 0.; // when Scale is selected, cmax will be dataMin + dataRange * displayFloorValue
 
     UIData.autoFloatFlag=1;
+    
+    UIData.windowScaleFactor=1.;
+ 
+    UIData.demosaic=0;
+    UIData.subtractBlack=0;
+    UIData.applyWhiteBalance=0;
+    UIData.applyGamma=1.0;
+
+    
 }
 
 int two_to_four(DATAWORD* dpt, int num, TWOBYTE scale)
@@ -418,7 +438,7 @@ int loadprefs(char* name)
         thespecs[IS_COLOR] = UIData.iscolor;
         thespecs[Y0] = UIData.y0;
         iBuffer.setspecs(thespecs);
-        //iBuffer.getmaxx(PRINT_RESULT);
+        //iBuffer.getmaxx(printMax);
         
         free(thespecs);
         long missingBytes = nbytes - HEADLEN - actualCount;
@@ -441,9 +461,44 @@ int loadprefs(char* name)
 
         if(missingBytes >= sizeof(float)){
             // set these default values
-            UIData.displaySaturateValue = 1.0; // when Scale is selected, cmax will be data max * displaySaturateValue
+            UIData.displaySaturateValue = 1.0; // when Scale is selected, cmax will be dataMax-dataRange*( 1-displaySaturateValue)
             missingBytes -= sizeof(float);
         }
+        
+        if(missingBytes >= sizeof(int)){
+            // set these default values
+            UIData.autoFloatFlag = 1; // determines whether or not a variable is set to float when an assignment with a decimal point is made
+            missingBytes -= sizeof(int);
+        }
+        if(missingBytes >= 3*sizeof(float)){
+            // set these default values
+            UIData.redGamma = 1.;
+            UIData.greenGamma = 1.;
+            UIData.blueGamma = 1.;
+            missingBytes -= 3*sizeof(float);
+        }
+
+        if(missingBytes >= sizeof(float)){
+            // set these default values
+            UIData.windowScaleFactor = 1.;
+             missingBytes -= sizeof(float);
+        }
+
+        if(missingBytes >= 3*sizeof(int)+sizeof(float)){
+            // set these default values
+            UIData.demosaic=0;
+            UIData.subtractBlack=0;
+            UIData.applyWhiteBalance=0;
+            UIData.applyGamma=0;
+             missingBytes -= 3*sizeof(int)+sizeof(float);
+        }
+        
+        if(missingBytes >= sizeof(float)){
+            // set these default values
+            UIData.displayFloorValue = 0.0; // when Scale is selected, cmax will be dataMin + dataRange * displayFloorValue
+            missingBytes -= sizeof(float);
+        }
+
 
         return NO_ERR;
     }
@@ -726,6 +781,40 @@ int getpalettefile(char* name)
     read(fd,thecolors,256);
     for(i=0; i<256; i++)
         color[i][UIData.thepalette].blue = thecolors[i];
+    
+    close(fd);
+    
+    return 0;
+}
+
+int savepalettefile(char* name)
+{
+    // write the contents of palette1 to a binary .pa1 file
+    extern RGBColor color[256][8];
+    
+    unsigned short i;
+    int fd;
+    unsigned char thecolors[256];
+    
+    fd = open(name,WMODE);
+    if(fd == -1) {
+        beep();
+        return -1;
+    }
+    
+    for(i=0; i<256; i++)
+        thecolors[i]=color[i][BGRBOW].red;
+    write(fd,thecolors,256);
+    
+    for(i=0; i<256; i++)
+        thecolors[i]=color[i][BGRBOW].green;
+    write(fd,thecolors,256);
+    
+    for(i=0; i<256; i++)
+        thecolors[i]=color[i][BGRBOW].blue;
+    write(fd,thecolors,256);
+    
+    close(fd);
     
     return 0;
 }
@@ -1090,7 +1179,7 @@ int readBinary(char* filename,Image* theImage, int bin_rows, int bin_cols,
     //iBuffer.free();     // release the old data
     *theImage = newImage;   // this is the new data
     
-    theImage->getmaxx(PRINT_RESULT);
+    theImage->getmaxx(printMax);
     update_UI();
     
     return NO_ERR;
@@ -1149,7 +1238,7 @@ int readCsv(char* filename,Image* theImage){
     
     theImage->free();     // release the old data
     *theImage = newIm;   // this is the new data
-    theImage->getmaxx(PRINT_RESULT);
+    theImage->getmaxx(printMax);
     update_UI();
 
     return NO_ERR;
@@ -1281,7 +1370,7 @@ int readHobj(char* filename,Image* theImage){
             
     }
             
-    theImage->getmaxx(PRINT_RESULT);
+    theImage->getmaxx(printMax);
     update_UI();
     
     

@@ -212,6 +212,14 @@ BOOL dropped_file(char* extension, char* name){
         wPointer->addCString((char*)"OMA2>");
         if (err == NO_ERR) return YES;
     }
+    if(strcmp(extension, "PA1")==0){
+        printf("Loading Custom Palette...\n");
+        int err = getpalettefile(name);
+        update_UI();
+        wPointer->addCString((char*)"OMA2>");
+        if (err == NO_ERR) return YES;
+    }
+
 
     return NO;
 }

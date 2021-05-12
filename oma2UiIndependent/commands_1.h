@@ -33,6 +33,7 @@ int binextension_c(int,char*);
 int boundbox_c(int, char*);
 int bleed_c(int, char*);
 int bayerFlag_c(int, char*);
+int bitmap2rgb_c(int, char*);
 
 int colorflag_c(int,char*);
 int compositefile_c(int,char*);
@@ -53,8 +54,9 @@ int closefile_c(int n,char* args);
 int columns_c(int n,char* args);
 int c2rgb_c(int n,char* args);
 #if defined (OPENCV_ROUTINES)
-int cvHoughCircles_q(int n,char* args);
-int cvAlign_q(int n,char* args);
+int cvHoughCircles_q(int,char*);
+int cvAlign_q(int,char*);
+int cvDenoise_q(int,char*);
 #endif
 
 int dcrawarg_c(int,char*);
@@ -114,6 +116,7 @@ int hdrAcdelete_c(int,char*);
 int hdrAcget_c(int,char*);
 int hdrNumget_c(int,char*);
 int hobjSettings_c(int,char*);
+int hsv2rgb_c(int,char*);
 
 
 int invert_c(int,char*);
@@ -128,6 +131,7 @@ int list_c(int,char*);
 int ltemp_c(int,char*);
 int lookup_c(int,char*);
 int ln_c(int,char*);
+int last_c(int,char*);
 
 int minus_c(int,char*);
 int mirror_c(int,char*);
@@ -176,6 +180,8 @@ int roundoff_c(int,char*);
 int rows_c(int,char*);
 int ruler_c(int, char*);
 int remap_c(int, char*);
+int rawparams_c(int,char*);
+int rgb2hsv_c(int,char*);
 
 int setcminmax_c(int,char*);
 int size_c(int,char*);
@@ -199,6 +205,7 @@ int snr_c(int,char*);
 int shotnoise_c(int,char*);
 int say_c(int,char*);
 int scatter_c(int,char*);
+int saturate_c(int,char*);
 
 
 #if defined(Qt_UI_Mac)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
@@ -227,6 +234,7 @@ int warp_c(int, char*);
 int writebad_c(int,char*);
 
 int x0_c(int n,char* args);
+
 int y0_c(int n,char* args);
 
 // Others

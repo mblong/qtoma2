@@ -119,6 +119,7 @@ win32 {
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette2.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMApalette3.pa1
+    EXTRA_FILES +=  $$SFILE\Resources\customPalette.pa1
     EXTRA_FILES +=  $$SFILE\Resources\OMASettings
 
     for(FILE,EXTRA_FILES){
@@ -133,6 +134,7 @@ macx {
     MediaFiles.files += "Resources/OMApalette.pa1"
     MediaFiles.files += "Resources/OMApalette2.pa1"
     MediaFiles.files += "Resources/OMApalette3.pa1"
+    MediaFiles.files += "Resources/customPalette.pa1"
     MediaFiles.files += "Resources/OMASettings"
     MediaFiles.path = Contents/Resources
     QMAKE_BUNDLE_DATA += MediaFiles
@@ -167,7 +169,8 @@ unix:!macx:{
         $$_PRO_FILE_PWD_/oma2UiIndependent/oma2help.txt \
         $$_PRO_FILE_PWD_/Resources/OMApalette.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMApalette2.pa1 \
-        $$_PRO_FILE_PWD_/Resources/OMApalette3.pa1
+        $$_PRO_FILE_PWD_/Resources/OMApalette3.pa1 \
+        $$_PRO_FILE_PWD_/Resources/customPalette.pa1 \
         $$_PRO_FILE_PWD_/Resources/OMASettings
     for(FILE,EXTRA_FILES){
         QMAKE_POST_LINK += $$quote(cp $${FILE} ./$$escape_expand(\\n\\t))

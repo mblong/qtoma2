@@ -33,6 +33,8 @@
 
 #define NUMLABELS 6             // number of lines for image labels
 
+#define HISTORY_BUFFER_SIZE 50000
+
 /* Define the indices to important locations in the header */
 
 #define NMAX    1
@@ -231,21 +233,22 @@ typedef struct {
     int demosaicHobjFlag;    // setting for whether or not to demosaic after decoding
     int clearHobjFlag;      // setting for whether or not to clear bad color pixels (call cclearbad_c)
  
-    float displaySaturateValue; // when Scale is selected, cmax will be data max * displaySaturateValue
+    float displaySaturateValue; // when Scale is selected, cmax will be dataMax-dataRange*( 1-displaySaturateValue)
 
     int   autoFloatFlag;  // determines whether or not a variable is set to float when an assignment with a decimal point is made
     
-    /*
-	settings[4] = detector;
-	settings[8] = showselection;
-	settings[9] = docalcs;
-	
-	settings[11] = dlen;
-	settings[12] = dhi;
-	settings[13] = c_font;
-	settings[14] = s_font;
-	settings[15] = showruler;
-    */
+    float redGamma;
+    float greenGamma;
+    float blueGamma;
+    
+    float windowScaleFactor;
+    
+    int demosaic;
+    int subtractBlack;
+    int applyWhiteBalance;
+    float applyGamma;
+    
+    float displayFloorValue; // when Scale is selected, cmin will be dataMin + dataRange * displayFloorValue
 
     
     

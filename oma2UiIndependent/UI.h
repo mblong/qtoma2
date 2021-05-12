@@ -38,6 +38,13 @@ enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 
 #define printf omaprintf
+/*
+ #define display_data [appController showDataWindow:(char*) args];
+ #define erase_window [appController eraseWindow:(int) n];
+ #define label_data [appController labelDataWindow:(char*) args];
+ #define label_data_minMax [appController labelMinMax];
+ */
+
 #define checkEvents ;
 
 #define WMODE   O_CREAT|O_WRONLY,0666
@@ -49,6 +56,7 @@ enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 #define PALETTEFILE	"Contents/Resources/OMApalette.pa1"
 #define PALETTEFILE2 "Contents/Resources/OMApalette2.pa1"
 #define PALETTEFILE3 "Contents/Resources/OMApalette3.pa1"
+#define CUSTOMPALETTE "Contents/Resources/customPalette.pa1"
 
 #define HELPFILE "Contents/Resources/oma2help.txt"
 #define HELPURL "Contents/Resources/LightOma2Help/index.html"
@@ -57,23 +65,27 @@ enum {CROSS,SELRECT,CALCRECT,RULER,LINEPLOT};
 
 // try this so that the command thread doesn't mess with things that need to be in the main thread
 
-#define display_data if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
+#define display_data if([NSThread isMainThread]) \
 [appController showDataWindow:(char*) args]; \
 else \
 dispatch_sync(dispatch_get_main_queue(),^{[appController showDataWindow:(char*) args];});
 
-
-#define erase_window if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
+#define erase_window if([NSThread isMainThread]) \
 [appController eraseWindow:(int) n]; \
 else \
 dispatch_sync(dispatch_get_main_queue(),^{[appController eraseWindow:(int) n];});
 
-#define label_data if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
+#define label_data if([NSThread isMainThread]) \
 [appController labelDataWindow:(char*) args]; \
 else \
 dispatch_sync(dispatch_get_main_queue(),^{[appController labelDataWindow:(char*) args];});
 
-#define label_data_minMax if(dispatch_get_main_queue() == dispatch_get_current_queue()) \
+#define set_alpha if([NSThread isMainThread]) \
+[appController setAlpha:(float) newAlpha]; \
+else \
+dispatch_sync(dispatch_get_main_queue(),^{[appController setAlpha:(float) newAlpha];});
+
+#define label_data_minMax if([NSThread isMainThread]) \
 [appController labelMinMax]; \
 else \
 dispatch_sync(dispatch_get_main_queue(),^{[appController labelMinMax];});
@@ -118,14 +130,15 @@ int pprintf(const char* format, ...);
 
 // dcraw needs these
 #define ABS(x) (((int)(x) ^ ((int)(x) >> 31)) - ((int)(x) >> 31))
-//#define MIN(a,b) ((a) < (b) ? (a) : (b))
-//#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 #ifndef SETTINGSFILE
 #define SETTINGSFILE "../Resources/OMASettings"
 #define PALETTEFILE	"../Resources/OMApalette.pa1"
 #define PALETTEFILE2 "../Resources/OMApalette2.pa1"
 #define PALETTEFILE3 "../Resources/OMApalette3.pa1"
+#define CUSTOMPALETTE "../Resources/customPalette.pa1"
 
 #define HELPFILE "../Resources/oma2help.txt"
 #define HELPURL "../Resources/LightOma2Help/index.html"
@@ -159,8 +172,8 @@ void displayData(char*);
 void eraseWindow(int);
 void labelDataMinMax();
 void labelData(char*);
-void setWindowAlpha(float);
 BOOL dropped_file(char*,char*);
+void setWindowAlpha(float);
 
 #endif
 
@@ -178,8 +191,8 @@ BOOL dropped_file(char*,char*);
 #define erase_window eraseWindow(n);
 #define label_data labelData(args);
 #define label_data_minMax labelDataMinMax();
-#define set_alpha setWindowAlpha(newAlpha);
 #define checkEvents QCoreApplication::processEvents();
+#define set_alpha setWindowAlpha(newAlpha);
 
 #define pprintf omaprintf
 #define printf omaprintf
@@ -197,13 +210,14 @@ BOOL dropped_file(char*,char*);
 
 
 #ifndef SETTINGSFILE
-#define SETTINGSFILE "../OMASettings"
-#define PALETTEFILE	"../OMApalette.pa1"
-#define PALETTEFILE2 "../OMApalette2.pa1"
-#define PALETTEFILE3 "../OMApalette3.pa1"
+#define SETTINGSFILE "OMASettings"
+#define PALETTEFILE	"OMApalette.pa1"
+#define PALETTEFILE2 "OMApalette2.pa1"
+#define PALETTEFILE3 "OMApalette3.pa1"
+#define CUSTOMPALETTE "customPalette.pa1"
 
-#define HELPFILE "../oma2help.txt"
-#define HELPURL "../LightOma2Help/index.html"
+#define HELPFILE "oma2help.txt"
+#define HELPURL "LightOma2Help/index.html"
 #endif
 /*
 #pragma gcc diagnostic ignored "-Wsign-compare"
@@ -244,8 +258,8 @@ void displayData(char*);
 void eraseWindow(int);
 void labelDataMinMax();
 void labelData(char*);
-void setWindowAlpha(float);
 BOOL dropped_file(char*,char*);
+void setWindowAlpha(float);
 
 #endif
 
@@ -261,6 +275,7 @@ BOOL dropped_file(char*,char*);
 #define label_data labelData(args);
 #define label_data_minMax labelDataMinMax();
 #define checkEvents QCoreApplication::processEvents();
+#define set_alpha setWindowAlpha(newAlpha);
 
 #define pprintf omaprintf
 #define printf omaprintf
@@ -327,7 +342,7 @@ void eraseWindow(int);
 void labelDataMinMax();
 void labelData(char*);
 BOOL dropped_file(char*,char*);
-
+void setWindowAlpha(float);
 
 #endif
 

@@ -32,7 +32,7 @@ FILE* folderFilePtr = NULL;   // used in the GETFOLDERNAMES and NEXTPREFIX comma
 
 char applicationPath[CHPERLN];	// this is the path to the directory that the program is running from
 char contentsPath[CHPERLN];		// this is the path to the Contents directory where things like palettes are stored
-float windowScaleFactor = 1.;
+//float windowScaleFactor = 1.; // this global was moved to the UIData
 
 char windowName[CHPERLN];
 char lastname[CHPERLN];
@@ -40,6 +40,8 @@ int windowNameMemory = 0;
 
 char binaryExtension[CHPERLN] = {"RAW"};
 int bin_rows = 1024, bin_cols = 1360, bin_header = 0, binary_file_bytes_per_data_point = 2 , swap_bytes_flag = 0, unsigned_flag=0;
+
+int printMax = PRINT_RESULT;
 
 
 FileDecoderExtensions fileDecoderExtensions[] = {
@@ -50,6 +52,7 @@ FileDecoderExtensions fileDecoderExtensions[] = {
     {{".CRW"},DCRAW},
     {{".JPG"},JPEG},
     {{".DNG"},JPEG},
+    {{".HIF"},JPEG},
     {{".HEIF"},JPEG},
     {{".HEIC"},JPEG},
 //    {{".png"},JPEG},
@@ -150,7 +153,8 @@ Image::Image(char* filename, int kindOfName)
             if (kindOfName == LONG_NAME) {
                 color = dcrawGlue(filename,-1,this);
             } else {
-                color = dcrawGlue(fullname(filename,RAW_DATA),-1,this);
+                fullname(filename,RAW_DATA);
+                color = dcrawGlue(filename,-1,this);
             }
             if(color < 0) error = FILE_ERR;
             if (error) windowNameMemory = 0;
@@ -813,10 +817,11 @@ void Image::getmaxx(char printFlag)
     
     //if( specs[HAVE_MAX] == 1)return;      // Disable for now. May want to add an argument to this to look at the
                                             // flag or not.
-    if(data == NULL){
+    if(data == NULL || specs[ROWS] < 1  || specs[COLS] < 1){
         error = MEM_ERR;
         return;
     }
+    
     mydatpt = data;
     locmin = locmax = mydatpt;
     locrmin = locrmax = locgmin = locgmax = locbmin = locbmax = mydatpt;

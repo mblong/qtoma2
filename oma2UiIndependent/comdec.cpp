@@ -40,6 +40,8 @@ ComDef   commands[] =    {
     {{"BOUNDBOX       "},   boundbox_c},
     {{"BLEED          "},   bleed_c},
     {{"BAYERFLAG      "},   bayerFlag_c},
+    {{"BITMAP2RGB     "},   bitmap2rgb_c},
+    
     
     {{"CALCULATE      "},	calc_cmd_c},
     {{"CALCALL        "},	calcall_c},
@@ -64,6 +66,7 @@ ComDef   commands[] =    {
 #ifdef OPENCV_ROUTINES
     {{"CVHOUGHCIRCLES "},   cvHoughCircles_q},
     {{"CVALIGN        "},   cvAlign_q},
+    {{"CVDENOISE      "},   cvDenoise_q},
 #endif
     
     {{"DISPLAY        "},	display},
@@ -133,6 +136,7 @@ ComDef   commands[] =    {
     {{"HDRACGET       "},	hdrAcget_c},
     {{"HDRNUMGET      "},	hdrNumget_c},
     {{"HOBJSETTINGS   "},	hobjSettings_c},
+    {{"HSV2RGB        "},   hsv2rgb_c},
     
     {{"IF             "},	ifcmnd},
     {{"IFNOT          "},	ifnotcmnd},
@@ -155,6 +159,7 @@ ComDef   commands[] =    {
     {{"LTEMPIMAGE     "},	ltemp_c},
     {{"LOOKUP         "},	lookup_c},
     {{"LN             "},	ln_c},
+    {{"LAST           "},    last_c},
         
     {{"MACRO          "},	macro},
     {{"MAKNEW         "},	resize_c},
@@ -202,6 +207,9 @@ ComDef   commands[] =    {
     {{"RNDUP          "},	roundUp_c},
     {{"RULER          "},	ruler_c},
     {{"REMAP          "},   remap_c},
+    {{"RAWPARAMS      "},   rawparams_c},
+    {{"RGB2HSV        "},   rgb2hsv_c},
+    
     
     
     {{"SAVEFILE       "},	savefile_c},
@@ -227,6 +235,7 @@ ComDef   commands[] =    {
     {{"SAY            "},	say_c},
     {{"SCATTER        "},   scatter_c},
     {{"SETALPHA       "},   setAlpha},
+    {{"SATURATE       "},   saturate_c},
 
 
 #if defined(Qt_UI_Mac)  || defined(Qt_UI_Win) || defined(Qt_UI_Linux)
@@ -255,6 +264,7 @@ ComDef   commands[] =    {
     {{"WARPARAM       "},	warpar_c},
     
     {{"X0             "},	x0_c},
+    {{"XCORRELATE     "},   xcorrelate},
     
     {{"Y0             "},	y0_c},
     
@@ -363,7 +373,7 @@ int stop_on_error = 0;
 int isErrorText = 0;
 
 // Things for command history
-#define HISTORY_BUFFER_SIZE 10000
+
 char cmnd_history[HISTORY_BUFFER_SIZE];
 int hist_index=0;
 int selected_hist_index = 0;
